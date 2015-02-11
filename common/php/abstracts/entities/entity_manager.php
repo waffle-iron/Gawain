@@ -365,7 +365,6 @@ abstract class entity_manager {
 		
 		return json_encode($arr_Result);
 
-
 	}
 	
 	
@@ -378,37 +377,56 @@ abstract class entity_manager {
 		
 		// If the input data row set is not null, renders the given data...
 		if ($arr_DataRows !== NULL) {
-		
-			// The display mode can be either "display" or "edit"
-			if ($str_DisplayMode == 'display') {
-				foreach ($arr_DataRows as $arr_ItemRow) {
-					foreach ($arr_ItemRow as $str_ItemField => $str_ItemValue) {
-						
-						// Replace the element's markers with data
-						$arr_Substitutions = array(
-								'%ID%'			=>	$this->enabledFields[$str_RenderingType][$str_ItemField]['columnName'],
-								'%COLNAME%'		=>	$this->enabledFields[$str_RenderingType][$str_ItemField]['columnName'],
-								'%LABEL%'		=>	$this->enabledFields[$str_RenderingType][$str_ItemField]['fieldLabel'],
-								'%VALUE%'		=>	$str_ItemValue,
-								'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : ''
-							);
-						
+
+			foreach ($arr_DataRows as $arr_ItemRow) {
+				foreach ($arr_ItemRow as $str_ItemField => $str_ItemValue) {
+					// Replace the element's markers with data
+					$arr_Substitutions = array(
+							// TODO: add more substitution expressions
+							'%ID%'			=>	$this->enabledFields[$str_RenderingType][$str_ItemField]['columnName'],
+							'%COLNAME%'		=>	$this->enabledFields[$str_RenderingType][$str_ItemField]['columnName'],
+							'%LABEL%'		=>	$this->enabledFields[$str_RenderingType][$str_ItemField]['fieldLabel'],
+							'%VALUE%'		=>	$str_ItemValue,
+							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : ''
+						);
+					
+					// The display mode can be either "display" or "edit"
+					if ($str_DisplayMode == 'display') {
 						$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
 								array_values($arr_Substitutions),
 								$this->enabledFields[$str_RenderingType][$str_ItemField]['displayElementTemplate']);
-						
-						array_push($arr_Output, $str_RenderedElement);
+					
+					} elseif ($str_DisplayMode == 'edit') {
+						$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
+								array_values($arr_Substitutions),
+								$this->enabledFields[$str_RenderingType][$str_ItemField]['editElementTemplate']);
 					}
-		
+					
+					array_push($arr_Output, $str_RenderedElement);
 				}
-				
-			} elseif ($str_DisplayMode == 'edit') {
-				// TODO: write the "edit" part
-			}
-			
+			}		
 			
 		} else {	// ... Else it returns empty or edit-ready rendering
-			// TODO: write the NULL data row part
+			foreach ($this->enabledFields[$str_RenderingType] as $arr_EnabledField) {
+				$arr_Substitutions = array(
+						'%ID%'			=>	$arr_EnabledField['columnName'],
+						'%COLNAME%'		=>	$arr_EnabledField['columnName'],
+						'%LABEL%'		=>	$arr_EnabledField['fieldLabel'],
+						'%VALUE%'		=>	'',
+						'%IS_CHECKED%'	=>	''					
+					);
+				
+				if ($str_DisplayMode == 'display') {
+					$str_RenderedElement = NULL;
+						
+				} elseif ($str_DisplayMode == 'edit') {
+					$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
+							array_values($arr_Substitutions),
+							$arr_EnabledField['editElementTemplate']);
+				}
+					
+				array_push($arr_Output, $str_RenderedElement);
+			}
 		}
 	
 		
