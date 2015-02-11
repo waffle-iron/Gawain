@@ -248,7 +248,7 @@ abstract class entity_manager {
 
 
 	// Reads and returns data into formatted templates
-	public function readData($arr_Wheres, $str_RenderingType) {
+	public function readData($arr_Wheres, $str_RenderingType, $str_DisplayMode) {
 		
 		/*
 			The Where conditions are expressed in this way:
@@ -305,7 +305,6 @@ abstract class entity_manager {
 		
 		foreach ($arr_Joins as $arr_RefData) {
 			if ($arr_RefData['customerColumnName'] !== NULL) {
-				//$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  $arr_RefData['table'] . ' ' . $arr_RefData['alias'] . PHP_EOL;
 				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  PHP_EOL;
 				$str_JoinString .= '(select * from ' . $arr_RefData['table'] . ' where ' . $arr_RefData['customerColumnName'] . ' = ' . $this->currentCustomerID . ') '. $arr_RefData['alias'] . PHP_EOL;
 			} else {
@@ -356,7 +355,7 @@ abstract class entity_manager {
 		
 		
 		// Parse the results and render the result using display elements
-		$str_RenderedResult = utf8_encode($this->renderData($arr_GetResult, $str_RenderingType, 'display'));
+		$str_RenderedResult = utf8_encode($this->renderData($arr_GetResult, $str_RenderingType, $str_DisplayMode));
 		
 		$arr_Result = array(
 			'raw' 		=> $arr_GetResult,
@@ -366,6 +365,14 @@ abstract class entity_manager {
 		return json_encode($arr_Result);
 
 	}
+	
+	
+	
+	
+	public function insertData($str_Wheres, $arr_DataRows) {
+		
+	}
+	
 	
 	
 	
