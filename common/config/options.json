@@ -1,0 +1,14 @@
+{
+	"environment"	:
+		{
+			"DB"	:
+				{
+					"type"	:	"MySQL",
+					"host"	:	"localhost",
+					"user"	:	"webproject",
+					"pwd"	:	"webproject",
+					"dbName":	"webproject"
+				},
+			"locale"	:	"it-IT"
+		}
+}
