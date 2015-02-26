@@ -248,7 +248,7 @@ abstract class entity_manager {
 
 
 	// Reads and returns data into formatted templates
-	public function readData($arr_Wheres, $str_RenderingType, $str_DisplayMode) {
+	protected function readData($arr_Wheres, $str_RenderingType, $str_DisplayMode) {
 		
 		/*
 			The Where conditions are expressed in this way:
@@ -369,7 +369,7 @@ abstract class entity_manager {
 	
 	
 	
-	public function insertData($str_Wheres, $arr_DataRows) {
+	protected function insertData($str_Wheres, $arr_DataRows) {
 		
 	}
 	
