@@ -10,6 +10,10 @@ abstract class entity_manager {
 
 	// Reference entity label
 	public $entityLabel;
+	
+	
+	// Enoty reference table
+	protected $entityReferenceTable;
 
 
 	// All available fields for selected entity
@@ -38,6 +42,9 @@ abstract class entity_manager {
 
 
 	// Constructor
+	/**
+	 * @param string $str_SessionID
+	 */
 	public function __construct($str_SessionID) {
 
 		// Sets inner class' data
@@ -55,16 +62,17 @@ abstract class entity_manager {
 
 
 		// Sets remaining fields
-		$this->retrieveCurrentCustomer();
-		$this->retrieveCurrentEntityLabel();
-		$this->retrieveAvailableFields();
-		$this->retrieveEnabledFields();
+		$this->getCurrentCustomer();
+		$this->getEntityLabel();
+		$this->getEntityReferenceTable();
+		$this->getAvailableFields();
+		$this->getEnabledFields();
 
 	}
 
 
 	// Get current customer ID
-	protected function retrieveCurrentCustomer() {
+	private function getCurrentCustomer() {
 
 		$str_CustomerPrepQuery =
 			'select
@@ -83,8 +91,8 @@ abstract class entity_manager {
 
 
 
-	// Get the current entity label
-	protected function retrieveCurrentEntityLabel() {
+	// Get the entity label
+	private function getEntityLabel() {
 
 		$str_LabelPrepQuery =
 			'select
@@ -102,11 +110,35 @@ abstract class entity_manager {
 		$this->entityLabel = $obj_Result[0]['entityLabel'];
 
 	}
+	
+	
+	
+	// Get the current entity reference table
+	private function getEntityReferenceTable() {
+		
+		$str_TablePrepQuery = 
+			'select
+				distinct tableName
+			from entities_reference_fields
+			where entityCode = ?';
+		
+		$obj_Result = $this->db_handler->execute_prepared($str_TablePrepQuery,
+			array(
+				$this->entityCode => 's'
+			));
+		
+		if (sizeof($obj_Result) == 1) {
+			$this->entityReferenceTable = $obj_Result[0]['tableName'];
+		} else {
+			throw new Exception('Non unique entity reference table');
+		}
+		
+	}
 
 
 
 	// Get all the available fields for selected entity
-	protected function retrieveAvailableFields() {
+	private function getAvailableFields() {
 
 		$str_AvailableFieldsPrepQuery = 
 			'select
@@ -114,6 +146,8 @@ abstract class entity_manager {
 				fieldIsPrimaryID,
 				tableName,
 				columnName,
+				fieldType,
+				referentialJoinType,
 				referentialTableName,
 				referentialCodeColumnName,
 				referentialValueColumnName,
@@ -127,14 +161,19 @@ abstract class entity_manager {
 				$this->entityCode => 's'
 			));
 
-		foreach($obj_Result as $obj_ResultEntry) {
+		foreach ($obj_Result as $obj_ResultEntry) {
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['fieldIsPrimaryID'] = $obj_ResultEntry['fieldIsPrimaryID'];
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['tableName'] = $obj_ResultEntry['tableName'];
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['columnName'] = $obj_ResultEntry['columnName'];
+			
+			$this->availableFields[$obj_ResultEntry['fieldCode']]['fieldType'] = $obj_ResultEntry['fieldType'];
+			
+			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialJoinType'] = $obj_ResultEntry['referentialJoinType'];
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialTableName'] = $obj_ResultEntry['referentialTableName'];
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialCodeColumnName'] = $obj_ResultEntry['referentialCodeColumnName'];
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialValueColumnName'] = $obj_ResultEntry['referentialValueColumnName'];
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialCustomerDependencyColumnName'] = $obj_ResultEntry['referentialCustomerDependencyColumnName'];
+			
 			$this->availableFields[$obj_ResultEntry['fieldCode']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
 		}
 
@@ -143,7 +182,7 @@ abstract class entity_manager {
 
 
 	// Get all enabled fields with full specs
-	protected function retrieveEnabledFields() {
+	private function getEnabledFields() {
 
 		$str_EnabledFieldsPrepQuery = 
 			'select
@@ -186,7 +225,7 @@ abstract class entity_manager {
 				$this->currentCustomerID => 'i'
 			));
 
-		foreach($obj_Result as $obj_ResultEntry) {
+		foreach ($obj_Result as $obj_ResultEntry) {
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
 				[$obj_ResultEntry['fieldCode']]
 					['fieldIsPrimaryID'] = (bool) ($obj_ResultEntry['fieldIsPrimaryID']);
@@ -246,6 +285,12 @@ abstract class entity_manager {
 
 
 	// Reads and returns data into formatted templates
+	/**
+	 * @param array $arr_Wheres
+	 * @param string $str_RenderingType
+	 * @param string $str_OutputFormat
+	 * @return string
+	 */
 	public function read($arr_Wheres, $str_RenderingType, $str_OutputFormat = 'rendered') {
 		
 		/*
@@ -372,8 +417,53 @@ abstract class entity_manager {
 	
 	
 	
-	
-	public function insert($str_Wheres, $arr_DataRows) {
+	// Inserts new data, overwriting existent records if isSafe parameter is set to false
+	// Data rows derive from JSON format (converted in connector)
+	public function insert($arr_DataRows, $bool_IsSafe = TRUE) {
+		
+		// First, check if the proposed datarows keys are contained in entity avaiable fields
+		$arr_DataRowsFields = array_keys($arr_DataRows);
+		$arr_AvailableFields = array_keys($this->availableFields);
+		
+		if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
+			throw new Exception('Invalid fields in insert statement');
+			return FALSE;
+			
+		} else {
+			// Compose the insert statement
+			$str_Query = 'insert into ' . $this->entityReferenceTable . PHP_EOL;
+			$str_Query .= '(' . implode(', ', $arr_DataRowsFields) . ') ' . PHP_EOL;
+			
+			// Loop to insert prepared statement marks
+			$arr_PreparedMarks = array();
+			$arr_ParametersType = array();
+			
+			foreach ($arr_DataRowsFields as $str_FieldName) {
+				array_push($arr_PreparedMarks, '?');
+				array_push($arr_ParametersType, $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's');
+			}
+			
+			$str_Query .= 'values (' . implode(', ', $arr_PreparedMarks) . ')';
+			
+			
+			// Prepare input array for prepared statement	
+			$arr_Parameters = array_merge(array_values($arr_DataRows), $arr_ParametersType);
+			/*foreach ($arr_DataRows as $str_FieldName => $str_FieldValue) {
+				var_dump($str_FieldName);
+				$arr_Parameters[$str_FieldValue] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's';
+			}*/
+			
+			
+			var_dump($arr_Parameters);
+			
+			// Starts transaction and insert data
+			$this->db_handler->begin_transaction();
+			$this->db_handler->execute_prepared($str_Query, $arr_Parameters);
+			$this->db_handler->commit();
+			
+			return TRUE;
+			
+		}
 		
 	}
 	
@@ -394,6 +484,11 @@ abstract class entity_manager {
 	
 	
 	// Renders the given items into their respective elements
+	/**
+	 * @param array $arr_DataRows
+	 * @param string $str_RenderingType
+	 * @return string
+	 */
 	protected function render($arr_DataRows, $str_RenderingType) {
 		
 		$arr_Output = array();
