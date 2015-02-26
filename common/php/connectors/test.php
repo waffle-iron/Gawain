@@ -11,7 +11,7 @@ echo $obj_Manager->read(array(
 						1
 					)
 			)
-	), 'block_text', 'display');
+	), 'block_text', 'rendered');
 
 
 

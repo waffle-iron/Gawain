@@ -151,6 +151,8 @@ abstract class entity_manager {
 				reference.fieldCode,
 				reference.fieldIsPrimaryID,
 				link.fieldOrderingIndex,
+				link.fieldGroupingLevel,
+				link.fieldGroupingFunction,
 				link.fieldLabel,
 				link.fieldTooltip,
 				reference.tableName,
@@ -192,6 +194,12 @@ abstract class entity_manager {
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
 				[$obj_ResultEntry['fieldCode']]
 					['fieldOrderingIndex'] = $obj_ResultEntry['fieldOrderingIndex'];
+			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
+				[$obj_ResultEntry['fieldCode']]
+					['fieldGroupingLevel'] = $obj_ResultEntry['fieldGroupingLevel'];
+			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
+				[$obj_ResultEntry['fieldCode']]
+					['fieldGroupingFunction'] = $obj_ResultEntry['fieldGroupingFunction'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
 				[$obj_ResultEntry['fieldCode']]
 					['fieldLabel'] = $obj_ResultEntry['fieldLabel'];
@@ -238,7 +246,7 @@ abstract class entity_manager {
 
 
 	// Reads and returns data into formatted templates
-	public function read($arr_Wheres, $str_RenderingType, $str_DisplayMode) {
+	public function read($arr_Wheres, $str_RenderingType, $str_OutputFormat = 'rendered') {
 		
 		/*
 			The Where conditions are expressed in this way:
@@ -344,15 +352,21 @@ abstract class entity_manager {
 		$arr_GetResult = $this->db_handler->execute_prepared($str_QueryString, $arr_Parameters);
 		
 		
-		// Parse the results and render the result using display elements
-		$str_RenderedResult = mb_convert_encoding($this->render($arr_GetResult, $str_RenderingType, $str_DisplayMode), 'UTF-8');
+		// Set output type according to specified format
+		switch ($str_OutputFormat) {
+			case 'raw':
+				$str_Output = json_encode($arr_GetResult);
+				break;
+				
+			case 'rendered':
+				// Parse the results and render the result using display elements
+				$str_RenderedResult = $this->render($arr_GetResult, $str_RenderingType);
+				$str_Output = $str_RenderedResult;
+				break;
+		}
 		
-		$arr_Result = array(
-			'raw' 		=> $arr_GetResult,
-			'rendered' 	=> $str_RenderedResult
-		);
 		
-		return json_encode($arr_Result);
+		return $str_Output;
 
 	}
 	
@@ -380,7 +394,7 @@ abstract class entity_manager {
 	
 	
 	// Renders the given items into their respective elements
-	protected function render($arr_DataRows, $str_RenderingType, $str_DisplayMode) {
+	protected function render($arr_DataRows, $str_RenderingType) {
 		
 		$arr_Output = array();
 		
@@ -403,6 +417,10 @@ abstract class entity_manager {
 						array_values($arr_Substitutions),
 						$this->enabledFields[$str_RenderingType][$str_ItemField]['renderingElementTemplate']);
 					
+					// Regular expression replace to minify the code
+					// TODO: verify the correctness of the expression and correct it if necessary
+					$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
+					
 					array_push($arr_Output, $str_RenderedElement);
 				}
 			}		
@@ -417,14 +435,9 @@ abstract class entity_manager {
 						'%IS_CHECKED%'	=>	''					
 					);
 				
-				if ($str_DisplayMode == 'display') {
-					$str_RenderedElement = NULL;
-						
-				} elseif ($str_DisplayMode == 'edit') {
-					$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-							array_values($arr_Substitutions),
-							$arr_EnabledField['editElementTemplate']);
-				}
+				$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
+						array_values($arr_Substitutions),
+						$arr_EnabledField['renderingElementTemplate']);
 					
 				array_push($arr_Output, $str_RenderedElement);
 			}
