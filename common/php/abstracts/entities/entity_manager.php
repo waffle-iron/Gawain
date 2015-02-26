@@ -147,7 +147,7 @@ abstract class entity_manager {
 
 		$str_EnabledFieldsPrepQuery = 
 			'select
-				render.renderingTypeCode,
+				rendering_types.renderingTypeCode,
 				reference.fieldCode,
 				reference.fieldIsPrimaryID,
 				link.fieldOrderingIndex,
@@ -161,23 +161,19 @@ abstract class entity_manager {
 				reference.referentialCodeColumnName,
 				reference.referentialValueColumnName,
 				reference.referentialCustomerDependencyColumnName,
-				display.elementBaseTag as displayElementBaseTag,
-				display.elementTemplate as displayElementTemplate,
-				edit.elementBaseTag as editElementBaseTag,
-				edit.elementTemplate as editElementTemplate
+				render.elementBaseTag as displayElementBaseTag,
+				render.elementTemplate as displayElementTemplate
 			from entities_reference_fields reference
 			inner join entities_linked_rendering_elements link
 				on reference.fieldCode = link.fieldCode
-			inner join rendering_types render
-				on render.renderingTypeCode = link.renderingTypeCode
-			left join rendering_display_elements display
-				on link.fieldDisplayElementCode = display.elementCode
-			left join rendering_edit_elements edit
-				on link.fieldDisplayElementCode = edit.elementCode
+			inner join rendering_types rendering_types
+				on rendering_types.renderingTypeCode = link.renderingTypeCode
+			left join rendering_elements render
+				on link.fieldRenderingElementCode = render.elementCode
 			where reference.entityCode = ?
 				and link.customerID = ?
 			order by
-				render.renderingTypeCode,
+				rendering_types.renderingTypeCode,
 				link.fieldOrderingIndex,
 				link.fieldLabel';
 
@@ -188,7 +184,8 @@ abstract class entity_manager {
 				$this->currentCustomerID => 'i'
 			));
 
-		foreach($obj_Result as $obj_ResultEntry) {$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
+		foreach($obj_Result as $obj_ResultEntry) {
+			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
 				[$obj_ResultEntry['fieldCode']]
 					['fieldIsPrimaryID'] = (bool) ($obj_ResultEntry['fieldIsPrimaryID']);
 
@@ -230,17 +227,10 @@ abstract class entity_manager {
 
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
 				[$obj_ResultEntry['fieldCode']]
-					['displayElementBaseTag'] = $obj_ResultEntry['displayElementBaseTag'];
+					['renderingElementBaseTag'] = $obj_ResultEntry['displayElementBaseTag'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
 				[$obj_ResultEntry['fieldCode']]
-					['displayElementTemplate'] = $obj_ResultEntry['displayElementTemplate'];
-
-			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
-				[$obj_ResultEntry['fieldCode']]
-					['editElementBaseTag'] = $obj_ResultEntry['editElementBaseTag'];
-			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]
-				[$obj_ResultEntry['fieldCode']]
-					['editElementTemplate'] = $obj_ResultEntry['editElementTemplate'];
+					['renderingElementTemplate'] = $obj_ResultEntry['displayElementTemplate'];
 		}
 
 	}
@@ -248,7 +238,7 @@ abstract class entity_manager {
 
 
 	// Reads and returns data into formatted templates
-	protected function readData($arr_Wheres, $str_RenderingType, $str_DisplayMode) {
+	public function read($arr_Wheres, $str_RenderingType, $str_DisplayMode) {
 		
 		/*
 			The Where conditions are expressed in this way:
@@ -355,7 +345,7 @@ abstract class entity_manager {
 		
 		
 		// Parse the results and render the result using display elements
-		$str_RenderedResult = utf8_encode($this->renderData($arr_GetResult, $str_RenderingType, $str_DisplayMode));
+		$str_RenderedResult = mb_convert_encoding($this->render($arr_GetResult, $str_RenderingType, $str_DisplayMode), 'UTF-8');
 		
 		$arr_Result = array(
 			'raw' 		=> $arr_GetResult,
@@ -369,7 +359,19 @@ abstract class entity_manager {
 	
 	
 	
-	protected function insertData($str_Wheres, $arr_DataRows) {
+	public function insert($str_Wheres, $arr_DataRows) {
+		
+	}
+	
+	
+	
+	public function update($str_Wheres, $arr_DataRows) {
+		
+	}
+	
+	
+	
+	public function delete($str_Wheres) {
 		
 	}
 	
@@ -378,7 +380,7 @@ abstract class entity_manager {
 	
 	
 	// Renders the given items into their respective elements
-	protected function renderData($arr_DataRows, $str_RenderingType, $str_DisplayMode) {
+	protected function render($arr_DataRows, $str_RenderingType, $str_DisplayMode) {
 		
 		$arr_Output = array();
 		
@@ -397,17 +399,9 @@ abstract class entity_manager {
 							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : ''
 						);
 					
-					// The display mode can be either "display" or "edit"
-					if ($str_DisplayMode == 'display') {
-						$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-								array_values($arr_Substitutions),
-								$this->enabledFields[$str_RenderingType][$str_ItemField]['displayElementTemplate']);
-					
-					} elseif ($str_DisplayMode == 'edit') {
-						$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-								array_values($arr_Substitutions),
-								$this->enabledFields[$str_RenderingType][$str_ItemField]['editElementTemplate']);
-					}
+					$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
+						array_values($arr_Substitutions),
+						$this->enabledFields[$str_RenderingType][$str_ItemField]['renderingElementTemplate']);
 					
 					array_push($arr_Output, $str_RenderedElement);
 				}

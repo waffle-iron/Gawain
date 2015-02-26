@@ -5,9 +5,9 @@
 				{
 					"type"	:	"MySQL",
 					"host"	:	"localhost",
-					"user"	:	"webproject",
-					"pwd"	:	"webproject",
-					"dbName":	"webproject"
+					"user"	:	"gawain",
+					"pwd"	:	"gawain",
+					"dbName":	"gawain"
 				},
 			"locale"	:	"it-IT"
 		}

@@ -4,7 +4,7 @@ require_once('../classes/entities/activity_manager.php');
 
 $obj_Manager = new activity_manager('AAA');
 
-echo $obj_Manager->readData(array(
+echo $obj_Manager->read(array(
 		'activityID' => array(
 				'operator' => '=',
 				'arguments' => array(
