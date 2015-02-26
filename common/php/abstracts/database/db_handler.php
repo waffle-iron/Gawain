@@ -30,6 +30,18 @@ abstract class db_handler {
 
 	// Execute prepared query and output resultset
 	abstract function execute_prepared($str_Query, $arr_InputParameters);
+	
+	
+	// Starts a transaction
+	abstract function begin_transaction();
+	
+	
+	// Commits a transaction
+	abstract function commit();
+	
+	
+	// Rollbacks a transaction
+	abstract function rollback();
 
 
 	// Class destructor

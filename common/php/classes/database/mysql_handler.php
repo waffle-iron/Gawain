@@ -77,6 +77,27 @@ class mysql_handler extends db_handler {
 		return $obj_Result;
 
 	}
+	
+	
+	
+	// Starts a transaction
+	public function begin_transaction() {
+		$this->handler->query('begin transaction');
+	}
+	
+	
+	
+	// Commits a transaction
+	public function commit() {
+		$this->handler->query('commit');
+	}
+	
+	
+	
+	// Rollback a transaction
+	public function rollback() {
+		$this->handler->query('rollback');
+	}
 
 
 
