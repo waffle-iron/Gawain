@@ -28,6 +28,8 @@ class mysql_handler extends db_handler {
 		} catch (Exception $exception) {
 			echo 'Cannot connect to selected DB: ' . $exception->getMessage() . "\n";
 		}
+		
+		$this->handler->autocommit(FALSE);
 
 	}
 
@@ -74,9 +76,16 @@ class mysql_handler extends db_handler {
 
 
 		// Output
-		$obj_Result = $obj_Prepared->get_result()->fetch_all(MYSQLI_ASSOC);
-		$obj_Prepared->free_result();
-		$obj_Prepared->close();
+		$obj_Resultset = $obj_Prepared->get_result();
+		
+		if (is_object($obj_Resultset)) {
+			$obj_Result = $obj_Resultset->fetch_all(MYSQLI_ASSOC);
+			$obj_Prepared->free_result();
+			$obj_Prepared->close();
+		} else {
+			$obj_Result = NULL;
+		}
+		
 
 		return $obj_Result;
 
