@@ -82,7 +82,7 @@ abstract class entity_manager {
 
 		$arr_Result = $this->db_handler->execute_prepared($str_CustomerPrepQuery,
 			array(
-				$this->sessionID => 's'
+				array($this->sessionID => 's')
 			));
 
 		$this->currentCustomerID = $arr_Result[0]['customerID'];
@@ -103,8 +103,8 @@ abstract class entity_manager {
 
 		$obj_Result = $this->db_handler->execute_prepared($str_LabelPrepQuery,
 			array(
-				$this->currentCustomerID => 'i',
-				$this->entityCode => 's'
+				array($this->currentCustomerID => 'i'),
+				array($this->entityCode => 's')
 			));
 
 		$this->entityLabel = $obj_Result[0]['entityLabel'];
@@ -124,7 +124,7 @@ abstract class entity_manager {
 		
 		$obj_Result = $this->db_handler->execute_prepared($str_TablePrepQuery,
 			array(
-				$this->entityCode => 's'
+				array($this->entityCode => 's')
 			));
 		
 		if (sizeof($obj_Result) == 1) {
@@ -158,7 +158,7 @@ abstract class entity_manager {
 	
 		$obj_Result = $this->db_handler->execute_prepared($str_AvailableFieldsPrepQuery,
 			array(
-				$this->entityCode => 's'
+				array($this->entityCode => 's')
 			));
 
 		foreach ($obj_Result as $obj_ResultEntry) {
@@ -221,8 +221,8 @@ abstract class entity_manager {
 
 		$obj_Result = $this->db_handler->execute_prepared($str_EnabledFieldsPrepQuery,
 			array(
-				$this->entityCode => 's',
-				$this->currentCustomerID => 'i'
+				array($this->entityCode => 's'),
+				array($this->currentCustomerID => 'i')
 			));
 
 		foreach ($obj_Result as $obj_ResultEntry) {
@@ -382,7 +382,7 @@ abstract class entity_manager {
 				}
 				
 				foreach ($arr_WhereCondition['arguments'] as $str_Argument) {
-					$arr_Parameters[$str_Argument] = $this->enabledFields[$str_RenderingType][$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's';
+					$arr_Parameters[] = array($str_Argument => $this->enabledFields[$str_RenderingType][$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's');
 				}
 				
 				$arr_WhereFields[] = $str_WhereCondition;
@@ -437,24 +437,20 @@ abstract class entity_manager {
 			// Loop to insert prepared statement marks
 			$arr_PreparedMarks = array();
 			$arr_ParametersType = array();
+			$arr_Parameters = array();
 			
 			foreach ($arr_DataRowsFields as $str_FieldName) {
-				array_push($arr_PreparedMarks, '?');
-				array_push($arr_ParametersType, $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's');
+				$arr_PreparedMarks[] = '?';
+				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's';
 			}
 			
 			$str_Query .= 'values (' . implode(', ', $arr_PreparedMarks) . ')';
 			
+			$arr_ParametersValue = array_values($arr_DataRows);
 			
-			// Prepare input array for prepared statement	
-			$arr_Parameters = array_merge(array_values($arr_DataRows), $arr_ParametersType);
-			/*foreach ($arr_DataRows as $str_FieldName => $str_FieldValue) {
-				var_dump($str_FieldName);
-				$arr_Parameters[$str_FieldValue] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's';
-			}*/
-			
-			
-			var_dump($arr_Parameters);
+			for ($int_ParameterCounter = 0; $int_ParameterCounter < sizeof($arr_ParametersType); $int_ParameterCounter++) {
+				$arr_Parameters[] = array($arr_ParametersValue[$int_ParameterCounter] => $arr_ParametersType[$int_ParameterCounter]);
+			}
 			
 			// Starts transaction and insert data
 			$this->db_handler->begin_transaction();
@@ -514,7 +510,7 @@ abstract class entity_manager {
 					
 					// Regular expression replace to minify the code
 					// TODO: verify the correctness of the expression and correct it if necessary
-					$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
+					//$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
 					
 					array_push($arr_Output, $str_RenderedElement);
 				}
@@ -539,7 +535,7 @@ abstract class entity_manager {
 		}
 	
 		
-		return implode('', $arr_Output);
+		return implode(PHP_EOL, $arr_Output);
 		
 	}
 
