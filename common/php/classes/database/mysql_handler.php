@@ -37,8 +37,8 @@ class mysql_handler extends db_handler {
 	public function execute_prepared($str_Query, $arr_InputParameters) {
 
 		/*
-			The input will be formatted in the following way:
-			array(variable1 => type1, variable2 => type2, ...)
+			The input parameters will be formatted in the following way:
+			array([0] => array(variable1 => type1), [1] => array(variable2 => type2))
 		*/
 
 		// Prepare the query
@@ -50,14 +50,18 @@ class mysql_handler extends db_handler {
 			$str_ParametersType = '';
 			$arr_ParametersValue = array();
 			
-			$arr_InputParametersKeys = array_keys($arr_InputParameters);
+			$arr_InputParametersKey = array();
+			$arr_InputParametersValue = array();
 			
-			foreach ($arr_InputParametersKeys as &$str_Value) {
-				$arr_ParametersValue[] = &$str_Value;
+			foreach ($arr_InputParameters as $arr_InputParameter) {
+				$arr_InputParametersKey[] = implode('', array_keys($arr_InputParameter));
+				$arr_InputParametersValue[] = implode('', array_values($arr_InputParameter));
 			}
 			
-			foreach (array_values($arr_InputParameters) as $str_Type) {
-				$str_ParametersType .= $str_Type;
+			
+			for ($int_ParametersCounter = 0; $int_ParametersCounter < sizeof($arr_InputParametersKey); $int_ParametersCounter++) {
+				$arr_ParametersValue[] = &$arr_InputParametersKey[$int_ParametersCounter];
+				$str_ParametersType .= $arr_InputParametersValue[$int_ParametersCounter];
 			}
 			
 			
