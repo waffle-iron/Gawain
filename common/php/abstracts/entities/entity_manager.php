@@ -417,15 +417,14 @@ abstract class entity_manager {
 	
 	
 	
-	// Inserts new data, overwriting existent records if isSafe parameter is set to false
+	// Inserts new data
 	// Data rows derive from JSON format (converted in connector)
 	/**
 	 * @param array $arr_DataRows
-	 * @param boolean $bool_IsSafe
 	 * @throws Exception
 	 * @return boolean
 	 */
-	public function insert($arr_DataRows, $bool_IsSafe = TRUE) {
+	public function insert($arr_DataRows) {
 		
 		// First, check if the proposed datarows keys are contained in entity avaiable fields
 		$arr_DataRowsFields = array_keys($arr_DataRows);
