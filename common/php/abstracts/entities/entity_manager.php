@@ -63,8 +63,7 @@ abstract class entity_manager {
 
 		// Sets remaining fields
 		$this->getCurrentCustomer();
-		$this->getEntityLabel();
-		$this->getEntityReferenceTable();
+		$this->getEntityInfo();
 		$this->getAvailableFields();
 		$this->getEnabledFields();
 
@@ -91,48 +90,27 @@ abstract class entity_manager {
 
 
 
-	// Get the entity label
-	private function getEntityLabel() {
+	// Get entity info
+	private function getEntityInfo() {
 
-		$str_LabelPrepQuery =
+		$str_InfoPrepQuery =
 			'select
-				entityLabel
+				entityLabel,
+				entityReferenceTable
 			from entities_label
-			where customerID = ?
-				and entityCode = ?';
+			inner join entities
+				on entities.entityCode = entities_label.entityCode
+			where entities_label.customerID = ?
+				and entities_label.entityCode = ?';
 
-		$obj_Result = $this->db_handler->execute_prepared($str_LabelPrepQuery,
+		$obj_Result = $this->db_handler->execute_prepared($str_InfoPrepQuery,
 			array(
 				array($this->currentCustomerID => 'i'),
 				array($this->entityCode => 's')
 			));
 
 		$this->entityLabel = $obj_Result[0]['entityLabel'];
-
-	}
-	
-	
-	
-	// Get the current entity reference table
-	private function getEntityReferenceTable() {
-		
-		$str_TablePrepQuery = 
-			'select
-				distinct tableName
-			from entities_reference_fields
-			where entityCode = ?';
-		
-		$obj_Result = $this->db_handler->execute_prepared($str_TablePrepQuery,
-			array(
-				array($this->entityCode => 's')
-			));
-		
-		if (sizeof($obj_Result) == 1) {
-			$this->entityReferenceTable = $obj_Result[0]['tableName'];
-		} else {
-			throw new Exception('Non unique entity reference table');
-		}
-		
+		$this->entityReferenceTable = $obj_Result[0]['entityReferenceTable'];
 	}
 
 
@@ -142,10 +120,9 @@ abstract class entity_manager {
 
 		$str_AvailableFieldsPrepQuery = 
 			'select
-				fieldCode,
-				fieldIsPrimaryID,
-				tableName,
 				columnName,
+				fieldIsAutoIncrement,
+				fieldIsNillable,
 				fieldType,
 				referentialJoinType,
 				referentialTableName,
@@ -162,19 +139,18 @@ abstract class entity_manager {
 			));
 
 		foreach ($obj_Result as $obj_ResultEntry) {
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['fieldIsPrimaryID'] = $obj_ResultEntry['fieldIsPrimaryID'];
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['tableName'] = $obj_ResultEntry['tableName'];
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['columnName'] = $obj_ResultEntry['columnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['fieldIsAutoIncrement'] = $obj_ResultEntry['fieldIsAutoIncrement'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['fieldIsNillable'] = $obj_ResultEntry['fieldIsNillable'];
 			
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['fieldType'] = $obj_ResultEntry['fieldType'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['fieldType'] = $obj_ResultEntry['fieldType'];
 			
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialJoinType'] = $obj_ResultEntry['referentialJoinType'];
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialTableName'] = $obj_ResultEntry['referentialTableName'];
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialCodeColumnName'] = $obj_ResultEntry['referentialCodeColumnName'];
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialValueColumnName'] = $obj_ResultEntry['referentialValueColumnName'];
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['referentialCustomerDependencyColumnName'] = $obj_ResultEntry['referentialCustomerDependencyColumnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialJoinType'] = $obj_ResultEntry['referentialJoinType'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialTableName'] = $obj_ResultEntry['referentialTableName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCodeColumnName'] = $obj_ResultEntry['referentialCodeColumnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialValueColumnName'] = $obj_ResultEntry['referentialValueColumnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCustomerDependencyColumnName'] = $obj_ResultEntry['referentialCustomerDependencyColumnName'];
 			
-			$this->availableFields[$obj_ResultEntry['fieldCode']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
 		}
 
 	}
@@ -187,15 +163,15 @@ abstract class entity_manager {
 		$str_EnabledFieldsPrepQuery = 
 			'select
 				rendering_types.renderingTypeCode,
-				reference.fieldCode,
-				reference.fieldIsPrimaryID,
+				entities.entityReferenceTable as tableName,
+				reference.columnName,
+				reference.fieldIsAutoIncrement,
+				reference.fieldIsNillable,
 				link.fieldOrderingIndex,
 				link.fieldGroupingLevel,
 				link.fieldGroupingFunction,
 				link.fieldLabel,
 				link.fieldTooltip,
-				reference.tableName,
-				reference.columnName,
 				reference.fieldType,
 				reference.referentialJoinType,
 				reference.referentialTableName,
@@ -209,9 +185,12 @@ abstract class entity_manager {
 				rendering_types.renderingTypeBetweenEachRecordSnippet,
 				rendering_types.renderingTypeAfterEachRecordSnippet,
 				rendering_types.renderingTypeAfterAllSnippet
-			from entities_reference_fields reference
+			from entities entities
+			inner join entities_reference_fields reference
+				on reference.entityCode = entities.entityCode
 			inner join entities_linked_rendering_elements link
-				on reference.fieldCode = link.fieldCode
+				on link.entityCode = reference.entityCode
+				and link.columnName = reference.columnName
 			inner join rendering_types rendering_types
 				on rendering_types.renderingTypeCode = link.renderingTypeCode
 			left join rendering_elements render
@@ -231,57 +210,59 @@ abstract class entity_manager {
 			));
 
 		foreach ($obj_Result as $obj_ResultEntry) {
+			// Field info
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
-					['fieldIsPrimaryID'] = (bool) ($obj_ResultEntry['fieldIsPrimaryID']);
-
+				[$obj_ResultEntry['columnName']]
+					['fieldIsAutoIncrement'] = (bool) ($obj_ResultEntry['fieldIsAutoIncrement']);
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
+					['fieldIsNillable'] = (bool) ($obj_ResultEntry['fieldIsNillable']);
+			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
+				[$obj_ResultEntry['columnName']]
+					['fieldType'] = $obj_ResultEntry['fieldType'];
+			
+			// Field representation
+			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
+				[$obj_ResultEntry['columnName']]
 					['fieldOrderingIndex'] = $obj_ResultEntry['fieldOrderingIndex'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['fieldGroupingLevel'] = $obj_ResultEntry['fieldGroupingLevel'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['fieldGroupingFunction'] = $obj_ResultEntry['fieldGroupingFunction'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['fieldLabel'] = $obj_ResultEntry['fieldLabel'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['fieldTooltip'] = $obj_ResultEntry['fieldTooltip'];
 
-			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
-					['tableName'] = $obj_ResultEntry['tableName'];
-			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
-					['columnName'] = $obj_ResultEntry['columnName'];
-			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
-					['fieldType'] = $obj_ResultEntry['fieldType'];
 
+			// Referentials
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['referentialJoinType'] = $obj_ResultEntry['referentialJoinType'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['referentialTableName'] = $obj_ResultEntry['referentialTableName'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['referentialCodeColumnName'] = $obj_ResultEntry['referentialCodeColumnName'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['referentialValueColumnName'] = $obj_ResultEntry['referentialValueColumnName'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['referentialCustomerDependencyColumnName'] = $obj_ResultEntry['referentialCustomerDependencyColumnName'];
 			
+			
+			// Rendering elements
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['renderingElementBaseTag'] = $obj_ResultEntry['renderingElementBaseTag'];
 			$this->enabledFields[$obj_ResultEntry['renderingTypeCode']]['fields']
-				[$obj_ResultEntry['fieldCode']]
+				[$obj_ResultEntry['columnName']]
 					['renderingElementTemplate'] = $obj_ResultEntry['renderingElementTemplate'];
 			
 			// Global rendering settings
@@ -322,15 +303,12 @@ abstract class entity_manager {
 		$arr_From = array();
 
 		// First compile the select query string
-		foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldCode => $arr_FieldEntry) {
-			
-			$arr_From[] = $arr_FieldEntry['tableName'];
+		foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldName => $arr_FieldEntry) {
 			
 			// Checks if the field references another table
 			if ($arr_FieldEntry['referentialJoinType'] !== NULL && $arr_FieldEntry['referentialTableName'] !== NULL && $arr_FieldEntry['referentialCodeColumnName'] !== NULL && $arr_FieldEntry['referentialValueColumnName'] !== NULL) {
 				
-				$str_Random = chr(65+rand(0,25)) . chr(65+rand(0,25)) . chr(65+rand(0,25)) . chr(65+rand(0,25)) . chr(65+rand(0,25)) .
-					chr(65+rand(0,25)) . chr(65+rand(0,25)) . chr(65+rand(0,25)) . chr(65+rand(0,25)) . chr(65+rand(0,25));
+				$str_Random = rtrim(base64_encode(md5(microtime())), '=');
 				
 				$arr_Joins[] = array(
 					'table' => $arr_FieldEntry['referentialTableName'],
@@ -338,7 +316,7 @@ abstract class entity_manager {
 					'customerColumnName' => $arr_FieldEntry['referentialCustomerDependencyColumnName'],
 					'join' => array(
 						'type' => $arr_FieldEntry['referentialJoinType'],
-						'innerColumnName' => $arr_FieldEntry['columnName'],
+						'innerColumnName' => $str_FieldName,
 						'outerColumnName' => $arr_FieldEntry['referentialCodeColumnName']
 					)
 				);
@@ -348,9 +326,9 @@ abstract class entity_manager {
 					$arr_CustomerDependency[] = $str_Random . '.' . $arr_FieldEntry['referentialCustomerDependencyColumnName'] . ' = ' . $this->currentCustomerID;
 				}
 				
-				$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $arr_FieldEntry['columnName'];
+				$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $str_FieldName;
 			} else {
-				$arr_SelectFields[] = $arr_FieldEntry['tableName'] . '.' . $arr_FieldEntry['columnName']; 
+				$arr_SelectFields[] = $this->entityReferenceTable . '.' . $str_FieldName; 
 			}
 			
 		}
@@ -358,7 +336,7 @@ abstract class entity_manager {
 		
 		$str_QueryString = 'select ' . PHP_EOL;
 		$str_QueryString .= implode(', ' . PHP_EOL, $arr_SelectFields) . PHP_EOL;
-		$str_QueryString .= 'from ' . implode(', ', array_unique($arr_From)) . PHP_EOL;
+		$str_QueryString .= 'from ' . $this->entityReferenceTable . PHP_EOL;
 		
 		
 		// Create join part
@@ -372,7 +350,7 @@ abstract class entity_manager {
 				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  $arr_RefData['table'] . ' ' . $arr_RefData['alias'] . PHP_EOL;
 			}
 			
-			$str_JoinString .= 'on ' . implode(', ', array_unique($arr_From)) . '.' . $arr_RefData['join']['innerColumnName'] . ' = ' . 
+			$str_JoinString .= 'on ' . $this->entityReferenceTable . '.' . $arr_RefData['join']['innerColumnName'] . ' = ' . 
 				$arr_RefData['alias'] . '.' . $arr_RefData['join']['outerColumnName'] . PHP_EOL;
 		}
 		
@@ -411,8 +389,6 @@ abstract class entity_manager {
 			$arr_Parameters = NULL;
 		}
 		
-		
-		
 		// Execute the query and get raw data
 		$arr_GetResult = $this->db_handler->execute_prepared($str_QueryString, $arr_Parameters);
 		
@@ -427,6 +403,10 @@ abstract class entity_manager {
 				// Parse the results and render the result using display elements
 				$str_RenderedResult = $this->render($arr_GetResult, $str_RenderingType);
 				$str_Output = $str_RenderedResult;
+				break;
+				
+			case 'blank':
+				$str_Output = $this->render(NULL, $str_RenderingType);
 				break;
 		}
 		
@@ -536,9 +516,9 @@ abstract class entity_manager {
 					// Replace the element's markers with data
 					$arr_Substitutions = array(
 							// TODO: add more substitution expressions
-							'%ID%'			=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['columnName'],
-							'%TABLENAME%'	=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['tableName'],
-							'%COLNAME%'		=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['columnName'],
+							'%ID%'			=>	$str_ItemField,
+							'%TABLENAME%'	=>	$this->entityReferenceTable,
+							'%COLNAME%'		=>	$str_ItemField,
 							'%LABEL%'		=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldLabel'],
 							'%VALUE%'		=>	$str_ItemValue,
 							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : ''
@@ -553,18 +533,14 @@ abstract class entity_manager {
 					
 					$arr_OutputRow[] = $str_RenderedElement;
 				}
-				
-				$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] . 
-					implode(PHP_EOL, $arr_OutputRow) .
-					$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
 			}
 			
 		} else {	// ... Else it returns empty or edit-ready rendering
-			foreach ($this->enabledFields[$str_RenderingType] as $arr_EnabledField) {
+			foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldName => $arr_EnabledField) {
 				$arr_Substitutions = array(
-						'%ID%'			=>	$arr_EnabledField['columnName'],
-						'%TABLENAME%'	=>	$arr_EnabledField['tableName'],
-						'%COLNAME%'		=>	$arr_EnabledField['columnName'],
+						'%ID%'			=>	$str_FieldName,
+						'%TABLENAME%'	=>	$this->entityReferenceTable,
+						'%COLNAME%'		=>	$str_FieldName,
 						'%LABEL%'		=>	$arr_EnabledField['fieldLabel'],
 						'%VALUE%'		=>	'',
 						'%IS_CHECKED%'	=>	''					
@@ -577,6 +553,10 @@ abstract class entity_manager {
 				$arr_OutputRow[] = $str_RenderedElement;
 			}
 		}
+		
+		$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
+			implode(PHP_EOL, $arr_OutputRow) .
+			$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
 	
 		
 		return $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeAllSnippet'] . 
