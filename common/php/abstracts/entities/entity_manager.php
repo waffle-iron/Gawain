@@ -533,6 +533,11 @@ abstract class entity_manager {
 					
 					$arr_OutputRow[] = $str_RenderedElement;
 				}
+				
+				$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
+					implode(PHP_EOL, $arr_OutputRow) .
+					$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
+				
 			}
 			
 		} else {	// ... Else it returns empty or edit-ready rendering
@@ -552,11 +557,12 @@ abstract class entity_manager {
 					
 				$arr_OutputRow[] = $str_RenderedElement;
 			}
+			
+			$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
+				implode(PHP_EOL, $arr_OutputRow) .
+				$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
+			
 		}
-		
-		$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
-			implode(PHP_EOL, $arr_OutputRow) .
-			$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
 	
 		
 		return $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeAllSnippet'] . 
