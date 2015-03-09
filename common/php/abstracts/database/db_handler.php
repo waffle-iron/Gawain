@@ -1,5 +1,8 @@
 <?php
 
+require_once(__DIR__ . '/../../constants/global_defines.php');
+require_once(PHP_CLASSES_DIR . 'options/options.php');
+
 abstract class db_handler {
 
 	// Hostname
@@ -20,12 +23,25 @@ abstract class db_handler {
 
 	// Connection Handler
 	protected $handler;
+	
+	
+	// Options
+	protected $options;
 
 
 
 
 	// Class constructor
-	abstract function __construct();
+	protected function __construct() {
+		$this->options = new options();
+		
+		$obj_DBdata = $this->options->getValue()['environment']['DB'];
+		
+		$this->hostname = $obj_DBdata['host'];
+		$this->username = $obj_DBdata['user'];
+		$this->password = $obj_DBdata['pwd'];
+		$this->database = $obj_DBdata['dbName'];
+	}
 
 
 	// Execute prepared query and output resultset

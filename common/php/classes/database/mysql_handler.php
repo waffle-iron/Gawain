@@ -9,18 +9,11 @@ class mysql_handler extends db_handler {
 	// Class constructor
 	function __construct() {
 
-		$obj_Options = new options();
-
-		$obj_DBdata = $obj_Options->getValue()['environment']['DB'];
-
-		$str_Hostname = $obj_DBdata['host'];
-		$str_Username = $obj_DBdata['user'];
-		$str_Password = $obj_DBdata['pwd'];
-		$str_Database = $obj_DBdata['dbName'];
+		parent::__construct();
 
 		try {
 
-			$this->handler = new mysqli($str_Hostname, $str_Username, $str_Password, $str_Database);
+			$this->handler = new mysqli($this->hostname, $this->username, $this->password, $this->database);
 
 			if ($this->handler->connect_error) {
 				throw new Exception('DB Connection Error');

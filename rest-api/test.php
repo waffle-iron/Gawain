@@ -5,7 +5,7 @@ require_once(PHP_CLASSES_DIR . 'entities/activity_manager.php');
 
 $obj_Manager = new activity_manager('AAA');
 
-/*echo $obj_Manager->read(NULL, 'block_text');*/
+echo $obj_Manager->read(NULL, 'block_text');
 
 /*echo $obj_Manager->read(array(
 		'activityID' => array(
