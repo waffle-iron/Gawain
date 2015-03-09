@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(CONFIG_DIR . 'options.json');
+require_once(PHP_CLASSES_DIR . 'options/options.php');
 require_once(PHP_ABSTRACTS_DIR . 'database/db_handler.php');
 
 class mysql_handler extends db_handler {
