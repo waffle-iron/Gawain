@@ -1,23 +1,28 @@
 <?php
 
-class options {
+require_once(__DIR__ . '/../../constants/global_defines.php');
 
-	// Configuration file path
-	private $str_OptionsFilePath = '/../../../config/options.json';
+class options {
+	
+	private $optionsArray;
+	
+	public function __construct() {
+		$this->optionsArray = json_decode(file_get_contents(CONFIG_DIR . 'options.json'), true);
+	}
 
 	// Get options as object
-	function getValue() {
-		return json_decode($this->getStringValue(), true);
+	public function getValue() {
+		return $this->optionsArray;
 	}
 
 	// Get options as JSON string
-	function getStringValue() {
-		return file_get_contents(__DIR__ . $this->str_OptionsFilePath);
+	public function getStringValue() {
+		return json_encode($this->optionsArray);
 	}
 
 	// Set the options file content
-	function setValue($str_JsonString) {
-		return file_put_contents(__DIR__ . $this->str_OptionsFilePath, $str_JsonString);
+	public function setValue($str_JsonString) {
+		return file_put_contents(CONFIG_DIR . 'options.json', $str_JsonString);
 	}
 
 }

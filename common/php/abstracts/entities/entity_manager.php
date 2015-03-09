@@ -1,6 +1,7 @@
 <?php
 
-require_once(__DIR__ . '/../../classes/options/options.php');
+require_once(__DIR__ . '/../../constants/global_defines.php');
+require_once(PHP_CLASSES_DIR . 'options/options.php');
 
 abstract class entity_manager {
 
@@ -49,13 +50,14 @@ abstract class entity_manager {
 
 		// Sets inner class' data
 		$this->sessionID = $str_SessionID;
-		$this->options = new options;
+		$this->options = new options();
 
 
 		// Sets the correct DB handler
-		switch($this->options->getValue()['environment']['DB']['type']) {
+		$str_DbType = $this->options->getValue()['environment']['DB']['type'];
+		switch($str_DbType) {
 			case 'MySQL':
-				require_once(__DIR__ . '/../../classes/database/mysql_handler.php');
+				require_once(PHP_CLASSES_DIR . 'database/mysql_handler.php');
 				$this->db_handler = new mysql_handler;
 				break;
 		}
