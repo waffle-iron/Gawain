@@ -287,17 +287,20 @@ abstract class Entity {
 	/**
 	 * Reads and returns data into formatted templates
 	 * 
+	 * The Where conditions are expressed in this way:
+	 * array(column_name => array(
+	 * 		'operator' => '=',
+	 * 		'arguments' => array(
+	 * 			1
+	 * 		)
+	 * ))
+	 * 
 	 * @param array $arr_Wheres
 	 * @param string $str_RenderingType
 	 * @param string $str_OutputFormat
 	 * @return string
 	 */
 	public function read($arr_Wheres, $str_RenderingType, $str_OutputFormat = 'rendered') {
-		
-		/*
-			The Where conditions are expressed in this way:
-				array(column_name => array('operator' => '=', 'arguments' => array(1))) 
-		*/
 		
 		// Variables initialization
 		$arr_SelectFields = array();
@@ -398,16 +401,17 @@ abstract class Entity {
 		// Set output type according to specified format
 		switch ($str_OutputFormat) {
 			case 'raw':
+				// Outputs the required data in JSON format
 				$str_Output = json_encode($arr_GetResult);
 				break;
 				
 			case 'rendered':
 				// Parse the results and render the result using display elements
-				$str_RenderedResult = $this->render($arr_GetResult, $str_RenderingType);
-				$str_Output = $str_RenderedResult;
+				$str_Output = $this->render($arr_GetResult, $str_RenderingType);
 				break;
 				
 			case 'blank':
+				// Outputs a blank rendered form for data insertion
 				$str_Output = $this->render(NULL, $str_RenderingType);
 				break;
 		}
@@ -523,7 +527,8 @@ abstract class Entity {
 							'%COLNAME%'		=>	$str_ItemField,
 							'%LABEL%'		=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldLabel'],
 							'%VALUE%'		=>	$str_ItemValue,
-							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : ''
+							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : '',
+							'%IS_REQUIRED%'	=>	(bool) $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldIsNillable'] ? '' : 'required'
 						);
 					
 					$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
@@ -532,6 +537,8 @@ abstract class Entity {
 					
 					// Regular expression replace to minify the code
 					//$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
+					
+					// FIXME: add filling of checkboxes using the referential links
 					
 					$arr_OutputRow[] = $str_RenderedElement;
 				}
@@ -550,7 +557,8 @@ abstract class Entity {
 						'%COLNAME%'		=>	$str_FieldName,
 						'%LABEL%'		=>	$arr_EnabledField['fieldLabel'],
 						'%VALUE%'		=>	'',
-						'%IS_CHECKED%'	=>	''					
+						'%IS_CHECKED%'	=>	'',
+						'%IS_REQUIRED%'	=>	(bool) $arr_EnabledField['fieldIsNillable'] ? '' : 'required'
 					);
 				
 				$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
