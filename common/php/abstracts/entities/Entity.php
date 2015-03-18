@@ -1,9 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'options/options.php');
+require_once(PHP_CLASSES_DIR . 'options/Options.php');
 
-abstract class entity_manager {
+abstract class Entity {
 
 	// Reference entity code
 	protected $entityCode;
@@ -34,7 +34,7 @@ abstract class entity_manager {
 
 
 	// Database Hanlder
-	protected $db_handler;
+	protected $dbHandler;
 
 
 	// Options
@@ -57,8 +57,8 @@ abstract class entity_manager {
 		$str_DbType = $this->options->getValue()['environment']['DB']['type'];
 		switch($str_DbType) {
 			case 'MySQL':
-				require_once(PHP_CLASSES_DIR . 'database/mysql_handler.php');
-				$this->db_handler = new mysql_handler;
+				require_once(PHP_CLASSES_DIR . 'database/MySqlHandler.php');
+				$this->dbHandler = new MySqlHandler;
 				break;
 		}
 
@@ -81,7 +81,7 @@ abstract class entity_manager {
 			from sessions
 			where sessionID = ?';
 
-		$arr_Result = $this->db_handler->execute_prepared($str_CustomerPrepQuery,
+		$arr_Result = $this->dbHandler->executePrepared($str_CustomerPrepQuery,
 			array(
 				array($this->sessionID => 's')
 			));
@@ -105,7 +105,7 @@ abstract class entity_manager {
 			where entities_label.customerID = ?
 				and entities_label.entityCode = ?';
 
-		$obj_Result = $this->db_handler->execute_prepared($str_InfoPrepQuery,
+		$obj_Result = $this->dbHandler->executePrepared($str_InfoPrepQuery,
 			array(
 				array($this->currentCustomerID => 'i'),
 				array($this->entityCode => 's')
@@ -135,7 +135,7 @@ abstract class entity_manager {
 			from entities_reference_fields
 			where entityCode = ?';
 	
-		$obj_Result = $this->db_handler->execute_prepared($str_AvailableFieldsPrepQuery,
+		$obj_Result = $this->dbHandler->executePrepared($str_AvailableFieldsPrepQuery,
 			array(
 				array($this->entityCode => 's')
 			));
@@ -205,7 +205,7 @@ abstract class entity_manager {
 				link.fieldLabel';
 
 
-		$obj_Result = $this->db_handler->execute_prepared($str_EnabledFieldsPrepQuery,
+		$obj_Result = $this->dbHandler->executePrepared($str_EnabledFieldsPrepQuery,
 			array(
 				array($this->entityCode => 's'),
 				array($this->currentCustomerID => 'i')
@@ -392,7 +392,7 @@ abstract class entity_manager {
 		}
 		
 		// Execute the query and get raw data
-		$arr_GetResult = $this->db_handler->execute_prepared($str_QueryString, $arr_Parameters);
+		$arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
 		
 		
 		// Set output type according to specified format
@@ -461,9 +461,9 @@ abstract class entity_manager {
 			}
 			
 			// Starts transaction and insert data
-			$this->db_handler->begin_transaction();
-			$this->db_handler->execute_prepared($str_Query, $arr_Parameters);
-			$this->db_handler->commit();
+			$this->dbHandler->begin_transaction();
+			$this->dbHandler->executePrepared($str_Query, $arr_Parameters);
+			$this->dbHandler->commit();
 			
 			return TRUE;
 			

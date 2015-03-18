@@ -1,9 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'options/options.php');
+require_once(PHP_CLASSES_DIR . 'options/Options.php');
 
-abstract class db_handler {
+abstract class DbHandler {
 
 	// Hostname
 	protected $hostname;
@@ -45,11 +45,11 @@ abstract class db_handler {
 
 
 	// Execute prepared query and output resultset
-	abstract function execute_prepared($str_Query, $arr_InputParameters);
+	abstract function executePrepared($str_Query, $arr_InputParameters);
 	
 	
 	// Starts a transaction
-	abstract function begin_transaction();
+	abstract function beginTransaction();
 	
 	
 	// Commits a transaction

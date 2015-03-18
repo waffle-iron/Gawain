@@ -1,9 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../common/php/constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'entities/activity_manager.php');
+require_once(PHP_CLASSES_DIR . 'entities/Activity.php');
 
-$obj_Manager = new activity_manager('AAA');
+$obj_Manager = new Activity('AAA');
 
 echo $obj_Manager->read(NULL, 'block_text');
 

@@ -1,10 +1,10 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'options/options.php');
-require_once(PHP_ABSTRACTS_DIR . 'database/db_handler.php');
+require_once(PHP_CLASSES_DIR . 'options/Options.php');
+require_once(PHP_ABSTRACTS_DIR . 'database/DbHandler.php');
 
-class mysql_handler extends db_handler {
+class MySqlHandler extends DbHandler {
 
 	// Class constructor
 	function __construct() {
@@ -39,7 +39,7 @@ class mysql_handler extends db_handler {
 	 * @param array $arr_InputParameters
 	 * @return object 
 	 */
-	public function execute_prepared($str_Query, $arr_InputParameters) {
+	public function executePrepared($str_Query, $arr_InputParameters) {
 		
 
 		/*
@@ -97,7 +97,7 @@ class mysql_handler extends db_handler {
 	
 	
 	// Starts a transaction
-	public function begin_transaction() {
+	public function beginTransaction() {
 		$this->handler->query('begin transaction');
 	}
 	
