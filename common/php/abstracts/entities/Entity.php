@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'options/Options.php');
+require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
 
 abstract class Entity {
 
@@ -313,7 +314,7 @@ abstract class Entity {
 			// Checks if the field references another table
 			if ($arr_FieldEntry['referentialJoinType'] !== NULL && $arr_FieldEntry['referentialTableName'] !== NULL && $arr_FieldEntry['referentialCodeColumnName'] !== NULL && $arr_FieldEntry['referentialValueColumnName'] !== NULL) {
 				
-				$str_Random = rtrim(base64_encode(md5(microtime())), '=');
+				$str_Random = generate_random_string();
 				
 				$arr_Joins[] = array(
 					'table' => $arr_FieldEntry['referentialTableName'],
@@ -519,6 +520,40 @@ abstract class Entity {
 				$arr_OutputRow = array();
 				
 				foreach ($arr_ItemRow as $str_ItemField => $str_ItemValue) {
+					// If base element is a select, fill the options using data from referential tables
+					$str_Options = '';
+					
+					if ($this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementBaseTag'] == 'select' &&
+							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] !== NULL &&
+							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] !== NULL &&
+							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'] !== NULL) {
+								
+						try {
+							$str_SelectStatement = 'select ' .
+								$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] . ' as ID, ' .
+								$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] . ' as value ' .
+								'from ' . $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'];
+								
+							$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
+						} catch (Exception $exc_WrongReferential) {
+							echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
+						}
+						
+						
+						// NULL value if no option is present
+						$str_Options .= '<option value=\'NULL\'' .
+								($str_ItemValue == NULL ? 'selected' : '') . '>' .
+								'---</option>';
+						
+						foreach ($obj_SelectResults as $arr_SelectResult) {
+							$str_Options .= '<option value=\'' .
+								$arr_SelectResult['ID'] . '\'' .
+								($arr_SelectResult['value'] == $str_ItemValue ? 'selected' : '') . '>' .
+								$arr_SelectResult['value'] . '</option>';
+						}
+					}
+					
+					
 					// Replace the element's markers with data
 					$arr_Substitutions = array(
 							// TODO: add more substitution expressions
@@ -528,17 +563,18 @@ abstract class Entity {
 							'%LABEL%'		=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldLabel'],
 							'%VALUE%'		=>	$str_ItemValue,
 							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : '',
-							'%IS_REQUIRED%'	=>	(bool) $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldIsNillable'] ? '' : 'required'
-						);
+							'%IS_REQUIRED%'	=>	(bool) $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldIsNillable'] ? '' : 'required',
+							'%OPTIONS%'		=>	$str_Options
+					);
+						
+						
 					
 					$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-						array_values($arr_Substitutions),
-						$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementTemplate']);
-					
+							array_values($arr_Substitutions),
+							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementTemplate']);
+						
 					// Regular expression replace to minify the code
 					//$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
-					
-					// FIXME: add filling of checkboxes using the referential links
 					
 					$arr_OutputRow[] = $str_RenderedElement;
 				}
@@ -551,6 +587,38 @@ abstract class Entity {
 			
 		} else {	// ... Else it returns empty or edit-ready rendering
 			foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldName => $arr_EnabledField) {
+				// If base element is a select, fill the options using data from referential tables
+				$str_Options = '';
+					
+				if ($this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['renderingElementBaseTag'] == 'select' &&
+					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialCodeColumnName'] !== NULL &&
+					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialValueColumnName'] !== NULL &&
+					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialTableName'] !== NULL) {
+			
+						try {
+							$str_SelectStatement = 'select ' .
+									$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialCodeColumnName'] . ' as ID, ' .
+									$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialValueColumnName'] . ' as value ' .
+									'from ' . $this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialTableName'];
+			
+							$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
+						} catch (Exception $exc_WrongReferential) {
+							echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
+						}
+			
+			
+						// NULL value if no option is present
+						$str_Options .= '<option value=\'NULL\' selected>' .
+								'---</option>';
+			
+						foreach ($obj_SelectResults as $arr_SelectResult) {
+							$str_Options .= '<option value=\'' .
+									$arr_SelectResult['ID'] . '\'>' .
+									$arr_SelectResult['value'] . '</option>';
+						}
+					}
+						
+						
 				$arr_Substitutions = array(
 						'%ID%'			=>	$str_FieldName,
 						'%TABLENAME%'	=>	$this->entityReferenceTable,
@@ -558,7 +626,8 @@ abstract class Entity {
 						'%LABEL%'		=>	$arr_EnabledField['fieldLabel'],
 						'%VALUE%'		=>	'',
 						'%IS_CHECKED%'	=>	'',
-						'%IS_REQUIRED%'	=>	(bool) $arr_EnabledField['fieldIsNillable'] ? '' : 'required'
+						'%IS_REQUIRED%'	=>	(bool) $arr_EnabledField['fieldIsNillable'] ? '' : 'required',
+						'%OPTIONS%'		=>	$str_Options
 					);
 				
 				$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
