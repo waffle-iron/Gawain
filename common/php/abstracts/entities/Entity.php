@@ -1,8 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'options/Options.php');
+require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
+require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 abstract class Entity {
 
@@ -51,17 +52,8 @@ abstract class Entity {
 
 		// Sets inner class' data
 		$this->sessionID = $str_SessionID;
-		$this->options = new options();
-
-
-		// Sets the correct DB handler
-		$str_DbType = $this->options->getValue()['environment']['DB']['type'];
-		switch($str_DbType) {
-			case 'MySQL':
-				require_once(PHP_CLASSES_DIR . 'database/MySqlHandler.php');
-				$this->dbHandler = new MySqlHandler;
-				break;
-		}
+		$this->options = new Options();
+		$this->dbHandler = db_autodefine($this->options);
 
 
 		// Sets remaining fields

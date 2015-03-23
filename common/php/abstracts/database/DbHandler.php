@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'options/Options.php');
+require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 
 abstract class DbHandler {
 
@@ -17,8 +17,8 @@ abstract class DbHandler {
 	protected $password;
 
 
-	// Default DB
-	protected $database;
+	// Default schema
+	protected $schema;
 
 
 	// Connection Handler
@@ -33,14 +33,12 @@ abstract class DbHandler {
 
 	// Class constructor
 	protected function __construct() {
-		$this->options = new options();
+		$this->options = new Options();
 		
-		$obj_DBdata = $this->options->getValue()['environment']['DB'];
-		
-		$this->hostname = $obj_DBdata['host'];
-		$this->username = $obj_DBdata['user'];
-		$this->password = $obj_DBdata['pwd'];
-		$this->database = $obj_DBdata['dbName'];
+		$this->hostname = $this->options->get('db_host');
+		$this->username = $this->options->get('db_user');
+		$this->password = $this->options->get('db_pwd');
+		$this->schema = $this->options->get('db_schema');
 	}
 
 

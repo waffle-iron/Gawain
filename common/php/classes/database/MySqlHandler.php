@@ -1,7 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'options/Options.php');
+require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_ABSTRACTS_DIR . 'database/DbHandler.php');
 
 class MySqlHandler extends DbHandler {
@@ -13,7 +13,7 @@ class MySqlHandler extends DbHandler {
 
 		try {
 
-			$this->handler = new mysqli($this->hostname, $this->username, $this->password, $this->database);
+			$this->handler = new mysqli($this->hostname, $this->username, $this->password, $this->schema);
 
 			if ($this->handler->connect_error) {
 				throw new Exception('DB Connection Error');
