@@ -77,15 +77,5 @@ define('PHP_FUNCTIONS_DIR', PHP_DIR . 'functions/');
 /* ==================================================================== */
 
 
-/* ============== */
-/*   LOG LEVELS   */
-/* ============== */
-
-define('LOG_FATAL_ERROR',	'FATAL ERROR');
-define('LOG_ERROR',			'ERROR');
-define('LOG_WARNING',		'WARNING');
-define('LOG_INFO',			'INFO');
-define('LOG_DEBUG',			'DEBUG');
-
 
 ?>
