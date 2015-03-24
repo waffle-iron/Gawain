@@ -63,7 +63,19 @@ class Logger {
 	
 	
 	// Inserts a log entry
-	public function log($str_LogLevel, $str_Message, $str_Hostname = 'localhost', $str_UserNick = NULL) {
+	public function log($str_LogLevel, $str_Message, $str_UserNick = NULL, $str_Hostname = 'localhost') {
+		
+		$str_Timestamp = get_timestamp();
+		$arr_InsertValues = array(
+					array($str_Timestamp	=> 's'),
+					array($str_LogLevel		=> 's'),
+					array($str_Hostname		=> 's'),
+					array($str_UserNick		=> 's'),
+					array($this->entity		=> 's'),
+					array($this->module		=> 's'),
+					array($str_Message		=> 's')
+			);
+		
 		$str_LogPrepared =
 			'insert into ' . $this->logTableName . 
 			' (
@@ -85,17 +97,7 @@ class Logger {
 			)';
 		
 		$this->dbHandler->beginTransaction();
-		$this->dbHandler->executePrepared($str_LogPrepared,
-				array(
-						array(get_timestamp()	=> 's'),
-						array($str_LogLevel		=> 's'),
-						array($str_Hostname		=> 's'),
-						array($str_UserNick		=> 's'),
-						array($this->entity		=> 's'),
-						array($this->module		=> 's'),
-						array($str_Message		=> 's')
-				));
-		
+		$this->dbHandler->executePrepared($str_LogPrepared, $arr_InsertValues);
 		$this->dbHandler->commit();
 		
 		return TRUE;

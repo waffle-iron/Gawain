@@ -457,8 +457,9 @@ abstract class Entity {
 				$arr_Parameters[] = array($arr_ParametersValue[$int_ParameterCounter] => $arr_ParametersType[$int_ParameterCounter]);
 			}
 			
+			
 			// Starts transaction and insert data
-			$this->dbHandler->begin_transaction();
+			$this->dbHandler->beginTransaction();
 			$this->dbHandler->executePrepared($str_Query, $arr_Parameters);
 			$this->dbHandler->commit();
 			

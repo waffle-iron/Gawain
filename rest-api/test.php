@@ -7,9 +7,11 @@ require_once(PHP_CLASSES_DIR . 'misc/Logger.php');
 $obj_Manager = new Activity('AAA');
 $obj_Logger = new Logger('activity');
 
-echo $obj_Manager->read(NULL, 'display__block_text', 'rendered');
+//echo $obj_Manager->read(NULL, 'display__block_text', 'rendered');
 
-$obj_Logger->log('INFO', 'Log di prova');
+echo $obj_Logger->log('INFO', 'Log di prova', 'admin');
+
+//var_dump($obj_Logger);
 
 /*echo $obj_Manager->read(array(
 		'activityID' => array(
