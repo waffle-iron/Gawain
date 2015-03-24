@@ -21,11 +21,11 @@ class Logger {
 	
 	// Internal log levels
 	private $logLevelsList = array(
-			'FATAL ERROR',
-			'ERROR',
-			'WARNING',
-			'INFO',
-			'DEBUG'
+			0	=>	'FATAL ERROR',
+			10	=>	'ERROR',
+			20	=>	'WARNING',
+			30	=>	'INFO',
+			99	=>	'DEBUG'
 	);
 	
 	// Reference entity
@@ -36,7 +36,11 @@ class Logger {
 	
 	
 	
-	// Constructor
+	/** Constructor
+	 * 
+	 * @param string $str_Entity
+	 * @param string $str_Module = NULL
+	 */
 	public function __construct($str_Entity, $str_Module = NULL) {
 		$this->options = new Options();
 		$this->dbHandler = db_autodefine($this->options);
@@ -49,7 +53,13 @@ class Logger {
 	
 	
 	
-	// Manually sets and override default log level
+
+	/** Manually sets and override default log level
+	 * 
+	 * @param string $str_LogLevel
+	 * @throws Exception
+	 * @return boolean
+	 */
 	public function setLogLevel($str_LogLevel) {
 		
 		if (!in_array($str_LogLevel, $this->logLevelsList)) {
@@ -62,11 +72,22 @@ class Logger {
 	}
 	
 	
-	// Inserts a log entry
+
+	/** Inserts a log entry
+	 * 
+	 * @param string $str_LogLevel
+	 * @param string $str_Message
+	 * @param string $str_UserNick
+	 * @param string $str_Hostname
+	 * @return boolean
+	 */
 	public function log($str_LogLevel, $str_Message, $str_UserNick = NULL, $str_Hostname = 'localhost') {
 		
-		$str_Timestamp = get_timestamp();
-		$arr_InsertValues = array(
+		// Check if proposed log level is acceptable, otherwise log entry is refused
+		if (in_array($str_LogLevel, $this->logLevelsList)
+				&& array_search($str_LogLevel, $this->logLevelsList) <= array_search($this->logLevel, $this->logLevelsList)) {
+			$str_Timestamp = get_timestamp();
+			$arr_InsertValues = array(
 					array($str_Timestamp	=> 's'),
 					array($str_LogLevel		=> 's'),
 					array($str_Hostname		=> 's'),
@@ -75,10 +96,10 @@ class Logger {
 					array($this->module		=> 's'),
 					array($str_Message		=> 's')
 			);
-		
-		$str_LogPrepared =
-			'insert into ' . $this->logTableName . 
-			' (
+			
+			$str_LogPrepared =
+				'insert into ' . $this->logTableName .
+				' (
 					logTimestamp,
 					logLevel,
 					hostname,
@@ -95,12 +116,17 @@ class Logger {
 					?,
 					?
 			)';
+			
+			$this->dbHandler->beginTransaction();
+			$this->dbHandler->executePrepared($str_LogPrepared, $arr_InsertValues);
+			$this->dbHandler->commit();
+			
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 		
-		$this->dbHandler->beginTransaction();
-		$this->dbHandler->executePrepared($str_LogPrepared, $arr_InsertValues);
-		$this->dbHandler->commit();
 		
-		return TRUE;
 	}
 	
 }
