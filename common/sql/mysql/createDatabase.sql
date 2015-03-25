@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `gawain` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `gawain`;
 -- MySQL dump 10.13  Distrib 5.6.13, for Win32 (x86)
 --
--- Host: 10.0.0.12    Database: webproject
+-- Host: 10.0.0.12    Database: gawain
 -- ------------------------------------------------------
 -- Server version	5.5.41-0+wheezy1
 
@@ -35,20 +35,16 @@ CREATE TABLE `activities` (
   `activityDescription` mediumtext,
   `activityAreaID` int(10) unsigned DEFAULT NULL,
   `activityEnvironmentID` int(10) unsigned DEFAULT NULL,
-  `activityCustomerReference` varchar(64) DEFAULT NULL,
-  `activityManagerID` int(10) unsigned DEFAULT NULL,
+  `activityCustomerReference` varchar(256) DEFAULT NULL,
+  `activityManagerNick` varchar(64) DEFAULT NULL,
   `activityEstimatedEffortHours` decimal(7,2) unsigned NOT NULL DEFAULT '0.00',
   `activityIsEstimatedEffortHoursAuto` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `activityExpectedDailyWorkingHours` decimal(7,2) unsigned NOT NULL DEFAULT '0.00',
-  `activityStartDate` date NOT NULL,
-  `activityCalculatedDurationDays` decimal(7,2) unsigned DEFAULT NULL,
-  `activitySpentHours` decimal(7,2) unsigned DEFAULT '0.00',
+  `activityStartDate` date DEFAULT NULL,
   `activityStatusID` int(10) unsigned DEFAULT NULL,
-  `activityCoverage` decimal(5,2) unsigned NOT NULL DEFAULT '0.00',
   `activityCompletion` decimal(5,2) unsigned NOT NULL DEFAULT '0.00',
   `activityIsCompletionAuto` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `activityIsCompleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `activityIsOfficial` tinyint(1) NOT NULL DEFAULT '1',
+  `activityIsOfficial` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `activityQcConnectionID` int(10) unsigned DEFAULT NULL,
   `activityQcIdentificationQuery` varchar(256) DEFAULT NULL,
   `activityUserField01` varchar(256) DEFAULT NULL,
@@ -78,21 +74,21 @@ CREATE TABLE `activities` (
   KEY `projectReleaseStateID_idx` (`activityEnvironmentID`),
   KEY `projectStartDate_idx` (`activityStartDate`),
   KEY `projectStatusID_idx` (`activityStatusID`),
-  KEY `projectTestManagerID_idx` (`activityManagerID`),
+  KEY `projectTestManagerID_idx` (`activityManagerNick`),
   KEY `projectTypeID_idx` (`activityTypeID`),
   KEY `FK_activities_activities_activityID` (`activityRootID`),
   KEY `FK_activities_qc_connections_connID` (`activityQcConnectionID`),
   KEY `projectParentProjectID` (`activityParentID`),
   CONSTRAINT `FK_activities_activities_activityID` FOREIGN KEY (`activityRootID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_activities_qc_connections_connID` FOREIGN KEY (`activityQcConnectionID`) REFERENCES `qc_connections` (`connID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_activities_users_userNick` FOREIGN KEY (`activityManagerNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `projectAreaID` FOREIGN KEY (`activityAreaID`) REFERENCES `areas` (`areaID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `projectCustomerID` FOREIGN KEY (`activityCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `projectParentProjectID` FOREIGN KEY (`activityParentID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `projectReleaseStateID` FOREIGN KEY (`activityEnvironmentID`) REFERENCES `environment` (`environmentID`) ON UPDATE CASCADE,
   CONSTRAINT `projectStatusID` FOREIGN KEY (`activityStatusID`) REFERENCES `activity_status` (`statusID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `projectTestManagerID` FOREIGN KEY (`activityManagerID`) REFERENCES `users` (`userID`) ON DELETE NO ACTION ON UPDATE CASCADE,
   CONSTRAINT `projectTypeID` FOREIGN KEY (`activityTypeID`) REFERENCES `activity_type` (`activityTypeID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=4096;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=4096;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +97,7 @@ CREATE TABLE `activities` (
 
 LOCK TABLES `activities` WRITE;
 /*!40000 ALTER TABLE `activities` DISABLE KEYS */;
-INSERT INTO `activities` VALUES (1,NULL,NULL,1,'Progetto padre',1,'AAA23','Progetto padre per testare l\'inserimento',1,1,'Nome Cliente',2,36.00,1,0.00,'2014-01-01',4.50,4.00,1,15.00,11.11,1,0,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'#E2E2E2','Commento al progetto padre'),(4,1,1,1,'Progetto figlio',1,'AAA23','Progetto figlio per testare la gerarchia',1,1,'Nome Cliente',2,36.00,1,0.00,'2014-01-01',4.50,4.00,1,15.00,11.11,1,0,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'#E2E2E2','Commento al progetto figlio'),(5,1,4,1,'Progetto nipote',1,'AAA23a','Progetto nipote per testare la procedure',1,1,'Nome Cliente',2,20.00,0,8.00,'2014-01-01',2.50,4.00,1,15.00,20.00,1,0,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'#E2E2E2','Commento al progetto nipote'),(6,1,4,1,'Progetto nipote 2',1,'AAA23a','Progetto nipote per testare la procedure',1,1,'Nome Cliente',2,16.00,0,8.00,'2014-01-01',2.00,0.00,1,15.00,0.00,1,0,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'#E2E2E2','Commento al progetto nipote');
+INSERT INTO `activities` VALUES (9,NULL,NULL,1,'Prova padre',1,'123456','Prova di inserimento progetto padre',1,1,'Nome cliente','admin',50.00,1,'2015-03-26',1,40.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(10,9,9,1,'Prova figlio',1,'2245','Prova progetto figlio',1,1,'Pippo','admin',20.00,1,'2015-03-26',1,20.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(11,NULL,NULL,1,'Prova a caso',1,NULL,'Prova a caso',NULL,NULL,NULL,NULL,0.00,1,NULL,NULL,0.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `activities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,14 +110,14 @@ DROP TABLE IF EXISTS `activities_assigned_users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activities_assigned_users` (
   `activityID` int(10) unsigned NOT NULL,
-  `assignedUserID` int(10) unsigned NOT NULL,
+  `assignedUserNick` varchar(64) NOT NULL,
   `assignedActivityCustomerID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`activityID`,`assignedUserID`),
+  PRIMARY KEY (`activityID`,`assignedUserNick`),
   KEY `FK_wp_activities_assigned_users_wp_customers_customerID` (`assignedActivityCustomerID`),
-  KEY `FK_wp_activities_assigned_users_wp_users_userID` (`assignedUserID`),
+  KEY `FK_wp_activities_assigned_users_wp_users_userID` (`assignedUserNick`),
+  CONSTRAINT `FK_activities_assigned_users_users_userNick` FOREIGN KEY (`assignedUserNick`) REFERENCES `users` (`userNick`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_wp_activities_assigned_users_wp_activities_activityID` FOREIGN KEY (`activityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_wp_activities_assigned_users_wp_customers_customerID` FOREIGN KEY (`assignedActivityCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_wp_activities_assigned_users_wp_users_userID` FOREIGN KEY (`assignedUserID`) REFERENCES `users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_wp_activities_assigned_users_wp_customers_customerID` FOREIGN KEY (`assignedActivityCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -131,170 +127,8 @@ CREATE TABLE `activities_assigned_users` (
 
 LOCK TABLES `activities_assigned_users` WRITE;
 /*!40000 ALTER TABLE `activities_assigned_users` DISABLE KEYS */;
-INSERT INTO `activities_assigned_users` VALUES (5,1,1),(6,1,1);
 /*!40000 ALTER TABLE `activities_assigned_users` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER activities_assigned_users_INSERT
-	AFTER INSERT
-	ON activities_assigned_users
-	FOR EACH ROW
-BEGIN
-
-  call updateActivityBranch(new.activityID);
-
-  /*UPDATE activities
-  SET activities.activityExpectedDailyWorkingHours = activities.activityExpectedDailyWorkingHours + (SELECT
-    users.userDailyWorkingHours
-  FROM users
-  WHERE users.userID = new.assignedUserID)
-  WHERE activities.activityID = new.activityID;
-
-  if (select activities.activityExpectedDailyWorkingHours
-      from activities
-    where activities.activityID = new.activityID) <> 0
-  then
-    update activities
-      set activities.activityCalculatedDurationDays =
-        activities.activityEstimatedEffortHours / activities.activityExpectedDailyWorkingHours
-      where activities.activityID = new.activityID;
-  else
-    update activities
-      set activities.activityCalculatedDurationDays = 0
-      where activities.activityID = new.activityID;
-  end if;*/
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER activities_assigned_users_UPDATE
-	AFTER UPDATE
-	ON activities_assigned_users
-	FOR EACH ROW
-BEGIN
-
-  select activityParentID
-  into @parentID
-  from activities where activityID = old.activityID;
-
-  call updateActivityBranch(@parentID);
-
-  call updateActivityBranch(new.activityID);
-
-  /*UPDATE activities
-  SET activities.activityExpectedDailyWorkingHours = activities.activityExpectedDailyWorkingHours - (SELECT
-    users.userDailyWorkingHours
-  FROM users
-  WHERE users.userID = old.assignedUserID)
-  WHERE activities.activityID = old.activityID;
-
-  UPDATE activities
-  SET activities.activityExpectedDailyWorkingHours = activities.activityExpectedDailyWorkingHours + (SELECT
-    users.userDailyWorkingHours
-  FROM users
-  WHERE users.userID = new.assignedUserID)
-  WHERE activities.activityID = new.activityID;
-
-  if (select activities.activityExpectedDailyWorkingHours
-      from activities
-    where activities.activityID = old.activityID) <> 0
-  then
-    update activities
-      set activities.activityCalculatedDurationDays =
-        activities.activityEstimatedEffortHours / activities.activityExpectedDailyWorkingHours
-      where activities.activityID = old.activityID;
-  else
-    update activities
-      set activities.activityCalculatedDurationDays = 0
-      where activities.activityID = old.activityID;
-  end if;
-
-  if (select activities.activityExpectedDailyWorkingHours
-      from actvities
-    where activities.activityID = new.activityID) <> 0
-  then
-    update activities
-      set activities.activityCalculatedDurationDays =
-        activities.activityEstimatedEffortHours / activities.activityExpectedDailyWorkingHours
-      where activities.activityID = new.activityID;
-  else
-    update activities
-      set activities.activityCalculatedDurationDays = 0
-      where activities.activityID = new.activityID;
-  end if;*/
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER activities_assigned_users_DELETE
-	AFTER DELETE
-	ON activities_assigned_users
-	FOR EACH ROW
-BEGIN
-  
-  select activityParentID
-  into @parentID
-  from activities where activityID = old.activityID;
-
-  call updateActivityBranch(@parentID);
-
-
-  /*UPDATE activities
-  SET activities.activityExpectedDailyWorkingHours = activities.activityExpectedDailyWorkingHours - (SELECT
-    users.userDailyWorkingHours
-  FROM users
-  WHERE users.userID = old.assignedUserID)
-  WHERE activities.activityID = old.activityID;
-
-  if (select activities.activityExpectedDailyWorkingHours
-      from activities
-    where activities.activityID = old.activityID) <> 0
-  then
-    update activities
-      set activities.activityCalculatedDurationDays =
-        activities.activityEstimatedEffortHours / activities.activityExpectedDailyWorkingHours
-      where activities.activityID = old.activityID;
-  else
-    update activities
-      set activities.activityCalculatedDurationDays = 0
-      where activities.activityID = old.activityID;
-  end if;*/
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `activities_associated_qc_bugreport_types`
@@ -395,18 +229,18 @@ DROP TABLE IF EXISTS `activity_posts`;
 CREATE TABLE `activity_posts` (
   `postID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `postRelatedActivityID` int(10) unsigned NOT NULL,
-  `postAuthorID` int(10) unsigned DEFAULT NULL,
+  `postAuthorNick` varchar(64) DEFAULT NULL,
   `postContent` mediumtext,
   `postCreation` datetime NOT NULL,
   `postLastUpdate` datetime NOT NULL,
   `postIsOfficial` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`postID`),
   UNIQUE KEY `postID_UNIQUE` (`postID`),
-  KEY `postAuthorID_idx` (`postAuthorID`),
+  KEY `postAuthorID_idx` (`postAuthorNick`),
   KEY `postLastUpdate_idx` (`postLastUpdate`),
   KEY `postRelatedProjectID_idx` (`postRelatedActivityID`),
-  CONSTRAINT `postRelatedProjectID` FOREIGN KEY (`postRelatedActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `projectPostAuthorID` FOREIGN KEY (`postAuthorID`) REFERENCES `users` (`userID`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_activity_posts_users_userNick` FOREIGN KEY (`postAuthorNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `postRelatedProjectID` FOREIGN KEY (`postRelatedActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -478,6 +312,40 @@ LOCK TABLES `activity_type` WRITE;
 /*!40000 ALTER TABLE `activity_type` DISABLE KEYS */;
 INSERT INTO `activity_type` VALUES (1,1,'Progetti',1,'Progetti nuovi',100);
 /*!40000 ALTER TABLE `activity_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `application_log`
+--
+
+DROP TABLE IF EXISTS `application_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `application_log` (
+  `logTimestamp` varchar(32) NOT NULL,
+  `logLevel` enum('FATAL ERROR','ERROR','WARNING','INFO','DEBUG') NOT NULL DEFAULT 'INFO',
+  `hostname` varchar(255) DEFAULT NULL,
+  `userNick` varchar(64) DEFAULT NULL,
+  `entity` varchar(64) DEFAULT NULL,
+  `module` varchar(64) DEFAULT NULL,
+  `message` mediumtext NOT NULL,
+  PRIMARY KEY (`logTimestamp`),
+  UNIQUE KEY `UK_log_timestamp` (`logTimestamp`),
+  KEY `FK_log_users_userNick` (`userNick`),
+  KEY `IDX_log_logLevel` (`logLevel`),
+  KEY `IDX_log` (`entity`,`module`),
+  KEY `UK_log_hostname` (`hostname`),
+  CONSTRAINT `FK_log_users_userNick` FOREIGN KEY (`userNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table containing all the application logs';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `application_log`
+--
+
+LOCK TABLES `application_log` WRITE;
+/*!40000 ALTER TABLE `application_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `application_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -719,6 +587,7 @@ DROP TABLE IF EXISTS `entities`;
 CREATE TABLE `entities` (
   `entityCode` varchar(64) NOT NULL,
   `entityName` varchar(64) NOT NULL,
+  `entityReferenceTable` varchar(128) NOT NULL,
   `entityComment` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`entityCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192;
@@ -730,7 +599,7 @@ CREATE TABLE `entities` (
 
 LOCK TABLES `entities` WRITE;
 /*!40000 ALTER TABLE `entities` DISABLE KEYS */;
-INSERT INTO `entities` VALUES ('activity','Activity','EntitÃƒÂ  attivitÃƒÂ '),('timeslot_item','Timeslot Item','Elemento di timeslot inserito dall\'utente');
+INSERT INTO `entities` VALUES ('activity','Activity','activities','Attività generica'),('timeslot_item','Timeslot Item','','Elemento di timeslot inserito dall\'utente');
 /*!40000 ALTER TABLE `entities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -771,24 +640,24 @@ DROP TABLE IF EXISTS `entities_linked_rendering_elements`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `entities_linked_rendering_elements` (
-  `fieldCode` varchar(64) NOT NULL,
   `customerID` int(10) unsigned NOT NULL,
   `renderingTypeCode` varchar(64) NOT NULL,
+  `entityCode` varchar(64) NOT NULL,
+  `columnName` varchar(64) NOT NULL,
   `fieldLabel` varchar(128) NOT NULL,
   `fieldTooltip` varchar(256) DEFAULT NULL,
   `fieldOrderingIndex` int(10) unsigned NOT NULL DEFAULT '100',
-  `fieldDisplayElementCode` varchar(64) DEFAULT NULL,
-  `fieldEditElementCode` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`fieldCode`,`customerID`,`renderingTypeCode`),
-  KEY `FK_activities_linked_rendering` (`fieldDisplayElementCode`,`customerID`),
-  KEY `FK_activities_linked_rendering_edit` (`renderingTypeCode`,`customerID`),
-  KEY `FK_activities_linked_rendering_edit2` (`fieldEditElementCode`,`customerID`),
-  KEY `FK_activities_linked_rendering_elements_customers_customerID` (`customerID`),
-  CONSTRAINT `FK_activities_linked_rendering_elementsTypeCode` FOREIGN KEY (`renderingTypeCode`) REFERENCES `rendering_types` (`renderingTypeCode`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_activities_linked_rendering_elements_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_activities_linked_rendering_elements_display` FOREIGN KEY (`fieldDisplayElementCode`) REFERENCES `rendering_display_elements` (`elementCode`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_activities_linked_rendering_elements_edit` FOREIGN KEY (`fieldEditElementCode`) REFERENCES `rendering_edit_elements` (`elementCode`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_entities_linked_rendering_elements` FOREIGN KEY (`fieldCode`) REFERENCES `entities_reference_fields` (`fieldCode`) ON DELETE CASCADE ON UPDATE CASCADE
+  `fieldGroupingLevel` int(10) DEFAULT NULL,
+  `fieldGroupingFunction` varchar(64) DEFAULT NULL,
+  `fieldRenderingElementCode` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`customerID`,`renderingTypeCode`,`entityCode`,`columnName`),
+  KEY `FK_renderingElementCode` (`fieldRenderingElementCode`),
+  KEY `FK_entities_types_renderingTypeCode` (`renderingTypeCode`),
+  KEY `FK_entities_linked_rendering_e` (`entityCode`,`columnName`),
+  CONSTRAINT `FK_entities_linked_rendering_e` FOREIGN KEY (`entityCode`, `columnName`) REFERENCES `entities_reference_fields` (`entityCode`, `columnName`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_entities_types_renderingTypeCode` FOREIGN KEY (`renderingTypeCode`) REFERENCES `rendering_types` (`renderingTypeCode`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_renderingElementCode` FOREIGN KEY (`fieldRenderingElementCode`) REFERENCES `rendering_elements` (`elementCode`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_rendering_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -798,7 +667,7 @@ CREATE TABLE `entities_linked_rendering_elements` (
 
 LOCK TABLES `entities_linked_rendering_elements` WRITE;
 /*!40000 ALTER TABLE `entities_linked_rendering_elements` DISABLE KEYS */;
-INSERT INTO `entities_linked_rendering_elements` VALUES ('activityAreaID',1,'block_text','Area di competenza',NULL,800,'form-horizontal-text',NULL),('activityCalculatedDurationDays',1,'block_text','Durata calcolata (in giorni)',NULL,1600,'form-horizontal-text',NULL),('activityCode',1,'block_text','Codice attività',NULL,600,'form-horizontal-text',NULL),('activityColorHexCode',1,'block_text','Colore attività',NULL,2600,'form-horizontal-text',NULL),('activityComment',1,'block_text','Commento',NULL,2700,'form-horizontal-text',NULL),('activityCompletion',1,'block_text','Completamento',NULL,2000,'form-horizontal-text',NULL),('activityCoverage',1,'block_text','Copertura',NULL,1900,'form-horizontal-text',NULL),('activityCustomerID',1,'block_text','Cliente',NULL,350,'form-horizontal-text',NULL),('activityCustomerReference',1,'block_text','Project Manager',NULL,1000,'form-horizontal-text',NULL),('activityDescription',1,'block_text','Descrizione',NULL,700,'form-horizontal-text',NULL),('activityEnvironmentID',1,'block_text','Ambiente',NULL,900,'form-horizontal-text',NULL),('activityEstimatedEffortHours',1,'block_text','Ore stimate di effort',NULL,1200,'form-horizontal-text',NULL),('activityExpectedDailyWorkingHours',1,'block_text','Ore di lavoro giornaliere calcolate',NULL,1400,'form-horizontal-text',NULL),('activityID',1,'block_text','ID Attività',NULL,100,'form-horizontal-text',NULL),('activityIsCompleted',1,'block_text','Completata',NULL,2200,'form-horizontal-disabled-checkbox',NULL),('activityIsCompletionAuto',1,'block_text','Calcolo automatico completamento?',NULL,2100,'form-horizontal-disabled-checkbox',NULL),('activityIsEstimatedEffortHoursAuto',1,'block_text','Stima automatica effort?',NULL,1300,'form-horizontal-disabled-checkbox',NULL),('activityIsOfficial',1,'block_text','Ufficiale',NULL,2300,'form-horizontal-disabled-checkbox',NULL),('activityManagerID',1,'block_text','Test Manager',NULL,1100,'form-horizontal-text',NULL),('activityName',1,'block_text','Nome attività',NULL,400,'form-horizontal-text',NULL),('activityParentID',1,'block_text','Attività padre',NULL,300,'form-horizontal-text',NULL),('activityQcConnectionID',1,'block_text','ID connessione QC',NULL,2400,'form-horizontal-text',NULL),('activityQcIdentificationQuery',1,'block_text','Query univoca QC',NULL,2500,'form-horizontal-text',NULL),('activityRootID',1,'block_text','Attività radice',NULL,200,'form-horizontal-text',NULL),('activitySpentHours',1,'block_text','Ore consuntivate',NULL,1700,'form-horizontal-text',NULL),('activityStartDate',1,'block_text','Data inizio',NULL,1500,'form-horizontal-text',NULL),('activityStatusID',1,'block_text','Stato',NULL,1800,'form-horizontal-text',NULL),('activityTypeID',1,'block_text','Tipo attività',NULL,500,'form-horizontal-text',NULL);
+INSERT INTO `entities_linked_rendering_elements` VALUES (1,'display__block_text','activity','activityAreaID','Area di competenza',NULL,800,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityCode','Codice attività',NULL,600,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityColorHexCode','Colore attività',NULL,2600,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityComment','Commento',NULL,2700,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityCompletion','Completamento',NULL,2000,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityCustomerID','Cliente',NULL,350,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityCustomerReference','Project Manager',NULL,1000,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityDescription','Descrizione',NULL,700,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityEnvironmentID','Ambiente',NULL,900,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityID','ID Attività',NULL,100,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityIsCompleted','Completata',NULL,2200,NULL,NULL,'form-horizontal-disabled-checkbox'),(1,'display__block_text','activity','activityIsCompletionAuto','Calcolo automatico completamento?',NULL,2100,NULL,NULL,'form-horizontal-disabled-checkbox'),(1,'display__block_text','activity','activityIsEstimatedEffortHoursAuto','Stima automatica effort?',NULL,1300,NULL,NULL,'form-horizontal-disabled-checkbox'),(1,'display__block_text','activity','activityIsOfficial','Ufficiale',NULL,2300,NULL,NULL,'form-horizontal-disabled-checkbox'),(1,'display__block_text','activity','activityManagerNick','Test Manager',NULL,1100,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityName','Nome attività',NULL,400,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityParentID','Attività padre',NULL,300,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityQcConnectionID','ID connessione QC',NULL,2400,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityQcIdentificationQuery','Query univoca QC',NULL,2500,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityRootID','Attività radice',NULL,200,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityStartDate','Data inizio',NULL,1500,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityStatusID','Stato',NULL,1800,NULL,NULL,'form-horizontal-text'),(1,'display__block_text','activity','activityTypeID','Tipo attività',NULL,500,NULL,NULL,'form-horizontal-text'),(1,'edit__block_text','activity','activityAreaID','Area di competenza',NULL,800,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityCode','Codice attività',NULL,600,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityColorHexCode','Colore attività',NULL,2600,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityComment','Commento',NULL,2700,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityCompletion','Completamento',NULL,2000,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityCustomerID','Cliente',NULL,350,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityCustomerReference','Project Manager',NULL,1000,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityDescription','Descrizione',NULL,700,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityEnvironmentID','Ambiente',NULL,900,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityID','ID Attività',NULL,100,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityIsCompleted','Completata',NULL,2200,NULL,NULL,'form-horizontal-checkbox'),(1,'edit__block_text','activity','activityIsCompletionAuto','Calcolo automatico completamento?',NULL,2100,NULL,NULL,'form-horizontal-checkbox'),(1,'edit__block_text','activity','activityIsEstimatedEffortHoursAuto','Stima automatica effort?',NULL,1300,NULL,NULL,'form-horizontal-checkbox'),(1,'edit__block_text','activity','activityIsOfficial','Ufficiale',NULL,2300,NULL,NULL,'form-horizontal-checkbox'),(1,'edit__block_text','activity','activityManagerNick','Test Manager',NULL,1100,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityName','Nome attività',NULL,400,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityParentID','Attività padre',NULL,300,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityQcConnectionID','ID connessione QC',NULL,2400,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityQcIdentificationQuery','Query univoca QC',NULL,2500,NULL,NULL,'form-horizontal-input-text'),(1,'edit__block_text','activity','activityRootID','Attività radice',NULL,200,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityStartDate','Data inizio',NULL,1500,NULL,NULL,'form-horizontal-input-date'),(1,'edit__block_text','activity','activityStatusID','Stato',NULL,1800,NULL,NULL,'form-horizontal-select'),(1,'edit__block_text','activity','activityTypeID','Tipo attività',NULL,500,NULL,NULL,'form-horizontal-select');
 /*!40000 ALTER TABLE `entities_linked_rendering_elements` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -810,11 +679,10 @@ DROP TABLE IF EXISTS `entities_reference_fields`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `entities_reference_fields` (
-  `fieldCode` varchar(64) NOT NULL,
   `entityCode` varchar(64) NOT NULL,
-  `fieldIsPrimaryID` tinyint(1) NOT NULL DEFAULT '0',
-  `tableName` varchar(128) NOT NULL,
   `columnName` varchar(128) NOT NULL,
+  `fieldIsAutoIncrement` tinyint(1) NOT NULL DEFAULT '0',
+  `fieldIsNillable` tinyint(1) NOT NULL DEFAULT '1',
   `fieldType` enum('NUM','CHAR','DATE') NOT NULL DEFAULT 'CHAR',
   `referentialJoinType` enum('inner','left') DEFAULT NULL,
   `referentialTableName` varchar(128) DEFAULT NULL,
@@ -822,9 +690,9 @@ CREATE TABLE `entities_reference_fields` (
   `referentialValueColumnName` varchar(128) DEFAULT NULL,
   `referentialCustomerDependencyColumnName` varchar(128) DEFAULT NULL,
   `fieldComment` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`fieldCode`),
-  KEY `FK_entities_reference_fields` (`tableName`,`columnName`),
+  PRIMARY KEY (`entityCode`,`columnName`),
   KEY `FK_entities_reference_fields_entities_entityCode` (`entityCode`),
+  KEY `FK_entities_reference_fields` (`columnName`),
   CONSTRAINT `FK_entities_reference_fields_entities_entityCode` FOREIGN KEY (`entityCode`) REFERENCES `entities` (`entityCode`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -835,7 +703,7 @@ CREATE TABLE `entities_reference_fields` (
 
 LOCK TABLES `entities_reference_fields` WRITE;
 /*!40000 ALTER TABLE `entities_reference_fields` DISABLE KEYS */;
-INSERT INTO `entities_reference_fields` VALUES ('activityAreaID','activity',0,'activities','activityAreaID','NUM','inner','areas','areaID','areaName','areaCustomerID',NULL),('activityCalculatedDurationDays','activity',0,'activities','activityCalculatedDurationDays','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityCode','activity',0,'activities','activityCode','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityColorHexCode','activity',0,'activities','activityColorHexCode','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityComment','activity',0,'activities','activityComment','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityCompletion','activity',0,'activities','activityCompletion','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityCoverage','activity',0,'activities','activityCoverage','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityCustomerID','activity',0,'activities','activityCustomerID','NUM','inner','customers','customerID','customerName','customerID',NULL),('activityCustomerReference','activity',0,'activities','activityCustomerReference','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityDescription','activity',0,'activities','activityDescription','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityEnvironmentID','activity',0,'activities','activityEnvironmentID','NUM','inner','environment','environmentID','environmentName','environmentCustomerID',NULL),('activityEstimatedEffortHours','activity',0,'activities','activityEstimatedEffortHours','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityExpectedDailyWorkingHours','activity',0,'activities','activityExpectedDailyWorkingHours','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityID','activity',1,'activities','activityID','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityIsCompleted','activity',0,'activities','activityIsCompleted','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityIsCompletionAuto','activity',0,'activities','activityIsCompletionAuto','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityIsEstimatedEffortHoursAuto','activity',0,'activities','activityIsEstimatedEffortHoursAuto','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityIsOfficial','activity',0,'activities','activityIsOfficial','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityManagerID','activity',0,'activities','activityManagerID','NUM','inner','users','userID','userName',NULL,NULL),('activityName','activity',0,'activities','activityName','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityParentID','activity',0,'activities','activityParentID','NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activityQcConnectionID','activity',0,'activities','activityQcConnectionID','NUM','left','qc_connections','connID','connName','connCustomerID',NULL),('activityQcIdentificationQuery','activity',0,'activities','activityQcIdentificationQuery','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityRootID','activity',0,'activities','activityRootID','NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activitySpentHours','activity',0,'activities','activitySpentHours','NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activityStartDate','activity',0,'activities','activityStartDate','DATE',NULL,NULL,NULL,NULL,NULL,NULL),('activityStatusID','activity',0,'activities','activityStatusID','NUM','inner','activity_status','statusID','statusName','statusCustomerID',NULL),('activityTypeID','activity',0,'activities','activityTypeID','NUM','inner','activity_type','activityTypeID','activityTypeName','activityTypeCustomerID',NULL),('activityUserField01','activity',0,'activities','activityUserField01','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField02','activity',0,'activities','activityUserField02','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField03','activity',0,'activities','activityUserField03','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField04','activity',0,'activities','activityUserField04','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField05','activity',0,'activities','activityUserField05','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField06','activity',0,'activities','activityUserField06','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField07','activity',0,'activities','activityUserField07','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField08','activity',0,'activities','activityUserField08','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField09','activity',0,'activities','activityUserField09','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField10','activity',0,'activities','activityUserField10','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField11','activity',0,'activities','activityUserField11','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField12','activity',0,'activities','activityUserField12','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField13','activity',0,'activities','activityUserField13','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField14','activity',0,'activities','activityUserField14','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField15','activity',0,'activities','activityUserField15','CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activityUserField16','activity',0,'activities','activityUserField16','CHAR',NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `entities_reference_fields` VALUES ('activity','activityAreaID',0,1,'NUM','inner','areas','areaID','areaName','areaCustomerID',NULL),('activity','activityCode',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityColorHexCode',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityComment',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityCompletion',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityCustomerID',0,1,'NUM','inner','customers','customerID','customerName','customerID',NULL),('activity','activityCustomerReference',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityDescription',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityEnvironmentID',0,1,'NUM','inner','environment','environmentID','environmentName','environmentCustomerID',NULL),('activity','activityEstimatedEffortHours',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityID',1,0,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsCompleted',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsCompletionAuto',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsEstimatedEffortHoursAuto',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsOfficial',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityManagerNick',0,1,'CHAR','inner','users','userNick','userName',NULL,NULL),('activity','activityName',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityParentID',0,1,'NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activity','activityQcConnectionID',0,1,'NUM','left','qc_connections','connID','connName','connCustomerID',NULL),('activity','activityQcIdentificationQuery',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityRootID',0,1,'NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activity','activityStartDate',0,1,'DATE',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityStatusID',0,1,'NUM','inner','activity_status','statusID','statusName','statusCustomerID',NULL),('activity','activityTypeID',0,1,'NUM','inner','activity_type','activityTypeID','activityTypeName','activityTypeCustomerID',NULL),('activity','activityUserField01',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField02',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField03',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField04',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField05',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField06',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField07',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField08',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField09',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField10',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField11',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField12',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField13',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField14',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField15',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField16',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `entities_reference_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1088,54 +956,29 @@ INSERT INTO `qc_connections` VALUES (1,1,'qc_test','localhost','test','pwd','DEF
 UNLOCK TABLES;
 
 --
--- Table structure for table `rendering_display_elements`
+-- Table structure for table `rendering_elements`
 --
 
-DROP TABLE IF EXISTS `rendering_display_elements`;
+DROP TABLE IF EXISTS `rendering_elements`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rendering_display_elements` (
+CREATE TABLE `rendering_elements` (
   `elementCode` varchar(64) NOT NULL,
   `elementBaseTag` varchar(64) NOT NULL,
   `elementTemplate` mediumtext NOT NULL,
   `elementComment` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`elementCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192 COMMENT='Contains the minimal elements used to render entities fields';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `rendering_display_elements`
+-- Dumping data for table `rendering_elements`
 --
 
-LOCK TABLES `rendering_display_elements` WRITE;
-/*!40000 ALTER TABLE `rendering_display_elements` DISABLE KEYS */;
-INSERT INTO `rendering_display_elements` VALUES ('form-horizontal-disabled-checkbox','checkbox','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%ID%-value\" %IS_CHECKED% data-id=\"%COLNAME%\" disabled> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox disabilitata'),('form-horizontal-text','p','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<p class=\"form-control-static\" id=\"%ID%-value\" data-id=\"%COLNAME%\">%VALUE%</p>\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura');
-/*!40000 ALTER TABLE `rendering_display_elements` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rendering_edit_elements`
---
-
-DROP TABLE IF EXISTS `rendering_edit_elements`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rendering_edit_elements` (
-  `elementCode` varchar(64) NOT NULL,
-  `elementBaseTag` varchar(64) NOT NULL,
-  `elementTemplate` mediumtext NOT NULL,
-  `elementComment` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`elementCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rendering_edit_elements`
---
-
-LOCK TABLES `rendering_edit_elements` WRITE;
-/*!40000 ALTER TABLE `rendering_edit_elements` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rendering_edit_elements` ENABLE KEYS */;
+LOCK TABLES `rendering_elements` WRITE;
+/*!40000 ALTER TABLE `rendering_elements` DISABLE KEYS */;
+INSERT INTO `rendering_elements` VALUES ('form-horizontal-checkbox','checkbox','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%ID%-value\" %IS_CHECKED% data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\"> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox'),('form-horizontal-disabled-checkbox','checkbox','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%ID%-value\" %IS_CHECKED% data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" disabled> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox disabilitata'),('form-horizontal-input-date','input','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<input type=\"date\" class=\"form-control\" id=\"%ID%-value\" placeholder=\"%LABEL%\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" value=\"%VALUE%\">\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura'),('form-horizontal-input-text','input','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<input type=\"text\" class=\"form-control\" id=\"%ID%-value\" placeholder=\"%LABEL%\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" value=\"%VALUE%\">\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura'),('form-horizontal-select','select','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<select class=\"form-control\" id=\"%ID%-value\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\">%OPTIONS%</select>\r\n	</div>\r\n</div>','Template per combobox in editing'),('form-horizontal-text','p','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<p class=\"form-control-static\" id=\"%ID%-value\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\">%VALUE%</p>\r\n	</div>\r\n</div>','Template per campo di inserimento testo');
+/*!40000 ALTER TABLE `rendering_elements` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1177,6 +1020,11 @@ DROP TABLE IF EXISTS `rendering_types`;
 CREATE TABLE `rendering_types` (
   `renderingTypeCode` varchar(64) NOT NULL,
   `renderingTypeName` varchar(64) NOT NULL,
+  `renderingTypeBeforeAllSnippet` mediumtext,
+  `renderingTypeBeforeEachRecordSnippet` mediumtext,
+  `renderingTypeBetweenEachRecordSnippet` mediumtext,
+  `renderingTypeAfterEachRecordSnippet` mediumtext,
+  `renderingTypeAfterAllSnippet` mediumtext,
   `renderingTypeComment` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`renderingTypeCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=5461;
@@ -1188,7 +1036,7 @@ CREATE TABLE `rendering_types` (
 
 LOCK TABLES `rendering_types` WRITE;
 /*!40000 ALTER TABLE `rendering_types` DISABLE KEYS */;
-INSERT INTO `rendering_types` VALUES ('block_text','Block textual','Il campo viene mostrato testualmente allineato a blocchi'),('graphical','Graphical','Il campo viene mostrato graficamente'),('inline_text','Inline textual','Il campo viene mostrato testualmente in modo inline');
+INSERT INTO `rendering_types` VALUES ('display__block_text','Block textual (display mode)',NULL,NULL,'<hr>',NULL,NULL,'Il campo viene mostrato testualmente allineato a blocchi (sola lettura)'),('edit__block_text','Block textual (edit mode)',NULL,NULL,'<hr>',NULL,NULL,'Il campo viene mostrato testualmente allineato a blocchi (inserimento)'),('graphical','Graphical',NULL,NULL,NULL,NULL,NULL,'Il campo viene mostrato graficamente'),('inline_text','Inline textual',NULL,NULL,NULL,NULL,NULL,'Il campo viene mostrato testualmente in modo inline');
 /*!40000 ALTER TABLE `rendering_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1329,8 +1177,7 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`sessionID`),
   KEY `FK_sessions_customers_customerID` (`customerID`),
   KEY `FK_sessions_users_userID` (`userID`),
-  CONSTRAINT `FK_sessions_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_sessions_users_userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON UPDATE CASCADE
+  CONSTRAINT `FK_sessions_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1381,7 +1228,7 @@ DROP TABLE IF EXISTS `timeslots`;
 CREATE TABLE `timeslots` (
   `timeslotID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `timeslotActivityID` int(10) unsigned NOT NULL,
-  `timeslotUserID` int(10) unsigned DEFAULT NULL,
+  `timeslotUserNick` varchar(64) DEFAULT NULL,
   `timeslotReferenceDate` date NOT NULL,
   `timeslotDuration` decimal(5,2) unsigned NOT NULL,
   `timeslotDescription` mediumtext,
@@ -1391,10 +1238,10 @@ CREATE TABLE `timeslots` (
   KEY `timeslot_StartTime` (`timeslotReferenceDate`),
   KEY `timeslotProjectID_idx` (`timeslotActivityID`),
   KEY `timeslotTagID_idx` (`timeslotTagID`),
-  KEY `timeslotUserID_idx` (`timeslotUserID`),
+  KEY `timeslotUserID_idx` (`timeslotUserNick`),
+  CONSTRAINT `FK_timeslots_users_userNick` FOREIGN KEY (`timeslotUserNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `timeslotProjectID` FOREIGN KEY (`timeslotActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `timeslotTagID` FOREIGN KEY (`timeslotTagID`) REFERENCES `tags` (`tagID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `timeslotUserID` FOREIGN KEY (`timeslotUserID`) REFERENCES `users` (`userID`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `timeslotTagID` FOREIGN KEY (`timeslotTagID`) REFERENCES `tags` (`tagID`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1404,129 +1251,8 @@ CREATE TABLE `timeslots` (
 
 LOCK TABLES `timeslots` WRITE;
 /*!40000 ALTER TABLE `timeslots` DISABLE KEYS */;
-INSERT INTO `timeslots` VALUES (2,5,1,'2014-12-03',4.00,'Prova di inserimento timeslot',NULL);
 /*!40000 ALTER TABLE `timeslots` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER wp_timeslots_AINS
-	AFTER INSERT
-	ON timeslots
-	FOR EACH ROW
-BEGIN
-
-  call updateActivityBranch(new.timeslotActivityID);
-
-  /*UPDATE activities
-  SET activitySpentHours = activitySpentHours + new.timeslotDuration
-  WHERE activityID = new.timeslotActivityID;
-
-  IF (SELECT
-      activityIsCompletionAuto
-    FROM activities
-    WHERE activityID = new.timeslotActivityID) = 1 THEN
-    UPDATE activities
-    SET activityCompletion = (activitySpentHours / activityEstimatedEffortHours) * 100
-    WHERE activityID = new.timeslotActivityID;
-  END IF;*/
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER wp_timeslots_AUPD
-	AFTER UPDATE
-	ON timeslots
-	FOR EACH ROW
-BEGIN
-
-  call updateActivityBranch(old.timeslotActivityID);
-  call updateActivityBranch(new.timeslotActivityID);
-
-  /*UPDATE activities
-  SET activitySpentHours = activitySpentHours - old.timeslotDuration
-  WHERE activityID = old.timeslotActivityID;
-
-  IF (SELECT
-      activityIsCompletionAuto
-    FROM activities
-    WHERE activityID = old.timeslotActivityID) = 1 THEN
-    UPDATE activities
-    SET activityCompletion = (activitySpentHours / activityEstimatedEffortHours) * 100
-    WHERE activityID = old.timeslotActivityID;
-  END IF;
-
-
-  UPDATE activities
-  SET activitySpentHours = activitySpentHours + new.timeslotDuration
-  WHERE activityID = new.timeslotActivityID;
-
-  IF (SELECT
-      activityIsCompletionAuto
-    FROM activities
-    WHERE activityID = new.timeslotActivityID) = 1 THEN
-    UPDATE activities
-    SET activityCompletion = (activitySpentHours / activityEstimatedEffortHours) * 100
-    WHERE activityID = new.timeslotActivityID;
-  END IF;*/
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = latin1 */ ;
-/*!50003 SET character_set_results = latin1 */ ;
-/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER wp_timeslots_ADEL
-	AFTER DELETE
-	ON timeslots
-	FOR EACH ROW
-BEGIN
-
-  call updateActivityBranch(old.timeslotActivityID);
-
-  /*UPDATE activities
-  SET activitySpentHours = activitySpentHours - old.timeslotDuration
-  WHERE activityID = old.timeslotActivityID;
-
-  IF (SELECT
-      activityIsCompletionAuto
-    FROM activities
-    WHERE activityID = old.timeslotActivityID) = 1 THEN
-    UPDATE activities
-    SET activityCompletion = (activitySpentHours / activityEstimatedEffortHours) * 100
-    WHERE activityID = old.timeslotActivityID;
-  END IF;*/
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `user_enabled_customers`
@@ -1536,15 +1262,15 @@ DROP TABLE IF EXISTS `user_enabled_customers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_enabled_customers` (
-  `userID` int(10) unsigned NOT NULL,
+  `userNick` varchar(64) NOT NULL,
   `authorizedCustomerID` int(10) unsigned NOT NULL,
   `userAuthCode` varchar(64) NOT NULL,
-  PRIMARY KEY (`userID`,`authorizedCustomerID`),
+  PRIMARY KEY (`userNick`,`authorizedCustomerID`),
   KEY `FK_user_enabled_customers_auths_authCode` (`userAuthCode`),
   KEY `FK_user_enabled_customers_customers_customerID` (`authorizedCustomerID`),
+  CONSTRAINT `FK_user_enabled_customers_users_userNick` FOREIGN KEY (`userNick`) REFERENCES `users` (`userNick`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_user_enabled_customers_auths_authCode` FOREIGN KEY (`userAuthCode`) REFERENCES `auths` (`authCode`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_enabled_customers_customers_customerID` FOREIGN KEY (`authorizedCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_enabled_customers_users_userID` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_user_enabled_customers_customers_customerID` FOREIGN KEY (`authorizedCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1565,15 +1291,14 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `userID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `userNick` varchar(32) NOT NULL,
+  `userNick` varchar(64) NOT NULL,
   `userPassword` char(40) DEFAULT NULL,
   `userName` varchar(128) DEFAULT NULL,
   `userDailyWorkingHours` decimal(4,2) DEFAULT '8.00',
-  PRIMARY KEY (`userID`),
-  UNIQUE KEY `userID_UNIQUE` (`userID`),
+  `userIsActive` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`userNick`),
   UNIQUE KEY `userNick_UNIQUE` (`userNick`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1582,9 +1307,17 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','D033E22AE348AEB5660FC2140AEC35850C4DA997','Admin',8.00),(2,'test2','A94A8FE5CCB19BA61C4C0873D391E987982FBBD3','Test2',8.00);
+INSERT INTO `users` VALUES ('admin','D033E22AE348AEB5660FC2140AEC35850C4DA997','Admin',8.00,1),('test2','A94A8FE5CCB19BA61C4C0873D391E987982FBBD3','Test2',8.00,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'gawain'
+--
+
+--
+-- Dumping routines for database 'gawain'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1595,4 +1328,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-02-26 21:18:51
+-- Dump completed on 2015-03-26  0:23:25

@@ -298,7 +298,6 @@ abstract class Entity {
 		// Variables initialization
 		$arr_SelectFields = array();
 		$arr_CustomerDependency = array();
-		$arr_From = array();
 
 		// First compile the select query string
 		foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldName => $arr_FieldEntry) {
@@ -356,36 +355,11 @@ abstract class Entity {
 		
 		
 		// Chains all the input where conditions
-		if ($arr_Wheres !== NULL) {
-			$arr_WhereFields = array();
-			$arr_Parameters = array();
-			
-			foreach ($arr_Wheres as $str_WhereColumn => $arr_WhereCondition) {
-				$str_WhereCondition = implode(', ', array_unique($arr_From)) . '.' . $str_WhereColumn . ' ' . $arr_WhereCondition['operator'] . ' ';
-				
-				// Currently the array arguments feature is used only in 'IN' conditions.
-				// TODO: add support to more clauses that uses multiple arguments
-				
-				switch (strtolower($arr_WhereCondition['operator'])) {
-					case 'in':
-						$str_WhereCondition .= '(' . implode(', ', array_fill(1, count($arr_WhereCondition['arguments']), '?')) . ')';
-						break;
-					default:
-						$str_WhereCondition .= implode(', ', array_fill(1, count($arr_WhereCondition['arguments']), '?'));
-						break;
-				}
-				
-				foreach ($arr_WhereCondition['arguments'] as $str_Argument) {
-					$arr_Parameters[] = array($str_Argument => $this->enabledFields[$str_RenderingType]['fields'][$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's');
-				}
-				
-				$arr_WhereFields[] = $str_WhereCondition;
-			}
-			
-			$str_QueryString .= ' where ' . implode(' and ', $arr_WhereFields);
-		} else {
-			$arr_Parameters = NULL;
-		}
+		$arr_WhereOutput = parse_where_array($arr_Wheres, $this->enabledFields[$str_RenderingType]['fields'], $this->entityReferenceTable);
+		
+		$str_QueryString .= $arr_WhereOutput['query'];
+		$arr_Parameters = $arr_WhereOutput['parameters'];
+		
 		
 		// Execute the query and get raw data
 		$arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
@@ -425,7 +399,7 @@ abstract class Entity {
 	 * @return boolean
 	 */
 	public function insert($arr_DataRows) {
-		
+		// TODO: correct check and selection from available fields to enabled fields
 		// First, check if the proposed datarows keys are contained in entity avaiable fields
 		$arr_DataRowsFields = array_keys($arr_DataRows);
 		$arr_AvailableFields = array_keys($this->availableFields);
@@ -471,6 +445,15 @@ abstract class Entity {
 	
 	
 	
+	
+	
+	/** Updates existing data
+	 * 
+	 * @param array $arr_Wheres
+	 * @param array $arr_DataRows
+	 * @throws Exception
+	 * @return boolean
+	 */
 	public function update($arr_Wheres, $arr_DataRows) {
 		
 		// First, check if the proposed datarows keys are contained in entity avaiable fields
@@ -481,23 +464,88 @@ abstract class Entity {
 			throw new Exception('Invalid fields in insert statement');
 			return FALSE;
 		} else {
+			
 			// Compose the update statement
 			$str_Query = 'update ' . $this->entityReferenceTable . PHP_EOL;
+			
+			// Create the 'set' part
+			$str_Set = 'set ';
+			$arr_SetValues = array();
+			
+			foreach (array_keys($arr_DataRows) as $str_SetValue) {
+				$arr_SetValues[] = $str_SetValue . ' = ?';
+			}
+			
+			$str_Set .= implode(', ', $arr_SetValues);
+			$str_Query .= $str_Set;
+			
+			
+			// Create the 'where' part
+			$arr_WhereOutput = parse_where_array($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+			$str_Where = $arr_WhereOutput['query'];
+			$str_Query .= $str_Where;
+			
+			// Create the parameters array
+			$arr_PreparedMarks = array();
+			$arr_ParametersType = array();
+			$arr_Parameters = array();
+				
+			foreach ($arr_DataRowsFields as $str_FieldName) {
+				$arr_PreparedMarks[] = '?';
+				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's';
+			}
+				
+			$arr_ParametersValue = array_values($arr_DataRows);
+				
+			for ($int_ParameterCounter = 0; $int_ParameterCounter < sizeof($arr_ParametersType); $int_ParameterCounter++) {
+				$arr_Parameters[] = array($arr_ParametersValue[$int_ParameterCounter] => $arr_ParametersType[$int_ParameterCounter]);
+			}
+			
+			$arr_Parameters = array_merge($arr_Parameters, $arr_WhereOutput['parameters']);
+			
+			
+			// Perform the update
+			$this->dbHandler->beginTransaction();
+			$this->dbHandler->executePrepared($str_Query, $arr_Parameters);
+			$this->dbHandler->commit();
+				
+			return TRUE;
 		}
 	}
 	
 	
 	
-	public function delete($str_Wheres) {
+	
+	/** Deletes existing data
+	 * 
+	 * @param array $arr_Wheres
+	 * @return boolean
+	 */
+	public function delete($arr_Wheres) {
 		
+		// Start writing the query
+		$str_Query = 'delete from ' . $this->entityReferenceTable . PHP_EOL;
+		
+		// Create the 'where' part
+		$arr_WhereOutput = parse_where_array($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+		$str_Query .= $arr_WhereOutput['query'];
+		$arr_Parameters = $arr_WhereOutput['parameters'];
+		
+		// Perform the delete
+		$this->dbHandler->beginTransaction();
+		$this->dbHandler->executePrepared($str_Query, $arr_Parameters);
+		$this->dbHandler->commit();
+		
+		return TRUE;
 	}
 	
 	
 	
 	
 	
-	// Renders the given items into their respective elements
-	/**
+
+	/** Renders the given items into their respective elements
+	 * 
 	 * @param array $arr_DataRows
 	 * @param string $str_RenderingType
 	 * @return string
