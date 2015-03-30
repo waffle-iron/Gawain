@@ -22,7 +22,7 @@ function get_timestamp() {
 	
 	$dbl_Milliseconds = round(($dbl_UnixTimestamp - $dbl_Timestamp) * 1000000);
 	
-	$str_Timestamp = date(preg_replace('`(?<!\\\\)u`', $dbl_Milliseconds, 'Y-m-d H:i:s.u'), $dbl_Timestamp);
+	$str_Timestamp = date(preg_replace('`(?<!\\\\)u`', str_pad($dbl_Milliseconds, 6, '0'), 'Y-m-d H:i:s.u'), $dbl_Timestamp);
 
 	return $str_Timestamp;
 }

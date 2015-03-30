@@ -9,7 +9,7 @@ $obj_Logger = new Logger('activity');
 
 //echo $obj_Manager->read(NULL, 'display__block_text', 'rendered');
 
-// echo $obj_Logger->log('DEBUG', 'Testo di prova', 'admin');
+echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 
 
 
@@ -44,14 +44,14 @@ $obj_Logger = new Logger('activity');
 		)
 	);*/
 
-echo $obj_Manager->delete(array(
+/*echo $obj_Manager->delete(array(
 		'activityID' => array(
 				'operator' => '=',
 				'arguments' => array(
 						11
 					)
 			)
-	))
+	))*/
 
 
 
