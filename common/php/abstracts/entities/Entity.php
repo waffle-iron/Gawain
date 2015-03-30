@@ -44,8 +44,8 @@ abstract class Entity {
 
 
 
-	// Constructor
-	/**
+	/** Constructor
+	 * 
 	 * @param string $str_SessionID
 	 */
 	public function __construct($str_SessionID) {
