@@ -11,6 +11,10 @@ class UserAuthManager {
 	private $userNick;
 	
 	
+	// Session ID of the current user
+	private $sessionID;
+	
+	
 	// DB handler
 	private $dbHandler;
 	
@@ -25,18 +29,19 @@ class UserAuthManager {
 	 */
 	public function __construct($str_UserNick = NULL) {
 		$this->userNick = $str_UserNick;
+		$this->options = new Options();
 		$this->dbHandler = db_autodefine($this->options);
 	}
 	
 	
 	
-	/** Checks if a user is authorized with the given password hash
+	/** Authenticates with the given password hash
 	 * 
 	 * @param string $str_PasswordHash
 	 * @throws Exception
 	 * @return boolean
 	 */
-	public function isAuthorized($str_PasswordHash) {
+	public function authenticate($str_PasswordHash) {
 		$str_CheckQuery = '
 			select
 				userPassword,
@@ -46,23 +51,28 @@ class UserAuthManager {
 		
 		$obj_Resultset = $this->dbHandler->executePrepared($str_CheckQuery,
 			array(
-					array($this->userNick) => 's'
+					array($this->userNick => 's')
 			));
 		
 		if (count($obj_Resultset) == 0) {
 			throw new Exception('User does not exist');
 			return FALSE;
+			
 		} elseif (count($obj_Resultset) > 1) {
 			throw new Exception('Multiple user returned');
 			return FALSE;
-		} elseif ($obj_Resultset['userIsActive'] = 0) {
+			
+		} elseif ($obj_Resultset[0]['userIsActive'] = 0) {
 			throw new Exception('User is not active');
 			return FALSE;
-		} elseif ($obj_Resultset['userPassword'] != $str_PasswordHash) {
+			
+		} elseif (strtoupper($obj_Resultset[0]['userPassword']) != strtoupper($str_PasswordHash)) {
 			throw new Exception('Wrong username or password');
 			return FALSE;
+			
 		} else {
-			return $this->generateSessionID();
+			$this->sessionID = $this->generateSessionID();
+			
 		}
 	}
 	
@@ -74,7 +84,7 @@ class UserAuthManager {
 	 */
 	private function generateSessionID() {
 		$str_SessionID = sha1(sha1(microtime() . date('z') . uniqid(NULL, TRUE)));
-		return str_Session;
+		return $str_SessionID;
 	}
 	
 }
