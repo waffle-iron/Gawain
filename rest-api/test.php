@@ -11,6 +11,8 @@ $obj_AuthManager = new UserAuthManager('admin');
 
 echo $obj_AuthManager->authenticate('d033e22ae348aeb5660fc2140aec35850c4da997');
 
+echo $obj_AuthManager->getEnabledCustomers('json');
+
 //echo $obj_Manager->read(NULL, 'display__block_text', 'rendered');
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
