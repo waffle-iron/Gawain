@@ -122,6 +122,11 @@ class UserAuthManager {
 	
 	
 	
+	/** Logs out from the current session
+	 * 
+	 * @param string $str_SessionID
+	 * @return boolean
+	 */
 	public function logout($str_SessionID) {
 		$this->removeSession($str_SessionID);
 		
