@@ -7,11 +7,13 @@ require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
 $obj_Manager = new Activity('AAA');
 $obj_Logger = new Logger('activity');
-$obj_AuthManager = new UserAuthManager('admin');
+//$obj_AuthManager = new UserAuthManager('admin');
 
-echo $obj_AuthManager->authenticate('d033e22ae348aeb5660fc2140aec35850c4da997');
+//$obj_Output = $obj_AuthManager->authenticate('d033e22ae348aeb5660fc2140aec35850c4da997');
 
-echo $obj_AuthManager->getEnabledCustomers('json');
+//$obj_AuthManager->login($obj_Output['sessionID'], 1);
+
+//$obj_AuthManager->logout($obj_Output['sessionID']);
 
 //echo $obj_Manager->read(NULL, 'display__block_text', 'rendered');
 

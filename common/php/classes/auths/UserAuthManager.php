@@ -11,8 +11,8 @@ class UserAuthManager {
 	private $userNick;
 	
 	
-	// Session ID of the current user
-	private $sessionID;
+	// IP address
+	private $hostName;
 	
 	
 	// DB handler
@@ -26,8 +26,9 @@ class UserAuthManager {
 	/** Constructor
 	 * 
 	 * @param string $str_UserNick
+	 * @param string $str_Host
 	 */
-	public function __construct($str_UserNick) {
+	public function __construct($str_UserNick, $str_Host = NULL) {
 		$this->userNick = $str_UserNick;
 		$this->options = new Options();
 		$this->dbHandler = db_autodefine($this->options);
@@ -75,10 +76,56 @@ class UserAuthManager {
 			return FALSE;
 			
 		} else {
-			$this->sessionID = $this->generateSessionID();
+			$str_SessionID = $this->generateSessionID();
 			
-			return $this->sessionID;
+			$this->writeSession($str_SessionID, $this->userNick, NULL, $this->hostName);
+			
+			return array(
+					'sessionID'			=>	$str_SessionID,
+					'enabledCustomers'	=>	$this->getEnabledCustomers('raw')
+			);
 		}
+	}
+	
+	
+	
+	/** Log the current user in and selects the current customer
+	 *
+	 * @param string $str_SessionID
+	 * @param integer $int_SelectedCustomer
+	 */
+	public function login($str_SessionID, $int_SelectedCustomer) {
+		$str_CustomerCheckQuery = '
+			select
+				sessions.sessionID,
+				sessions.userNick
+			from sessions
+			inner join user_enabled_customers enabled
+				on sessions.userNick = enabled.userNick
+			where sessions.sessionID = ?
+				and enabled.authorizedCustomerID = ?';
+	
+		$obj_Resultset = $this->dbHandler->executePrepared($str_CustomerCheckQuery,
+				array(
+						array($str_SessionID => 's'),
+						array($int_SelectedCustomer => 'i')
+				));
+	
+		if (count($obj_Resultset) == 1) {
+			$this->setSessionCustomer($str_SessionID, $int_SelectedCustomer);
+			return TRUE;
+			
+		} else {
+			return FALSE;
+		}
+	}
+	
+	
+	
+	public function logout($str_SessionID) {
+		$this->removeSession($str_SessionID);
+		
+		return TRUE;
 	}
 	
 	
@@ -105,7 +152,7 @@ class UserAuthManager {
 	 * 
 	 * @return array
 	 */
-	public function getEnabledCustomers($str_Format = 'html') {
+	private function getEnabledCustomers($str_Format = 'html') {
 		$str_EnabledCustomersQuery = '
 			select
 				enabled.authorizedCustomerID as ID,
@@ -144,12 +191,6 @@ class UserAuthManager {
 				
 		}
 		
-		if ($str_Format == 'json') {
-			return json_encode($obj_Resultset);
-		} else {
-			return $obj_Resultset;
-		}
-		
 	}
 	
 	
@@ -170,22 +211,56 @@ class UserAuthManager {
 				userNick,
 				customerID,
 				sessionStartDate,
-				sessionOriginIP
+				sessionHostName
 			) values (
 				?,
 				?,
-				?,
+				' . (is_null($int_CustomerID) ? 'NULL' : '?') . ',
 				sysdate(),
 				?			
 			)';
 		
 		$this->dbHandler->beginTransaction();
 		$this->dbHandler->executePrepared($str_InsertQuery,
+				(is_null($int_CustomerID) ?
+					array(
+							array($str_SessionID => 's'),
+							array($str_UserNick => 's'),
+							array($str_Host => 's')
+					) :
+					array(
+							array($str_SessionID => 's'),
+							array($str_UserNick => 's'),
+							array($int_CustomerID =>'i'),
+							array($str_Host => 's')
+					)
+				)
+				);
+		$this->dbHandler->commit();
+		
+		return TRUE;
+	}
+	
+	
+	
+	
+	/** Sets the customerID for the given session
+	 * 
+	 * @param string $str_SessionID
+	 * @param integer $int_CustomerID
+	 * @return boolean
+	 */
+	private function setSessionCustomer($str_SessionID, $int_CustomerID) {
+		$str_SetCustomerQuery = '
+			update sessions
+			set customerID = ?
+				where sessionID = ?';
+		
+		$this->dbHandler->beginTransaction();
+		$this->dbHandler->executePrepared($str_SetCustomerQuery,
 				array(
-						array($str_SessionID => 's'),
-						array($str_UserNick => 's'),
-						array($int_CustomerID =>'i'),
-						array($str_Host => 's')
+						array($int_CustomerID	=>	'i'),
+						array($str_SessionID	=>	's')
 				));
 		$this->dbHandler->commit();
 		
@@ -194,33 +269,25 @@ class UserAuthManager {
 	
 	
 	
-	/** Log the current user in and selects the current customer
+	
+	/** Removes the given session from DB
 	 * 
 	 * @param string $str_SessionID
-	 * @param integer $int_SelectedCustomer
+	 * @return boolean
 	 */
-	public function login($str_SessionID, $int_SelectedCustomer) {
-		$str_CustomerCheckQuery = '
-			select
-				sessions.sessionID,
-				sessions.userNick
-			from sessions
-			inner join user_enabled_customers enabled
-				on sessions.userNick = enabled.userNick
-			where sessions.sessionID = ?
-				and enabled.authorizedCustomerID = ?';
+	private function removeSession($str_SessionID) {
+		$str_RemoveQuery = '
+			delete from sessions
+				where sessionID = ?';
 		
-		$obj_Resultset = $this->dbHandler->executePrepared($str_CustomerCheckQuery,
+		$this->dbHandler->beginTransaction();
+		$this->dbHandler->executePrepared($str_RemoveQuery,
 				array(
-						array($str_SessionID => 's'),
-						array($int_SelectedCustomer => 'i')
+						array($str_SessionID	=>	's')
 				));
+		$this->dbHandler->commit();
 		
-		if (count($obj_Resultset) = 1) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+		return TRUE;
 	}
 	
 }
