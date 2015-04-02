@@ -1,1 +1,1 @@
-FallbackResource /gawain/rest-api/index.php
+FallbackResource /gawain/rest-api/apiGateway.php
