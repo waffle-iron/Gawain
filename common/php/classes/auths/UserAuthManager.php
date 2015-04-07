@@ -89,6 +89,33 @@ class UserAuthManager {
 	
 	
 	
+	/** Checks if the given user is authenticated
+	 * 
+	 * @param string $str_SessionID
+	 * @return boolean
+	 */
+	public function isAuthenticated($str_SessionID) {
+		$str_Query = '
+				select
+					count(*) as counter
+				from sessions
+				where userNick = ?
+					and sessionID = ?';
+		
+		$obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+				array($this->userNick	=>	's'),
+				array($str_SessionID	=>	's')
+		));
+		
+		if ($obj_Resultset[0]['counter'] == 1) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	
+	
+	
 	/** Log the current user in and selects the current customer
 	 *
 	 * @param string $str_SessionID

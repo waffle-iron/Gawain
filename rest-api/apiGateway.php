@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'net/Curl.php');
+require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
 use \Curl\Curl;
 
@@ -12,12 +13,26 @@ $str_ServerName = $_SERVER['HTTP_HOST'];
 $str_RequestURL = $_SERVER['REQUEST_URI'];
 $str_RequestMethod = $_SERVER['REQUEST_METHOD'];
 
-if (isset($_COOKIE['GawainSessionID']) && isset($_COOKIE['GawainUser'])) {
+// If the cookies are not set, the request is automatically aborted
+/*if (isset($_COOKIE['GawainSessionID']) && isset($_COOKIE['GawainUser'])) {
 	$str_SessionID = $_COOKIE['GawainSessionID'];
 	$str_User = $_COOKIE['GawainUser'];
+	
+	// If the user authentication is not valid, the request is automatically aborted
+	$obj_UserAuthManager = new UserAuthManager($str_User);
+	
+	if (!$obj_UserAuthManager->isAuthenticated($str_SessionID)) {
+		header('Gawain-Response: Unauthorized', 0, 401);
+		exit();
+	}
+	
 } else {
 	header('Gawain-Response: Unauthorized', 0, 401);
-}
+	exit();
+}*/
+
+$str_SessionID = 'AAA';
+$str_User = 'admin';
 
 
 
@@ -36,19 +51,20 @@ if ($str_RequestMethod == 'POST') {
 	$str_RequestBody = file_get_contents('php://input');
 	
 	$arr_RedirectFields = array(
-			'ID'		=>	$int_ID,
+			'ID'		=>	$int_ID != '' ? $int_ID : NULL,
 			'method'	=>	$str_Method,
 			'data'		=>	$str_RequestBody
 	);
 	
 	
 } elseif ($str_RequestMethod == 'GET') {
-	$arr_RedirectFields = array('ID'	=>	$int_ID);
+	$arr_RedirectFields = $int_ID != '' ? array('ID'	=>	$int_ID) : array();
+	$arr_RedirectFields = array_merge($arr_RedirectFields, $_GET);
 }
 
 
 // Redirect the request
-$str_RedirectUrl = $str_ServerName . $str_ServerURL . '/rest-api/entities/' . $str_Entity . '.php';
+$str_RedirectUrl = $str_ServerName . $str_ServerURL . '/rest-api/controllers/' . $str_Entity . '.php';
 
 $obj_Curl = new Curl();
 $obj_Curl->setCookie('GawainSessionID', $str_SessionID);
@@ -73,13 +89,14 @@ if ($obj_Curl->error) {
 			header('Gawain-Response: Unauthorized', 0, 401);
 			break;
 			
+		case 400:
+			header('Gawain-Response: Malformed request', 0, 400);
+			break;
+			
 		default:
 			header('Gawain-Response: Invalid', 0, $obj_Curl->http_status_code);
 			break;
 	}
-	
-	if ($obj_Curl->http_status_code == 401 || $obj_Curl->http_status_code == 404)
-	echo $obj_Curl->response;
 }
 
 

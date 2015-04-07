@@ -152,7 +152,10 @@ abstract class Entity {
 			
 			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
 			
-			$this->mainID = $obj_ResultEntry['fieldIsMainID'];
+			if ($obj_ResultEntry['fieldIsMainID'] == 1) {
+				$this->mainID = $obj_ResultEntry['columnName'];
+			}
+
 		}
 
 	}
@@ -300,7 +303,19 @@ abstract class Entity {
 	 * @param string $str_OutputFormat
 	 * @return string
 	 */
-	public function read($arr_Wheres, $str_RenderingType, $str_OutputFormat = 'rendered') {
+	public function read($arr_Wheres, $str_RenderingType, $str_OutputFormat = NULL) {
+		
+		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
+		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
+			$arr_Wheres = array(
+					$this->mainID => array(
+							'operator' => '=',
+							'arguments' => array(
+									$arr_Wheres
+							)
+					)
+			);
+		}
 		
 		// Variables initialization
 		$arr_SelectFields = array();
@@ -374,19 +389,24 @@ abstract class Entity {
 		
 		// Set output type according to specified format
 		switch ($str_OutputFormat) {
-			case 'raw':
+			case 'json':
 				// Outputs the required data in JSON format
 				$str_Output = json_encode($arr_GetResult);
 				break;
 				
-			case 'rendered':
-				// Parse the results and render the result using display elements
-				$str_Output = $this->render($arr_GetResult, $str_RenderingType);
+			case 'array':
+				// Returns the result as PHP array
+				$str_Output = $arr_GetResult;
 				break;
 				
 			case 'blank':
 				// Outputs a blank rendered form for data insertion
 				$str_Output = $this->render(NULL, $str_RenderingType);
+				break;
+				
+			default:
+				// Parse the results and render the result using display elements
+				$str_Output = $this->render($arr_GetResult, $str_RenderingType);
 				break;
 		}
 		
@@ -463,6 +483,18 @@ abstract class Entity {
 	 */
 	public function update($arr_Wheres, $arr_DataRows) {
 		
+		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
+		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
+			$arr_Wheres = array(
+					$this->mainID => array(
+							'operator' => '=',
+							'arguments' => array(
+									$arr_Wheres
+							)
+					)
+			);
+		}
+		
 		// First, check if the proposed datarows keys are contained in entity avaiable fields
 		$arr_DataRowsFields = array_keys($arr_DataRows);
 		$arr_AvailableFields = array_keys($this->availableFields);
@@ -529,6 +561,18 @@ abstract class Entity {
 	 * @return boolean
 	 */
 	public function delete($arr_Wheres) {
+		
+		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
+		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
+			$arr_Wheres = array(
+					$this->mainID => array(
+							'operator' => '=',
+							'arguments' => array(
+									$arr_Wheres
+							)
+					)
+			);
+		}
 		
 		// Start writing the query
 		$str_Query = 'delete from ' . $this->entityReferenceTable . PHP_EOL;
@@ -700,23 +744,6 @@ abstract class Entity {
 	
 	
 	
-	
-	
-	/** Returns data using main ID as identifier
-	 * 
-	 * @param mixed $str_ID
-	 * @param string $str_RenderingType
-	 * @param string $str_OutputFormat
-	 * @return mixed
-	 */
-	public function readByID($str_ID, $str_RenderingType, $str_OutputFormat) {
-		return $this->read(array(
-				array($this->mainID	=>	array(
-						'operator'	=>	'=',
-						'arguments'	=>	array($str_ID)
-				))
-		), $str_RenderingType, $str_OutputFormat);
-	}
 
 }
 

@@ -15,7 +15,7 @@ $obj_Logger = new Logger('activity');
 
 //$obj_AuthManager->logout($obj_Output['sessionID']);
 
-echo $obj_Manager->read(NULL, 'display__block_text', 'rendered');
+echo $obj_Manager->read(9, 'display__block_text', 'rendered');
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 
