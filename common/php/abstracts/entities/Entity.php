@@ -15,7 +15,11 @@ abstract class Entity {
 	public $entityLabel;
 	
 	
-	// Enoty reference table
+	// Entity main ID field
+	public $mainID;
+	
+	
+	// Entity reference table
 	protected $entityReferenceTable;
 
 
@@ -116,6 +120,7 @@ abstract class Entity {
 		$str_AvailableFieldsPrepQuery = 
 			'select
 				columnName,
+				fieldIsMainID,
 				fieldIsAutoIncrement,
 				fieldIsNillable,
 				fieldType,
@@ -146,6 +151,8 @@ abstract class Entity {
 			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCustomerDependencyColumnName'] = $obj_ResultEntry['referentialCustomerDependencyColumnName'];
 			
 			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
+			
+			$this->mainID = $obj_ResultEntry['fieldIsMainID'];
 		}
 
 	}
@@ -689,6 +696,26 @@ abstract class Entity {
 			implode($this->enabledFields[$str_RenderingType]['global']['renderingTypeBetweenEachRecordSnippet'], $arr_Output) .
 			$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterAllSnippet'];
 		
+	}
+	
+	
+	
+	
+	
+	/** Returns data using main ID as identifier
+	 * 
+	 * @param mixed $str_ID
+	 * @param string $str_RenderingType
+	 * @param string $str_OutputFormat
+	 * @return mixed
+	 */
+	public function readByID($str_ID, $str_RenderingType, $str_OutputFormat) {
+		return $this->read(array(
+				array($this->mainID	=>	array(
+						'operator'	=>	'=',
+						'arguments'	=>	array($str_ID)
+				))
+		), $str_RenderingType, $str_OutputFormat);
 	}
 
 }
