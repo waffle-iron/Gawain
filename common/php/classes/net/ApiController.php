@@ -8,6 +8,9 @@ class ApiController {
 	// Linked entity class
 	private $entityClass;
 	
+	// Module code
+	private $module;
+	
 	// Path to entity class definition
 	private $classPath;
 	
@@ -18,7 +21,7 @@ class ApiController {
 	private $sessionID;
 	
 	// Request method
-	private $requestMethod;
+	public $requestMethod;
 	
 	// Request arguments
 	public $requestArgs = array();
@@ -26,9 +29,18 @@ class ApiController {
 	// Array with the available methods for the selected class
 	private $methods = array();
 	
+	// Class reflection for internal use
+	private $classReflection;
+	
+	// Class reflection methods
+	private $classReflectionMethods;
+	
+	// Internal Auth Manager
+	private $authManager;
 	
 	
-	public function __construct($str_EntityClass, $str_ClassPath, $str_Module) {
+	
+	public function __construct($str_EntityClass, $str_ClassPath, $str_Module, $bool_RegisterDefaultMethods = TRUE, $arr_ClassConstructArgs = NULL) {
 		
 		// Sets the session ID
 		if (isset($_COOKIE['GawainSessionID'])) {
@@ -37,15 +49,30 @@ class ApiController {
 			throw new Exception('Unauthorized');
 		}
 		
+		$this->authManager = new UserAuthManager();
+		$this->module = $str_Module;
+		
+		
+		if ($arr_ClassConstructArgs === NULL) {
+			$arr_ClassConstructArgs = array($this->sessionID);
+		}
+		
 		
 		if (file_exists($str_ClassPath)) {
 			require_once($str_ClassPath);
 			
 			if (class_exists($str_EntityClass)) {
-				$this->classInstance = new $str_EntityClass($this->sessionID);
+				$this->entityClass = $str_EntityClass;
+				$this->classReflection = new ReflectionClass($this->entityClass);
+				
+				$this->classInstance = $this->classReflection->newInstanceArgs($arr_ClassConstructArgs);
+				$this->getReflectionClassMethods();
 				$this->requestMethod = $_SERVER['REQUEST_METHOD'];
 				$this->getRequestArgs();
-				$this->registerDefaultMethods();
+				
+				if ($bool_RegisterDefaultMethods) {
+					$this->registerDefaultMethods();
+				}
 			}
 		}
 	}
@@ -62,16 +89,9 @@ class ApiController {
 	 */
 	public function registerMethod($str_RequestMethod, $str_MethodName, $arr_MethodDescription) {
 		
-		// Checks if the method exixts for the current class
-		$rfl_ClassReflection = new ReflectionClass($this->entityClass);
-		$arr_ClassMethods = $rfl_ClassReflection->getMethods(ReflectionMethod::IS_PUBLIC);
-		
-		if (array_search($str_MethodName, $arr_ClassMethods) !== FALSE) {
-			$arr_AddedMethod = array(
-					$str_MethodName		=>	$arr_MethodDescription
-			);
-			
-			$this->methods[$str_RequestMethod][] = $arr_AddedMethod;
+		// Checks if the method exists for the current class
+		if (array_search($str_MethodName, $this->classReflectionMethods) !== FALSE) {
+			$this->methods[$str_RequestMethod][$str_MethodName] = $arr_MethodDescription;
 			return TRUE;
 			
 		} else {
@@ -107,9 +127,13 @@ class ApiController {
 		}
 		
 		if ($this::checkPermissions()) {
-			$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
-					$this->methods[$this->requestMethod][$str_Method]['arguments']);
-			return $str_Output;
+			if ($this->authManager->hasGrants($this->sessionID, $this->module)) {
+				$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
+						$this->methods[$this->requestMethod][$str_Method]['arguments']);
+				return $str_Output;
+			} else {
+				throw new Exception('Insufficient grants');
+			}
 		} else {
 			throw new Exception('Insufficient grants');
 		}
@@ -132,9 +156,9 @@ class ApiController {
 			$str_User = $_COOKIE['GawainUser'];
 		
 			// If the user authentication is not valid, the request is automatically aborted
-			$obj_UserAuthManager = new UserAuthManager($str_User);
+			$obj_UserAuthManager = new UserAuthManager();
 		
-			if (!$obj_UserAuthManager->isAuthenticated($str_SessionID)) {
+			if (!$obj_UserAuthManager->isAuthenticated($str_User, $str_SessionID)) {
 				if ($bool_SendHeader) {
 					header('Gawain-Response: Unauthorized', 0, 401);
 				}
@@ -184,6 +208,9 @@ class ApiController {
 				$this->requestArgs[$str_Argument] = NULL;
 			}
 		}
+		
+		// Parses 'data' argument from JSON to array
+		$this->requestArgs['data'] = json_decode($this->requestArgs['data'], TRUE);
 	}
 	
 	
@@ -235,6 +262,20 @@ class ApiController {
 		// Add the default methods
 		$this->methods = $arr_DefaultMethods;
 		
+	}
+	
+	
+	
+	/** Retrieves all the available methods for the current class
+	 * 
+	 */
+	private function getReflectionClassMethods() {
+		$arr_ReflectionMethods = $this->classReflection->getMethods(ReflectionMethod::IS_PUBLIC);
+		$this->classReflectionMethods = array();
+		
+		foreach ($arr_ReflectionMethods as $obj_ReflectionMethod) {
+			$this->classReflectionMethods[] = $obj_ReflectionMethod->name;
+		}
 	}
 	
 

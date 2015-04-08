@@ -7,10 +7,6 @@ require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 class UserAuthManager {
 	
-	// Current user nick
-	private $userNick;
-	
-	
 	// IP address
 	private $hostName;
 	
@@ -25,11 +21,10 @@ class UserAuthManager {
 	
 	/** Constructor
 	 * 
-	 * @param string $str_UserNick
 	 * @param string $str_Host
 	 */
-	public function __construct($str_UserNick, $str_Host = NULL) {
-		$this->userNick = $str_UserNick;
+	public function __construct($str_Host = NULL) {
+		$this->hostName = $str_Host;
 		$this->options = new Options();
 		$this->dbHandler = db_autodefine($this->options);
 	}
@@ -38,11 +33,12 @@ class UserAuthManager {
 	
 	/** Authenticates with the given password hash
 	 * 
+	 * @param string $str_UserNick
 	 * @param string $str_PasswordHash
 	 * @throws Exception
 	 * @return boolean
 	 */
-	public function authenticate($str_PasswordHash) {
+	public function authenticate($str_UserNick, $str_PasswordHash) {
 		$str_CheckQuery = '
 			select
 				userPassword,
@@ -52,14 +48,14 @@ class UserAuthManager {
 		
 		$obj_Resultset = $this->dbHandler->executePrepared($str_CheckQuery,
 			array(
-					array($this->userNick => 's')
+					array($str_UserNick => 's')
 			));
 		
 		if (count($obj_Resultset) == 0) {
 			throw new Exception('User does not exist');
 			return FALSE;
 			
-		} elseif ($this->userNick === NULL) {
+		} elseif ($str_UserNick === NULL) {
 			throw new Exception('User not defined');
 			return FALSE;
 			
@@ -78,11 +74,11 @@ class UserAuthManager {
 		} else {
 			$str_SessionID = $this->generateSessionID();
 			
-			$this->writeSession($str_SessionID, $this->userNick, NULL, $this->hostName);
+			$this->writeSession($str_SessionID, $str_UserNick, NULL, $this->hostName);
 			
 			return array(
 					'sessionID'			=>	$str_SessionID,
-					'enabledCustomers'	=>	$this->getEnabledCustomers('raw')
+					'enabledCustomers'	=>	$this->getEnabledCustomers($str_UserNick, 'html')
 			);
 		}
 	}
@@ -91,10 +87,11 @@ class UserAuthManager {
 	
 	/** Checks if the given user is authenticated
 	 * 
+	 * @param string $str_UserNick
 	 * @param string $str_SessionID
 	 * @return boolean
 	 */
-	public function isAuthenticated($str_SessionID) {
+	public function isAuthenticated($str_UserNick, $str_SessionID) {
 		$str_Query = '
 				select
 					count(*) as counter
@@ -103,7 +100,7 @@ class UserAuthManager {
 					and sessionID = ?';
 		
 		$obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
-				array($this->userNick	=>	's'),
+				array($str_UserNick	=>	's'),
 				array($str_SessionID	=>	's')
 		));
 		
@@ -227,11 +224,12 @@ class UserAuthManager {
 	 * 	- 'json' to output the result as JSON string
 	 * 	- 'html' to output the result as HTML select options
 	 * 
+	 * @param string $str_UserNick
 	 * @param string $str_Format
 	 * 
 	 * @return array
 	 */
-	private function getEnabledCustomers($str_Format = 'html') {
+	private function getEnabledCustomers($str_UserNick, $str_Format = 'html') {
 		$str_EnabledCustomersQuery = '
 			select
 				enabled.authorizedCustomerID as ID,
@@ -243,7 +241,7 @@ class UserAuthManager {
 		
 		$obj_Resultset = $this->dbHandler->executePrepared($str_EnabledCustomersQuery,
 				array(
-						array($this->userNick => 's')
+						array($str_UserNick => 's')
 				));
 		
 		

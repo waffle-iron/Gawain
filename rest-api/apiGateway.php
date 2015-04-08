@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/../common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'net/CurlRequest.php');
-require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
+require_once(PHP_CLASSES_DIR . 'net/ApiController.php');
 
 
 // Parses API URL and redirects the request to the proper interface
@@ -18,9 +18,9 @@ $str_RequestMethod = $_SERVER['REQUEST_METHOD'];
 	$str_User = $_COOKIE['GawainUser'];
 	
 	// If the user authentication is not valid, the request is automatically aborted
-	$obj_UserAuthManager = new UserAuthManager($str_User);
+	$obj_UserAuthManager = new UserAuthManager();
 	
-	if (!$obj_UserAuthManager->isAuthenticated($str_SessionID)) {
+	if (!$obj_UserAuthManager->isAuthenticated($str_User, $str_SessionID)) {
 		header('Gawain-Response: Unauthorized', 0, 401);
 		exit();
 	}
@@ -68,6 +68,7 @@ $str_RedirectUrl = $str_ServerName . $str_ServerURL . '/rest-api/controllers/' .
 $obj_Curl = new CurlRequest();
 $obj_Curl->setCookie('GawainSessionID', $str_SessionID);
 $obj_Curl->setCookie('GawainUser', $str_User);
+$obj_Curl->setCookie('GawainClientIP', $_SERVER['REMOTE_ADDR']);
 
 if ($str_RequestMethod == 'GET') {
 	$obj_Curl->get($str_RedirectUrl, $arr_RedirectFields);
@@ -81,6 +82,10 @@ if ($obj_Curl->error) {
 } else {
 	switch ($obj_Curl->http_status_code) {
 		case 200:
+			$arr_ResponseHeader = explode(PHP_EOL, trim($obj_Curl->raw_response_headers));
+			foreach ($arr_ResponseHeader as $str_ResponseHeader) {
+				header($str_ResponseHeader);
+			}
 			echo $obj_Curl->response;
 			break;
 		
