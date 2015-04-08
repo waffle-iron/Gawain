@@ -116,6 +116,53 @@ class UserAuthManager {
 	
 	
 	
+	/** Checks if the user related to the current Session ID has grants to perform an action
+	 * 
+	 * @param string $str_SessionID
+	 * @param string $str_ModuleCode
+	 * @param string $str_RequiredPermission
+	 * @throws Exception
+	 * @return boolean
+	 */
+	public function hasGrants($str_SessionID, $str_ModuleCode, $int_RequiredPermission = 0) {
+		$str_Query = '
+				select
+					auth.writePermission
+				from modules
+				inner join modules_auths auth
+					on modules.moduleCode = auth.moduleCode
+				inner join user_groups groups
+					on groups.groupCode = auth.groupCode
+				inner join user_enabled_customers enabled
+					on enabled.groupCode = auth.groupCode
+					and enabled.authorizedCustomerID = auth.customerID
+				inner join users
+					on enabled.userNick = users.userNick
+				inner join sessions
+					on sessions.userNick = users.userNick
+					and sessions.customerID = enabled.authorizedCustomerID
+				where modules.moduleCode = ?
+					and sessions.sessionID = ?';
+		
+		
+		$arr_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+				array($str_ModuleCode	=>	's'),
+				array($str_SessionID	=>	's')
+		));
+		
+		if ($arr_Resultset !== NULL && count($arr_Resultset) == 1) {
+			if ($arr_Resultset[0]['writePermission'] >= $int_RequiredPermission) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+		} else {
+			throw new Exception('Invalid request');
+		}
+	}
+	
+	
+	
 	/** Log the current user in and selects the current customer
 	 *
 	 * @param string $str_SessionID

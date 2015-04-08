@@ -14,11 +14,14 @@ class ApiController {
 	// Internal class instance
 	private $classInstance;
 	
+	// Session ID
+	private $sessionID;
+	
 	// Request method
 	private $requestMethod;
 	
 	// Request arguments
-	private $requestArgs = array();
+	public $requestArgs = array();
 	
 	// Array with the available methods for the selected class
 	private $methods = array();
@@ -26,11 +29,20 @@ class ApiController {
 	
 	
 	public function __construct($str_EntityClass, $str_ClassPath, $str_Module) {
+		
+		// Sets the session ID
+		if (isset($_COOKIE['GawainSessionID'])) {
+			$this->sessionID = $_COOKIE['GawainSessionID'];
+		} else {
+			throw new Exception('Unauthorized');
+		}
+		
+		
 		if (file_exists($str_ClassPath)) {
 			require_once($str_ClassPath);
 			
 			if (class_exists($str_EntityClass)) {
-				$this->classInstance = new $str_EntityClass;
+				$this->classInstance = new $str_EntityClass($this->sessionID);
 				$this->requestMethod = $_SERVER['REQUEST_METHOD'];
 				$this->getRequestArgs();
 				$this->registerDefaultMethods();
@@ -56,12 +68,10 @@ class ApiController {
 		
 		if (array_search($str_MethodName, $arr_ClassMethods) !== FALSE) {
 			$arr_AddedMethod = array(
-					$str_RequestMethod	=>	array(
-							$str_MethodName		=>	$arr_MethodDescription
-					)
+					$str_MethodName		=>	$arr_MethodDescription
 			);
 			
-			$this->methods[] = $arr_AddedMethod;
+			$this->methods[$str_RequestMethod][] = $arr_AddedMethod;
 			return TRUE;
 			
 		} else {
@@ -77,10 +87,19 @@ class ApiController {
 	
 	
 	
+	/** Calls the selected method. If no method is provided, the method name is inferred from the request
+	 * 
+	 * @param string $str_Method
+	 * @throws Exception
+	 * @return mixed
+	 */
 	public function callMethod($str_Method = NULL) {
+
 		// If the method is not forced during the call, it is taken from request
 		if ($str_Method === NULL) {
-			if (array_key_exists($this->requestArgs['method'], $this->methods[$this->requestMethod])) {
+			if($this->requestMethod == 'GET') {
+				$str_Method = 'read';
+			} elseif (array_key_exists($this->requestArgs['method'], $this->methods[$this->requestMethod])) {
 				$str_Method = $this->requestArgs['method'];
 			} else {
 				throw new Exception('Non existing method');				
@@ -90,6 +109,9 @@ class ApiController {
 		if ($this::checkPermissions()) {
 			$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
 					$this->methods[$this->requestMethod][$str_Method]['arguments']);
+			return $str_Output;
+		} else {
+			throw new Exception('Insufficient grants');
 		}
 	}
 	
@@ -136,6 +158,8 @@ class ApiController {
 	 * 
 	 */
 	private function getRequestArgs() {
+		
+		// Start getting existing arguments
 		switch ($this->requestMethod) {
 			case 'GET':
 				$this->requestArgs = $_GET;
@@ -144,10 +168,21 @@ class ApiController {
 			case 'POST':
 				$this->requestArgs = $_POST;
 				break;
-				
-			default:
-				$this->requestArgs = NULL;
-				break;
+		}
+		
+		// If some argument is missing, is set to NULL
+		$arr_AvailableArguments = array(
+				'ID',
+				'renderingType',
+				'outputFormat',
+				'method',
+				'data'
+		);
+		
+		foreach ($arr_AvailableArguments as $str_Argument) {
+			if (!array_key_exists($str_Argument, $this->requestArgs)) {
+				$this->requestArgs[$str_Argument] = NULL;
+			}
 		}
 	}
 	
@@ -161,49 +196,45 @@ class ApiController {
 		
 		// GET functions
 		$arr_Get = array(
-				'GET'	=>	array(
-						'read'	=>	array(
-								'writeGrant'	=>	0,
-								'arguments'		=>	array(
-										$this->requestArgs['ID'],
-										$this->requestArgs['renderingType'],
-										$this->requestArgs['outputFormat']
-								)
+				'read'	=>	array(
+						'writeGrant'	=>	0,
+						'arguments'		=>	array(
+								$this->requestArgs['ID'],
+								$this->requestArgs['renderingType'],
+								$this->requestArgs['outputFormat']
 						)
 				)
 		);
-		$arr_DefaultMethods[] = $arr_Get;
+		$arr_DefaultMethods['GET'] = $arr_Get;
 		
 		
 		// POST functions
 		$arr_Post = array(
-				'POST'	=>	array(
-						'insert'	=>	array(
-								'writeGrant'	=>	1,
-								'arguments'		=>	array(
-										$this->requestArgs['data']
-								)
-						),
-						'update'	=>	array(
-								'writeGrant'	=>	1,
-								'arguments'		=>	array(
-										$this->requestArgs['ID'],
-										$this->requestArgs['data']
-								)
-						),
-						'delete'	=>	array(
-								'writeGrant'	=>	1,
-								'arguments'		=>	array(
-										$this->requestArgs['ID']
-								)
+				'insert'	=>	array(
+						'writeGrant'	=>	1,
+						'arguments'		=>	array(
+								$this->requestArgs['data']
+						)
+				),
+				'update'	=>	array(
+						'writeGrant'	=>	1,
+						'arguments'		=>	array(
+								$this->requestArgs['ID'],
+								$this->requestArgs['data']
+						)
+				),
+				'delete'	=>	array(
+						'writeGrant'	=>	1,
+						'arguments'		=>	array(
+								$this->requestArgs['ID']
 						)
 				)
 		);
-		$arr_DefaultMethods[] = $arr_Post;
-		
+		$arr_DefaultMethods['POST'] = $arr_Post;
 		
 		// Add the default methods
-		$this->methods[] = $arr_DefaultMethods;
+		$this->methods = $arr_DefaultMethods;
+		
 	}
 	
 
