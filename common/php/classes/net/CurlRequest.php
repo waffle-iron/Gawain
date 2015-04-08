@@ -1,8 +1,6 @@
 <?php
 
-namespace Curl;
-
-class Curl
+class CurlRequest
 {
     const VERSION = '3.4.4';
     const DEFAULT_TIMEOUT = 30;
@@ -384,6 +382,18 @@ class Curl
             return $response;
         };
     }
+    
+    /* Start of custom code */
+    
+    /*private function responseDecode($response) {
+            $json_obj = json_decode($response, false);
+            if (!($json_obj === null)) {
+                $response = $json_obj;
+            }
+            return $response;
+        }*/
+    
+    /* End of custom code */
 
     public function setDefaultTimeout()
     {
@@ -392,7 +402,7 @@ class Curl
 
     public function setDefaultUserAgent()
     {
-        $user_agent = 'PHP-Curl-Class/' . self::VERSION . ' (+https://github.com/php-curl-class/php-curl-class)';
+        $user_agent = 'PHP-CurlRequest-Class/' . self::VERSION . ' (+https://github.com/php-curl-class/php-curl-class)';
         $user_agent .= ' PHP/' . PHP_VERSION;
         $curl_version = curl_version();
         $user_agent .= ' curl/' . $curl_version['version'];
