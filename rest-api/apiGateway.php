@@ -1,10 +1,9 @@
 <?php 
 
 require_once(__DIR__ . '/../common/php/constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'net/Curl.php');
+require_once(PHP_CLASSES_DIR . 'net/CurlRequest.php');
 require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
-use \Curl\Curl;
 
 // Parses API URL and redirects the request to the proper interface
 
@@ -66,7 +65,7 @@ if ($str_RequestMethod == 'POST') {
 // Redirect the request
 $str_RedirectUrl = $str_ServerName . $str_ServerURL . '/rest-api/controllers/' . $str_Entity . '.php';
 
-$obj_Curl = new Curl();
+$obj_Curl = new CurlRequest();
 $obj_Curl->setCookie('GawainSessionID', $str_SessionID);
 $obj_Curl->setCookie('GawainUser', $str_User);
 

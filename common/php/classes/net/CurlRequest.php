@@ -382,18 +382,6 @@ class CurlRequest
             return $response;
         };
     }
-    
-    /* Start of custom code */
-    
-    /*private function responseDecode($response) {
-            $json_obj = json_decode($response, false);
-            if (!($json_obj === null)) {
-                $response = $json_obj;
-            }
-            return $response;
-        }*/
-    
-    /* End of custom code */
 
     public function setDefaultTimeout()
     {
