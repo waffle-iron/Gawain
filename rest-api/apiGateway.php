@@ -13,7 +13,7 @@ $str_RequestURL = $_SERVER['REQUEST_URI'];
 $str_RequestMethod = $_SERVER['REQUEST_METHOD'];
 
 // If the cookies are not set, the request is automatically aborted
-/*if (isset($_COOKIE['GawainSessionID']) && isset($_COOKIE['GawainUser'])) {
+if (isset($_COOKIE['GawainSessionID']) && isset($_COOKIE['GawainUser'])) {
 	$str_SessionID = $_COOKIE['GawainSessionID'];
 	$str_User = $_COOKIE['GawainUser'];
 	
@@ -28,10 +28,10 @@ $str_RequestMethod = $_SERVER['REQUEST_METHOD'];
 } else {
 	header('Gawain-Response: Unauthorized', 0, 401);
 	exit();
-}*/
+}
 
-$str_SessionID = 'AAA';
-$str_User = 'admin';
+/*$str_SessionID = 'AAA';
+$str_User = 'admin';*/
 
 
 
