@@ -3,7 +3,7 @@
 require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'net/ApiController.php');
 
-$obj_Controller = new ApiController('UserAuthManager', PHP_CLASSES_DIR . 'auths/UserAuthManager.php', 'login', $_COOKIE['GawainClientIP'], FALSE, array($_COOKIE['GawainClientIP']));
+$obj_Controller = new ApiController('UserAuthManager', PHP_CLASSES_DIR . 'auths/UserAuthManager.php', 'login', $_COOKIE['GawainClientIP'], FALSE, array($_COOKIE['GawainClientIP']), FALSE);
 
 
 // Define custom methods for authentication

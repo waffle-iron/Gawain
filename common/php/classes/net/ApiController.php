@@ -41,9 +41,12 @@ class ApiController {
 	// Request source
 	private $hostName;
 	
+	// Perform the grants check before calling a method?
+	private $doGrantsCheck;
 	
 	
-	public function __construct($str_EntityClass, $str_ClassPath, $str_Module, $str_HostName = 'localhost', $bool_RegisterDefaultMethods = TRUE, $arr_ClassConstructArgs = NULL) {
+	
+	public function __construct($str_EntityClass, $str_ClassPath, $str_Module, $str_HostName = 'localhost', $bool_RegisterDefaultMethods = TRUE, $arr_ClassConstructArgs = NULL, $bool_DoGrantsCheck = TRUE) {
 		
 		// Sets the session ID
 		if (isset($_COOKIE['GawainSessionID'])) {
@@ -55,6 +58,7 @@ class ApiController {
 		$this->authManager = new UserAuthManager();
 		$this->module = $str_Module;
 		$this->hostName = $str_HostName;
+		$this->doGrantsCheck = $bool_DoGrantsCheck;
 		
 		
 		if ($arr_ClassConstructArgs === NULL) {
@@ -130,16 +134,25 @@ class ApiController {
 			}
 		}
 		
-		if ($this::checkPermissions()) {
-			if ($this->authManager->hasGrants($this->sessionID, $this->module)) {
-				$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
-						$this->methods[$this->requestMethod][$str_Method]['arguments']);
-				return $str_Output;
+		
+		
+		// Bypass grants check if selected so
+		if ($this->doGrantsCheck) {
+			if ($this::checkPermissions()) {
+				if ($this->authManager->hasGrants($this->sessionID, $this->module)) {
+					$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
+							$this->methods[$this->requestMethod][$str_Method]['arguments']);
+					return $str_Output;
+				} else {
+					throw new Exception('Insufficient grants');
+				}
 			} else {
 				throw new Exception('Insufficient grants');
 			}
 		} else {
-			throw new Exception('Insufficient grants');
+			$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
+					$this->methods[$this->requestMethod][$str_Method]['arguments']);
+			return $str_Output;
 		}
 	}
 	
