@@ -1,0 +1,57 @@
+{
+	"jQuery"	:	{
+		"path"			:	"",
+		"dependencies"	:	[]
+	},
+	
+	"bootstrap"	:	{
+		"path"			:	"",
+		"dependencies"	:	[
+			"jQuery"
+		]
+	},
+	
+	"highcharts"	:	{
+		"path"			:	"",
+		"dependencies"	:	[]
+	},
+	
+	"bootstrap-colorpicker"	:	{
+		"path"			:	"",
+		"dependencies"	:	[
+			"bootstrap"
+		]
+	},
+	
+	"CryptoJS"	:	{
+		"path"			:	"",
+		"dependencies"	:	[]
+	},
+	
+	"jquery-confirm"	:	{
+		"path"			:	"",
+		"dependencies"	:	[
+			"jQuery",
+			"bootstrap"
+		]
+	},
+	
+	"jquery-treegrid"	:	{
+		"path"			:	"",
+		"dependencies"	:	[
+			"jQuery",
+			"bootstrap"
+		]
+	},
+	
+	"dhtmlx-Gantt"	:	{
+		"path"			:	"",
+		"dependencies"	:	[]
+	},
+	
+	"dhtmlx-Scheduler"	:	{
+		"path"			:	"",
+		"dependencies"	:	[]
+	}
+	
+}
