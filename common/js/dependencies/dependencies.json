@@ -1,35 +1,76 @@
 {
 	"jQuery"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				"common/libs/jQuery/jquery.min.js"
+			],
+			"css"	:	[]
+		},
 		"dependencies"	:	[]
 	},
 	
 	"bootstrap"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				"common/libs/Bootstrap/js/bootstrap.min.js"
+			],
+			"css"	:	[
+				"common/libs/Bootstrap/css/bootstrap.min.css",
+				"common/libs/Bootstrap/css/bootstrap-theme.css"
+			]
+		},
 		"dependencies"	:	[
 			"jQuery"
 		]
 	},
 	
 	"highcharts"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[]
 	},
 	
 	"bootstrap-colorpicker"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[
 			"bootstrap"
 		]
 	},
 	
 	"CryptoJS"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[]
 	},
 	
 	"jquery-confirm"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[
 			"jQuery",
 			"bootstrap"
@@ -37,7 +78,14 @@
 	},
 	
 	"jquery-treegrid"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[
 			"jQuery",
 			"bootstrap"
@@ -45,12 +93,26 @@
 	},
 	
 	"dhtmlx-Gantt"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[]
 	},
 	
 	"dhtmlx-Scheduler"	:	{
-		"path"			:	"",
+		"path"			:	{
+			"js"	:	[
+				""
+			],
+			"css"	:	[
+				""
+			]
+		},
 		"dependencies"	:	[]
 	}
 	
