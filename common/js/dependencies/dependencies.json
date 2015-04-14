@@ -2,7 +2,7 @@
 	"jQuery"	:	{
 		"path"			:	{
 			"js"	:	[
-				"common/libs/jQuery/jquery.min.js"
+				"common/js/libs/jQuery/jquery.min.js"
 			],
 			"css"	:	[]
 		},
@@ -12,11 +12,11 @@
 	"bootstrap"	:	{
 		"path"			:	{
 			"js"	:	[
-				"common/libs/Bootstrap/js/bootstrap.min.js"
+				"common/js/libs/Bootstrap/js/bootstrap.min.js"
 			],
 			"css"	:	[
-				"common/libs/Bootstrap/css/bootstrap.min.css",
-				"common/libs/Bootstrap/css/bootstrap-theme.css"
+				"common/js/libs/Bootstrap/css/bootstrap.min.css",
+				"common/js/libs/Bootstrap/css/bootstrap-theme.css"
 			]
 		},
 		"dependencies"	:	[

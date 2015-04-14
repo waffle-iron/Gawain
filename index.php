@@ -3,16 +3,20 @@
 <html>
 <head>
 
-<script src="common/js/classes/jierarchy.js" type="text/javascript"></script>
+<?php 
 
-<script>
+require_once(__DIR__ . '/common/php/constants/global_defines.php');
+require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
 
-var obj_Jierarchy = new jierarchy("common/js/dependencies/dependencies.json");
-obj_Jierarchy.load(['jQuery', 'bootstrap']);
+$obj_Jierarchy = new Jierarchy(JS_DIR . 'dependencies/dependencies.json');
+$obj_Jierarchy->load(array('jQuery', 'bootstrap'));
 
-</script>
+
+?>
 
 </head>
+
+
 
 
 </html>

@@ -24,7 +24,7 @@ function jierarchy(str_DepFilePath) {
 
 
 
-jierarchy.prototype.load = function(arr_LibraryNames) {
+jierarchy.prototype.include = function(arr_LibraryNames) {
 	var self = this;
 	
 	var str_LibName;
@@ -41,7 +41,7 @@ jierarchy.prototype.load = function(arr_LibraryNames) {
 		
 		// Recurse function
 		if (obj_CurrentNode.dependencies.length > 0) {
-			self.load(obj_CurrentNode.dependencies);
+			self.include(obj_CurrentNode.dependencies);
 		}
 		
 		
@@ -65,12 +65,37 @@ jierarchy.prototype.load = function(arr_LibraryNames) {
 	
 	this.JsPaths = this.JsPaths.getUnique();
 	this.CssPaths = this.CssPaths.getUnique();
+
+}
+
+
+
+jierarchy.prototype.load = function () {
+	this.JsPaths = this.JsPaths.getUnique();
+	this.CssPaths = this.CssPaths.getUnique();
+	
+	
+	// Add the selected paths to HTML source
+	for (int_PathCounter = 0; int_PathCounter < this.JsPaths.length; int_PathCounter++) {
+		var obj_ScriptTag = document.createElement('script');
+		obj_ScriptTag.setAttribute('src', this.JsPaths[int_PathCounter]);
+		document.head.appendChild(obj_ScriptTag);
+	}
+	
+	
+	for (int_PathCounter = 0; int_PathCounter < this.CssPaths.length; int_PathCounter++) {
+		var obj_CssTag = document.createElement('link');
+		obj_CssTag.setAttribute('rel', 'stylesheet');
+		obj_CssTag.setAttribute('href', this.CssPaths[int_PathCounter]);
+		obj_CssTag.setAttribute('type', 'text/css');
+		document.head.appendChild(obj_CssTag);
+	}
 }
 
 
 
 // Adding getUnique function to array prototype to get unique values
-Array.prototype.getUnique = function(){
+Array.prototype.getUnique = function() {
 	   var u = {}, a = [];
 	   for(var i = 0, l = this.length; i < l; ++i){
 	      if(u.hasOwnProperty(this[i])) {

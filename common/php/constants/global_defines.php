@@ -49,6 +49,12 @@ define('PHP_DIR', COMMON_DIR . 'php/');
  */
 define('SQL_DIR', COMMON_DIR . 'sql/');
 
+
+/**
+ * Javascript scripts folder path
+ */
+define('JS_DIR', COMMON_DIR . 'js/');
+
 /* -------------------------------------------------------------------- */
 
 /**
