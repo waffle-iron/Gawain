@@ -46,13 +46,29 @@ class ApiController {
 	
 	
 	
-	public function __construct($str_EntityClass, $str_ClassPath, $str_Module, $str_HostName = 'localhost', $bool_RegisterDefaultMethods = TRUE, $arr_ClassConstructArgs = NULL, $bool_DoGrantsCheck = TRUE) {
+	/** Constructor
+	 * 
+	 * @param string $str_EntityClass
+	 * @param string $str_ClassPath
+	 * @param string $str_Module
+	 * @param string $str_HostName
+	 * @param boolean $bool_RegisterDefaultMethods
+	 * @param array $arr_ClassConstructArgs
+	 * @param boolean $bool_DoGrantsCheck
+	 * @param boolean $bool_DoAuthCheck
+	 * @throws Exception
+	 */
+	public function __construct($str_EntityClass, $str_ClassPath, $str_Module, $str_HostName = 'localhost', $bool_RegisterDefaultMethods = TRUE, $arr_ClassConstructArgs = NULL, $bool_DoGrantsCheck = TRUE, $bool_DoAuthCheck = TRUE) {
 		
 		// Sets the session ID
-		if (isset($_COOKIE['GawainSessionID'])) {
-			$this->sessionID = $_COOKIE['GawainSessionID'];
+		if ($bool_DoAuthCheck) {
+			if (isset($_COOKIE['GawainSessionID'])) {
+				$this->sessionID = $_COOKIE['GawainSessionID'];
+			} else {
+				throw new Exception('Unauthorized');
+			}
 		} else {
-			throw new Exception('Unauthorized');
+			$this->sessionID = NULL;
 		}
 		
 		$this->authManager = new UserAuthManager();

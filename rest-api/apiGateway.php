@@ -12,26 +12,8 @@ $str_ServerName = $_SERVER['HTTP_HOST'];
 $str_RequestURL = $_SERVER['REQUEST_URI'];
 $str_RequestMethod = $_SERVER['REQUEST_METHOD'];
 
-// If the cookies are not set, the request is automatically aborted
-if (isset($_COOKIE['GawainSessionID']) && isset($_COOKIE['GawainUser'])) {
-	$str_SessionID = $_COOKIE['GawainSessionID'];
-	$str_User = $_COOKIE['GawainUser'];
-	
-	// If the user authentication is not valid, the request is automatically aborted
-	$obj_UserAuthManager = new UserAuthManager();
-	
-	if (!$obj_UserAuthManager->isAuthenticated($str_User, $str_SessionID)) {
-		header('Gawain-Response: Unauthorized', 0, 401);
-		exit();
-	}
-	
-} else {
-	header('Gawain-Response: Unauthorized', 0, 401);
-	exit();
-}
-
-/*$str_SessionID = 'AAA';
-$str_User = 'admin';*/
+$str_SessionID = isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL;
+$str_User = isset($_COOKIE['GawainUser']) ? $_COOKIE['GawainUser'] : NULL;
 
 
 
