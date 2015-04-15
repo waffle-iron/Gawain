@@ -2,7 +2,7 @@
 	"jQuery"	:	{
 		"path"			:	{
 			"js"	:	[
-				"common/js/libs/jQuery/jquery.min.js"
+				"/gawain/common/js/libs/jQuery/jquery.min.js"
 			],
 			"css"	:	[]
 		},
@@ -12,11 +12,11 @@
 	"bootstrap"	:	{
 		"path"			:	{
 			"js"	:	[
-				"common/js/libs/Bootstrap/js/bootstrap.min.js"
+				"/gawain/common/js/libs/Bootstrap/js/bootstrap.min.js"
 			],
 			"css"	:	[
-				"common/js/libs/Bootstrap/css/bootstrap.min.css",
-				"common/js/libs/Bootstrap/css/bootstrap-theme.css"
+				"/gawain/common/js/libs/Bootstrap/css/bootstrap.min.css",
+				"/gawain/common/js/libs/Bootstrap/css/bootstrap-theme.css"
 			]
 		},
 		"dependencies"	:	[
@@ -114,6 +114,38 @@
 			]
 		},
 		"dependencies"	:	[]
+	},
+	
+	
+	
+	
+	
+	
+	"bootstrap-cerulean-theme"	:	{
+		"path"			:	{
+			"js"	:	[],
+			"css"	:	[
+				"/gawain/common/css/Themes/Cerulean/bootstrap.min.css"
+			]
+		},
+		"dependencies"	:	[
+			"bootstrap"
+		]
+	},
+	
+	
+	
+	"gawain-style-settings"		:	{
+		"path"			:	{
+			"js"	:	[],
+			"css"	:	[
+				"/gawain/common/css/gawain/page.css",
+				"/gawain/common/css/gawain/viewports.css"
+			]
+		},
+		"dependencies"	:	[
+			"bootstrap"
+		]
 	}
 	
 }

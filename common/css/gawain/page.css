@@ -1,0 +1,8 @@
+/* CSS file containing all the default page settings for gawain */
+
+
+/* This leaves space for header navbar and footer */
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
