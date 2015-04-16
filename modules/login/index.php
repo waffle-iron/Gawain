@@ -6,7 +6,7 @@
 	<title>Gawain - Login Page</title>
 	
 	<meta charset="UTF-8">
-	<meta name="author" content="Stefano Romanò (Rumix87)">
+	<meta name="author" content="Stefano RomanÃ² (Rumix87)">
 	
 <?php 
 
@@ -18,7 +18,8 @@ $obj_Jierarchy->load(array(
 		'jQuery',
 		'bootstrap',
 		'bootstrap-cerulean-theme',
-		'gawain-style-settings'
+		'gawain-style-settings',
+        'CryptoJS'
 	));
 
 ?>
@@ -55,7 +56,7 @@ $obj_Jierarchy->load(array(
 							
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10">
-									<button type="button" class="btn btn-primary" id="gawain-login-authenticate" data-gawain-method="authenticate" data-gawain-target="gawain-login-form">Authenticate</button>
+									<button type="button" class="btn btn-primary" id="gawain-login-authenticate" data-gawain-controller="authentication" data-gawain-method="authenticate" data-gawain-target="gawain-login-form">Authenticate</button>
 								</div>
 							</div>
 						</form>

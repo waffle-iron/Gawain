@@ -53,7 +53,7 @@
 	"CryptoJS"	:	{
 		"path"			:	{
 			"js"	:	[
-				""
+				"/gawain/common/js/libs/CryptoJS/sha3.js"
 			],
 			"css"	:	[
 				""
