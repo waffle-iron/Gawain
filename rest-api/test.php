@@ -7,15 +7,15 @@ require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
 $obj_Manager = new Activity('AAA');
 $obj_Logger = new Logger('activity');
-//$obj_AuthManager = new UserAuthManager();
+$obj_AuthManager = new UserAuthManager();
 
 //$obj_Output = $obj_AuthManager->authenticate('admin', 'd033e22ae348aeb5660fc2140aec35850c4da997');
 
-//$obj_AuthManager->login($obj_Output['sessionID'], 1);
+var_dump($obj_AuthManager->isAuthenticated('admin', 'AAAA'));
 
 //$obj_AuthManager->logout($obj_Output['sessionID']);
 
-echo $obj_Manager->read(9, 'display__block_text', 'rendered');
+//echo $obj_Manager->read(9, 'display__block_text', 'rendered');
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 

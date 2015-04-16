@@ -104,8 +104,6 @@ class UserAuthManager {
 				array($str_SessionID	=>	's')
 		));
 		
-		
-		
 		if ($obj_Resultset[0]['counter'] == 1) {
 			return TRUE;
 		} else {

@@ -58,31 +58,15 @@ if ($str_RequestMethod == 'GET') {
 	$obj_Curl->post($str_RedirectUrl, $arr_RedirectFields);
 }
 
-
 if ($obj_Curl->error) {
+	header('Gawain-Response: ' . $obj_Curl->error_message, 0, $obj_Curl->error_code);
 	echo 'Error ' . $obj_Curl->error_code . ': ' . $obj_Curl->error_message;
 } else {
-	switch ($obj_Curl->http_status_code) {
-		case 200:
-			$arr_ResponseHeader = explode(PHP_EOL, trim($obj_Curl->raw_response_headers));
-			foreach ($arr_ResponseHeader as $str_ResponseHeader) {
-				header($str_ResponseHeader);
-			}
-			echo $obj_Curl->response;
-			break;
-		
-		case 401:
-			header('Gawain-Response: Unauthorized', 0, 401);
-			break;
-			
-		case 400:
-			header('Gawain-Response: Malformed request', 0, 400);
-			break;
-			
-		default:
-			header('Gawain-Response: Invalid', 0, $obj_Curl->http_status_code);
-			break;
+	$arr_ResponseHeader = explode(PHP_EOL, trim($obj_Curl->raw_response_headers));
+	foreach ($arr_ResponseHeader as $str_ResponseHeader) {
+		header($str_ResponseHeader);
 	}
+	echo $obj_Curl->response;
 }
 
 

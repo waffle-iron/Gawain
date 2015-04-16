@@ -46,7 +46,7 @@ $obj_Controller->registerMethod('POST', 'logout', array(
 
 
 
-// Call the requets method
+// Call the requests method
 $mix_Response = $obj_Controller->callMethod();
 
 
@@ -81,7 +81,7 @@ if ($mix_Response !== NULL) {
 			
 			
 		case 'hasGrants':
-			
+			break;
 	}
 }
 
