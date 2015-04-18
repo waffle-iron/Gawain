@@ -55,9 +55,10 @@ $obj_Jierarchy->load(array(
 							
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10">
-									<button type="button" class="btn btn-primary gawain-method-button" id="gawain-login-authenticate"
+									<button type="button" class="btn btn-primary gawain-controller-button" id="gawain-login-authenticate"
                                             data-gawain-controller="authentication"
-                                            data-gawain-method="authenticate"
+                                            data-gawain-controller-method="authenticate"
+                                            data-gawain-request-method="POST"
                                             data-gawain-target="gawain-login-form">Authenticate</button>
 								</div>
 							</div>
