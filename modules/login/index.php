@@ -19,12 +19,11 @@ $obj_Jierarchy->load(array(
 		'bootstrap',
 		'bootstrap-cerulean-theme',
 		'gawain-style-settings',
-        'CryptoJS'
+        'CryptoJS',
+        'gawain-button-bindings'
 	));
 
 ?>
-	
-	<script src="js/login.js"></script>
 	
 </head>
 
@@ -43,20 +42,23 @@ $obj_Jierarchy->load(array(
 							<div class="form-group">
 								<label for="gawain-login-username" class="col-md-2 control-label">Username</label>
 								<div class="col-md-10">
-									<input type="text" class="form-control" id="gawain-login-username" placeholder="Username" data-gawain-id="username">
+									<input type="text" class="form-control" id="gawain-login-username" placeholder="Username" name="username">
 								</div>
 							</div>
 							
 							<div class="form-group">
 								<label for="gawain-login-password" class="col-md-2 control-label">Password</label>
 								<div class="col-md-10">
-									<input type="password" class="form-control" id="gawain-login-password" placeholder="Password" data-gawain-id="password">
+									<input type="password" class="form-control" id="gawain-login-password" placeholder="Password" name="password" data-gawain-hash="hash">
 								</div>
 							</div>
 							
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10">
-									<button type="button" class="btn btn-primary" id="gawain-login-authenticate" data-gawain-controller="authentication" data-gawain-method="authenticate" data-gawain-target="gawain-login-form">Authenticate</button>
+									<button type="button" class="btn btn-primary gawain-method-button" id="gawain-login-authenticate"
+                                            data-gawain-controller="authentication"
+                                            data-gawain-method="authenticate"
+                                            data-gawain-target="gawain-login-form">Authenticate</button>
 								</div>
 							</div>
 						</form>

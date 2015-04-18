@@ -1,151 +1,154 @@
 {
-	"jQuery"	:	{
-		"path"			:	{
-			"js"	:	[
+	"jQuery"                   : {
+		"path"         : {
+			"js"  : [
 				"/gawain/common/js/libs/jQuery/jquery.min.js"
 			],
-			"css"	:	[]
+			"css" : []
 		},
-		"dependencies"	:	[]
+		"dependencies" : []
 	},
-	
-	"bootstrap"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"bootstrap"                : {
+		"path"         : {
+			"js"  : [
 				"/gawain/common/js/libs/Bootstrap/js/bootstrap.min.js"
 			],
-			"css"	:	[
+			"css" : [
 				"/gawain/common/js/libs/Bootstrap/css/bootstrap.min.css",
 				"/gawain/common/js/libs/Bootstrap/css/bootstrap-theme.css"
 			]
 		},
-		"dependencies"	:	[
+		"dependencies" : [
 			"jQuery"
 		]
 	},
-	
-	"highcharts"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"highcharts"               : {
+		"path"         : {
+			"js"  : [
 				""
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[]
+		"dependencies" : []
 	},
-	
-	"bootstrap-colorpicker"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"bootstrap-colorpicker"    : {
+		"path"         : {
+			"js"  : [
 				""
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[
+		"dependencies" : [
 			"bootstrap"
 		]
 	},
-	
-	"CryptoJS"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"CryptoJS"                 : {
+		"path"         : {
+			"js"  : [
 				"/gawain/common/js/libs/CryptoJS/sha3.js"
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[]
+		"dependencies" : []
 	},
-	
-	"jquery-confirm"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"jquery-confirm"           : {
+		"path"         : {
+			"js"  : [
 				""
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[
+		"dependencies" : [
 			"jQuery",
 			"bootstrap"
 		]
 	},
-	
-	"jquery-treegrid"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"jquery-treegrid"          : {
+		"path"         : {
+			"js"  : [
 				""
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[
+		"dependencies" : [
 			"jQuery",
 			"bootstrap"
 		]
 	},
-	
-	"dhtmlx-Gantt"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"dhtmlx-Gantt"             : {
+		"path"         : {
+			"js"  : [
 				""
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[]
+		"dependencies" : []
 	},
-	
-	"dhtmlx-Scheduler"	:	{
-		"path"			:	{
-			"js"	:	[
+
+	"dhtmlx-Scheduler"         : {
+		"path"         : {
+			"js"  : [
 				""
 			],
-			"css"	:	[
+			"css" : [
 				""
 			]
 		},
-		"dependencies"	:	[]
+		"dependencies" : []
 	},
-	
-	
-	
-	
-	
-	
-	"bootstrap-cerulean-theme"	:	{
-		"path"			:	{
-			"js"	:	[],
-			"css"	:	[
+
+	"bootstrap-cerulean-theme" : {
+		"path"         : {
+			"js"  : [],
+			"css" : [
 				"/gawain/common/css/Themes/Cerulean/bootstrap.min.css"
 			]
 		},
-		"dependencies"	:	[
+		"dependencies" : [
 			"bootstrap"
 		]
 	},
-	
-	
-	
-	"gawain-style-settings"		:	{
-		"path"			:	{
-			"js"	:	[],
-			"css"	:	[
+
+	"gawain-style-settings"    : {
+		"path"         : {
+			"js"  : [],
+			"css" : [
 				"/gawain/common/css/gawain/page.css",
 				"/gawain/common/css/gawain/viewports.css"
 			]
 		},
-		"dependencies"	:	[
+		"dependencies" : [
 			"bootstrap"
 		]
+	},
+
+	"gawain-button-bindings"   : {
+		"path"         : {
+			"js" : [
+				"/gawain/common/js/onloads/button_bindings.js"
+			]
+		},
+		"dependencies" : [
+			"jQuery"
+		]
 	}
-	
 }
