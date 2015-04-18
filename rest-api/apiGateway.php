@@ -27,7 +27,7 @@ $int_ID = $arr_ParsedPath[3];
 $str_Method = $arr_ParsedPath[4];
 
 
-// Get the request body if the requets method is POST and rewrite it
+// Get the request body if the request method is POST and rewrite it
 if ($str_RequestMethod == 'POST') {
 	$str_RequestBody = file_get_contents('php://input');
 	
