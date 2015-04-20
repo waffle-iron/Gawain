@@ -59,12 +59,12 @@ $obj_Jierarchy->load(array(
                                             data-gawain-controller="authentication"
                                             data-gawain-controller-method="authenticate"
                                             data-gawain-request-method="POST"
-                                            data-gawain-target="gawain-login-form">Authenticate</button>
+                                            data-gawain-request-target="gawain-login-form"
+											data-gawain-response-target="gawain-domain-viewport">Authenticate</button>
 								</div>
 							</div>
 						</form>
-						
-						<hr class="gawain-anchor" id="gawain-domain-anchor" data-gawain-related-to="gawain-domain-viewport">
+
 						
 						<div class="gawain-viewport" id="gawain-domain-viewport">
 							

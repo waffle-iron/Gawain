@@ -10,7 +10,7 @@ $(function() {
 		var str_Controller = $(this).attr('data-gawain-controller');
 		var str_ControllerMethod = $(this).attr('data-gawain-controller-method');
 		var str_RequestMethod = $(this).attr('data-gawain-request-method');
-		var str_Target = $(this).attr('data-gawain-target');
+		var str_Target = $(this).attr('data-gawain-request-target');
 
 		// Retrieve values from target
 		var obj_Target = $('#' + str_Target);
