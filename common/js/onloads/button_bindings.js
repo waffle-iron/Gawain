@@ -72,6 +72,7 @@ $(function() {
 		       })
 			.done(function(str_Data) {
 				      console.log(str_Data);
+
 			      });
 	});
 
