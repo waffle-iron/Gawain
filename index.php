@@ -18,6 +18,11 @@ $obj_Jierarchy->load(array('jQuery', 'bootstrap'));
 
 </head>
 
+<body>
+
+I'm here!
+
+</body>
 
 
 

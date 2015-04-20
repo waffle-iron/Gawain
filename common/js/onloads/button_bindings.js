@@ -10,10 +10,12 @@ $(function() {
 		var str_Controller = $(this).attr('data-gawain-controller');
 		var str_ControllerMethod = $(this).attr('data-gawain-controller-method');
 		var str_RequestMethod = $(this).attr('data-gawain-request-method');
-		var str_Target = $(this).attr('data-gawain-request-target');
+		var str_RequestTarget = $(this).attr('data-gawain-request-target');
+		var str_ResponseTarget = $(this).attr('data-gawain-response-target');
+		var str_ResponseRedirect = $(this).attr('data-gawain-response-redirect');
 
 		// Retrieve values from target
-		var obj_Target = $('#' + str_Target);
+		var obj_Target = $('#' + str_RequestTarget);
 		var obj_RequestBody = {};
 
 
@@ -71,7 +73,14 @@ $(function() {
 			       data:   JSON.stringify(obj_RequestBody)
 		       })
 			.done(function(str_Data) {
-				      console.log(str_Data);
+			                 $('#' + str_ResponseTarget)
+				                  .hide()
+				                  .html(str_Data)
+				                  .fadeIn(250);
+
+			                 if (str_ResponseRedirect !== undefined) {
+				                 window.location.replace(str_ResponseRedirect);
+			                 }
 			      });
 	});
 

@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../constants/global_defines.php');
 
 /** Automatically selects the right DB handler from options
  * 
- * @param Option $obj_OptionHandler
+ * @param Options $obj_OptionHandler
  * 
  * @return dbHandler
  */

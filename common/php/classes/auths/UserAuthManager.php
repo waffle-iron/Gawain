@@ -36,7 +36,7 @@ class UserAuthManager {
 	 * @param string $str_UserNick
 	 * @param string $str_PasswordHash
 	 * @throws Exception
-	 * @return boolean
+	 * @return array
 	 */
 	public function authenticate($str_UserNick, $str_PasswordHash) {
 		$str_CheckQuery = '
@@ -53,23 +53,18 @@ class UserAuthManager {
 		
 		if (count($obj_Resultset) == 0) {
 			throw new Exception('User does not exist');
-			return FALSE;
 			
 		} elseif ($str_UserNick === NULL) {
 			throw new Exception('User not defined');
-			return FALSE;
 			
 		} elseif (count($obj_Resultset) > 1) {
 			throw new Exception('Multiple user returned');
-			return FALSE;
 			
 		} elseif ($obj_Resultset[0]['userIsActive'] = 0) {
 			throw new Exception('User is not active');
-			return FALSE;
 			
 		} elseif (strtoupper($obj_Resultset[0]['userPassword']) != strtoupper($str_PasswordHash)) {
 			throw new Exception('Wrong username or password');
-			return FALSE;
 			
 		} else {
 			$str_SessionID = $this->generateSessionID();
@@ -117,7 +112,7 @@ class UserAuthManager {
 	 * 
 	 * @param string $str_SessionID
 	 * @param string $str_ModuleCode
-	 * @param string $str_RequiredPermission
+	 * @param integer $int_RequiredPermission
 	 * @throws Exception
 	 * @return boolean
 	 */
@@ -164,6 +159,7 @@ class UserAuthManager {
 	 *
 	 * @param string $str_SessionID
 	 * @param integer $int_SelectedCustomer
+	 * @return boolean
 	 */
 	public function login($str_SessionID, $int_SelectedCustomer) {
 		$str_CustomerCheckQuery = '
@@ -243,15 +239,17 @@ class UserAuthManager {
 				array(
 						array($str_UserNick => 's')
 				));
+
+		$mix_Return = NULL;
 		
 		
 		switch ($str_Format) {
 			case 'json':
-				return json_encode($obj_Resultset);
+				$mix_Return = json_encode($obj_Resultset);
 				break;
 				
 			case 'raw':
-				return $obj_Resultset;
+				$mix_Return =  $obj_Resultset;
 				break;
 				
 			case 'html':
@@ -264,10 +262,31 @@ class UserAuthManager {
 					$arr_Output[] = $str_Output;
 				}
 				
-				return implode(PHP_EOL, $arr_Output);
-				
+				$mix_Return =  '<hr>' .
+				               '<form class="form-horizontal" id="gawain-domain-selection-form">' .
+				               '<div class="form-group">' .
+				               '<label for="gawain-domain-selector" class="col-md-2 control-label">Domain</label>' .
+				               '<div class="col-md-10">' .
+				               '<select class="form-control" id="gawain-domain-selector" name="selectedCustomer">' .
+				               implode(PHP_EOL, $arr_Output) .
+				               '</select>' .
+				               '</div>' .
+				               '</div>' .
+				               '<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<button type="button" class="btn btn-primary gawain-controller-button" id="gawain-domain-selection-button"
+	                                            data-gawain-controller="authentication"
+	                                            data-gawain-controller-method="login"
+	                                            data-gawain-request-method="POST"
+	                                            data-gawain-request-target="gawain-domain-selection-form"
+												data-gawain-response-redirect="/gawain/index.php">Set Domain</button>
+									</div>
+								</div>' .
+				               '</form>';
+				break;
 		}
-		
+
+		return $mix_Return;
 	}
 	
 	
