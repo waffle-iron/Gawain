@@ -33,7 +33,9 @@
 				""
 			]
 		},
-		"dependencies" : []
+		"dependencies" : [
+			"jQuery"
+		]
 	},
 
 	"bootstrap-colorpicker"    : {
@@ -128,6 +130,16 @@
 		]
 	},
 
+	"font-awesome"   : {
+		"path"         : {
+			"js" : [],
+			"css": [
+				"/gawain/common/css/FontAwesome/font-awesome.min.css"
+			]
+		},
+		"dependencies" : []
+	},
+
 	"gawain-style-settings"    : {
 		"path"         : {
 			"js"  : [],
@@ -145,7 +157,8 @@
 		"path"         : {
 			"js" : [
 				"/gawain/common/js/onloads/button_bindings.js"
-			]
+			],
+			"css"   :   []
 		},
 		"dependencies" : [
 			"jQuery"

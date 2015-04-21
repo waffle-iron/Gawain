@@ -1,8 +1,8 @@
 <!doctype html>
 
-<html>
+<html data-gawain-module="login">
 
-<head data-gawain-module="login">
+<head>
 	<title>Gawain - Login Page</title>
 	
 	<meta charset="UTF-8">

@@ -16,7 +16,6 @@ $obj_Controller->registerMethod('POST', 'authenticate', array(
 $obj_Controller->registerMethod('POST', 'isAuthenticated', array(
 		'writeGrant'	=>	0,
 		'arguments'		=>	array(
-				isset($_COOKIE['GawainUser']) ? $_COOKIE['GawainUser'] : NULL,
 				isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
 		)
 ));
@@ -55,7 +54,7 @@ $mix_Response = $obj_Controller->callMethod();
 if ($mix_Response !== NULL) {
 	switch ($obj_Controller->requestArgs['method']) {
 		case 'authenticate':
-			setcookie('GawainSessionID', $mix_Response['sessionID']);
+			setcookie('GawainSessionID', $mix_Response['sessionID'], NULL, '/');
 			header('Gawain-Response: Authenticated', 0, 200);
 			echo $mix_Response['enabledCustomers'];
 			break;

@@ -25,6 +25,9 @@ class MySqlHandler extends DbHandler {
 		
 		$this->handler->autocommit(FALSE);
 
+		// Additional lines to prevent wrong rendering of accented characters
+		$this->handler->set_charset('utf8');
+
 	}
 
 

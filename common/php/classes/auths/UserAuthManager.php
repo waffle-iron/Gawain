@@ -161,7 +161,7 @@ class UserAuthManager {
 			// If the user authentication is not valid, the request is automatically aborted
 			$obj_UserAuthManager = new UserAuthManager();
 
-			if (!$obj_UserAuthManager->isAuthenticated($str_User, $str_SessionID)) {
+			if (!$obj_UserAuthManager->isAuthenticated($str_SessionID)) {
 				if ($bool_SendHeader) {
 					header('Gawain-Response: Unauthorized', 0, 401);
 				}
