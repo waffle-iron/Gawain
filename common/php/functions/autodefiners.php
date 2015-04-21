@@ -12,13 +12,18 @@ require_once(__DIR__ . '/../constants/global_defines.php');
 function db_autodefine($obj_OptionHandler) {
 	
 	$str_DbType = $obj_OptionHandler->get('db_type');
+	$obj_Return = NULL;
 	
 	switch($str_DbType) {
 		case 'MySQL':
 			require_once(PHP_CLASSES_DIR . 'database/MySqlHandler.php');
-			return new MySqlHandler;
+			$obj_Return = new MySqlHandler;
+			break;
+
+		default:
+			$obj_Return = NULL;
 			break;
 	}
-}
 
-?>
+	return $obj_Return;
+}

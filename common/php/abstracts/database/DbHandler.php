@@ -62,5 +62,3 @@ abstract class DbHandler {
 	abstract function __destruct();
 
 }
-
-?>

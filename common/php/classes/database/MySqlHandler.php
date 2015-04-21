@@ -122,5 +122,3 @@ class MySqlHandler extends DbHandler {
 		$this->handler->close();
 	}
 }
-
-?>

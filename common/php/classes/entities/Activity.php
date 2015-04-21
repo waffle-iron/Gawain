@@ -17,5 +17,3 @@ class Activity extends Entity {
 	
 
 }
-
-?>

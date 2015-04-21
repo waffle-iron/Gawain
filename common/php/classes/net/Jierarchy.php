@@ -82,11 +82,9 @@ class Jierarchy {
 		}
 		
 		
-		// 'Flip flip' method to get a unique array °_°
+		// 'Flip flip' method to get a unique array ï¿½_ï¿½
 		$this->JsPaths = array_merge(array_flip(array_flip($this->JsPaths)));
 		$this->CssPaths = array_merge(array_flip(array_flip($this->CssPaths)));
 		
 	}
 }
-
-?>

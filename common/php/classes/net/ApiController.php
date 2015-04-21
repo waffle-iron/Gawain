@@ -87,6 +87,7 @@ class ApiController {
 			
 			if (class_exists($str_EntityClass)) {
 				$this->entityClass = $str_EntityClass;
+				$this->classPath = $str_ClassPath;
 				$this->classReflection = new ReflectionClass($this->entityClass);
 				
 				$this->classInstance = $this->classReflection->newInstanceArgs($arr_ClassConstructArgs);
@@ -109,6 +110,9 @@ class ApiController {
 	 * @param string $str_RequestMethod
 	 * @param string $str_MethodName
 	 * @param array $arr_MethodDescription
+	 *
+	 * @throws Exception
+	 *
 	 * @return boolean
 	 */
 	public function registerMethod($str_RequestMethod, $str_MethodName, $arr_MethodDescription) {
@@ -120,11 +124,8 @@ class ApiController {
 			
 		} else {
 			throw new Exception('Method not found');
-			return FALSE;
 		}
-		
-		
-		return TRUE;
+
 	}
 	
 	
@@ -313,5 +314,3 @@ class ApiController {
 	
 
 }
-
-?>

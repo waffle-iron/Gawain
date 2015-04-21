@@ -320,6 +320,7 @@ abstract class Entity {
 		// Variables initialization
 		$arr_SelectFields = array();
 		$arr_CustomerDependency = array();
+		$arr_Joins = array();
 
 		// First compile the select query string
 		foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldName => $arr_FieldEntry) {
@@ -433,7 +434,6 @@ abstract class Entity {
 		
 		if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
 			throw new Exception('Invalid fields in insert statement');
-			return FALSE;
 			
 		} else {
 			// Compose the insert statement
@@ -501,7 +501,7 @@ abstract class Entity {
 		
 		if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
 			throw new Exception('Invalid fields in insert statement');
-			return FALSE;
+
 		} else {
 			
 			// Compose the update statement
@@ -629,6 +629,7 @@ abstract class Entity {
 							$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
 						} catch (Exception $exc_WrongReferential) {
 							echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
+							$obj_SelectResults = NULL;
 						}
 						
 						
@@ -696,6 +697,7 @@ abstract class Entity {
 							$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
 						} catch (Exception $exc_WrongReferential) {
 							echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
+							$obj_SelectResults = NULL;
 						}
 			
 			
@@ -746,5 +748,3 @@ abstract class Entity {
 	
 
 }
-
-?>

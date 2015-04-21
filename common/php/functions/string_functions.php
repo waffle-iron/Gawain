@@ -34,6 +34,7 @@ function get_timestamp() {
  * 
  * @param array $arr_Wheres
  * @param array $arr_EntityFieldsData
+ * @param string $str_TableName
  * 
  * @return array 
  */
@@ -78,5 +79,3 @@ function parse_where_array($arr_Wheres, $arr_EntityFieldsData, $str_TableName) {
 	
 	return($arr_Output);
 }
-
-?>

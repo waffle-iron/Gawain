@@ -64,7 +64,6 @@ class Logger {
 		
 		if (!in_array($str_LogLevel, $this->logLevelsList)) {
 			throw new Exception('Invalid log level');
-			return FALSE;
 		} else {
 			$this->logLevel = $str_LogLevel;
 			return TRUE;
@@ -130,5 +129,3 @@ class Logger {
 	}
 	
 }
-
-?>
