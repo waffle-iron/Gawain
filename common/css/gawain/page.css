@@ -6,3 +6,9 @@ body {
   padding-top: 70px;
   padding-bottom: 30px;
 }
+
+
+/* This fixes the navbar-right bad alignment to the right */
+.navbar-right {
+	margin-right: 0;
+}
