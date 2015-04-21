@@ -81,21 +81,18 @@ class UserAuthManager {
 	
 	
 	/** Checks if the given user is authenticated
-	 * 
-	 * @param string $str_UserNick
+	 *
 	 * @param string $str_SessionID
 	 * @return boolean
 	 */
-	public function isAuthenticated($str_UserNick, $str_SessionID) {
+	public function isAuthenticated($str_SessionID) {
 		$str_Query = '
 				select
 					count(*) as counter
 				from sessions
-				where userNick = ?
-					and sessionID = ?';
+				where sessionID = ?';
 		
 		$obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
-				array($str_UserNick	=>	's'),
 				array($str_SessionID	=>	's')
 		));
 		
@@ -152,6 +149,35 @@ class UserAuthManager {
 			throw new Exception('Invalid request');
 		}
 	}
+
+
+
+
+	public static function checkPermissions($bool_SendHeader = FALSE) {
+		// If the cookies are not set, the request is automatically aborted
+		if (isset($_COOKIE['GawainSessionID'])) {
+			$str_SessionID = $_COOKIE['GawainSessionID'];
+
+			// If the user authentication is not valid, the request is automatically aborted
+			$obj_UserAuthManager = new UserAuthManager();
+
+			if (!$obj_UserAuthManager->isAuthenticated($str_User, $str_SessionID)) {
+				if ($bool_SendHeader) {
+					header('Gawain-Response: Unauthorized', 0, 401);
+				}
+				return FALSE;
+			} else {
+				return TRUE;
+			}
+
+		} else {
+			if ($bool_SendHeader) {
+				header('Gawain-Response: Unauthorized', 0, 401);
+			}
+			return FALSE;
+		}
+	}
+
 	
 	
 	

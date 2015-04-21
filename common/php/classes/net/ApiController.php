@@ -155,7 +155,7 @@ class ApiController {
 		
 		// Bypass grants check if selected so
 		if ($this->doGrantsCheck) {
-			if ($this::checkPermissions()) {
+			if ($this->authManager->checkPermissions()) {
 				if ($this->authManager->hasGrants($this->sessionID, $this->module)) {
 					$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
 							$this->methods[$this->requestMethod][$str_Method]['arguments']);
@@ -172,42 +172,7 @@ class ApiController {
 			return $str_Output;
 		}
 	}
-	
-	
-	
-	
-	
-	
-	/** Checks if the user credentials are correct
-	 * 
-	 * @param boolean $bool_SendHeader
-	 * @return boolean
-	 */
-	public static function checkPermissions($bool_SendHeader = FALSE) {
-		// If the cookies are not set, the request is automatically aborted
-		if (isset($_COOKIE['GawainSessionID']) && isset($_COOKIE['GawainUser'])) {
-			$str_SessionID = $_COOKIE['GawainSessionID'];
-			$str_User = $_COOKIE['GawainUser'];
-		
-			// If the user authentication is not valid, the request is automatically aborted
-			$obj_UserAuthManager = new UserAuthManager();
-		
-			if (!$obj_UserAuthManager->isAuthenticated($str_User, $str_SessionID)) {
-				if ($bool_SendHeader) {
-					header('Gawain-Response: Unauthorized', 0, 401);
-				}
-				return FALSE;
-			} else {
-				return TRUE;
-			}
-		
-		} else {
-			if ($bool_SendHeader) {
-				header('Gawain-Response: Unauthorized', 0, 401);
-			}
-			return FALSE;
-		}
-	}
+
 	
 	
 	

@@ -11,11 +11,11 @@ $obj_AuthManager = new UserAuthManager();
 
 //$obj_Output = $obj_AuthManager->authenticate('admin', 'd033e22ae348aeb5660fc2140aec35850c4da997');
 
-var_dump($obj_AuthManager->isAuthenticated('admin', 'AAAA'));
+//var_dump($obj_AuthManager->isAuthenticated('AAA'));
 
 //$obj_AuthManager->logout($obj_Output['sessionID']);
 
-//echo $obj_Manager->read(9, 'display__block_text', 'rendered');
+echo $obj_Manager->read(9, 'display__block_text', 'blank');
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 
