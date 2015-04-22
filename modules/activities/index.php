@@ -24,14 +24,17 @@
 		                     'font-awesome'
 	                     ));
 
+	$obj_PageRenderer = new PageRenderer('activities');
+
 	?>
 
 </head>
 
 <body>
 <?php
-$obj_PageRenderer = new PageRenderer();
 $obj_PageRenderer->renderNavbar();
 ?>
 
 </body>
+
+</html>

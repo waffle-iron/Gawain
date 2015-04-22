@@ -16,13 +16,17 @@ class PageRenderer {
 	// Internal sessionID
 	private $sessionID;
 
+	// Internal module name
+	private $module;
+
 
 	/** Constructor
 	 *
+	 * @param string $str_Module
 	 * @param string $str_SessionID
 	 * @throws Exception
 	 */
-	public function __construct($str_SessionID = NULL) {
+	public function __construct($str_Module, $str_SessionID = NULL) {
 
 		// Check if session ID is null, if so try to get it from current cookies
 		if ($str_SessionID !== NULL) {
@@ -35,7 +39,7 @@ class PageRenderer {
 			}
 		}
 
-
+		$this->module = $str_Module;
 		$this->options = new Options();
 		$this->dbHandler = db_autodefine($this->options);
 	}
@@ -67,7 +71,7 @@ class PageRenderer {
 				on sessions.userNick = enabled.userNick
 				and sessions.customerID = enabled.authorizedCustomerID
 			where sessions.sessionID = ?
-				order by auths.moduleDisplayOrder, labels.moduleLabel';
+				order by labels.moduleDisplayOrder, labels.moduleLabel';
 
 		$obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
 			array($this->sessionID  =>  's')
@@ -93,6 +97,7 @@ class PageRenderer {
 
 		$arr_Links = array();
 
+		// TODO: make path dynamic
 		foreach ($obj_Resultset as $arr_Result) {
 			$arr_Links[] = '<li><a href="' . '/gawain/modules/' . $arr_Result['moduleCode'] . '/">' .
 			               $arr_Result['moduleLabel'] . '</a></li>';
@@ -126,11 +131,9 @@ class PageRenderer {
 						<i class="fa fa-user"></i> ' . $obj_Resultset[0]['userName'] . ' <i class="fa fa-caret-down"></i></button>
 
 						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
+							<li><a href="#">To be filled...</a></li>
 							<li class="divider"></li>
-							<li><a href="#">Separated link</a></li>
+							<li><a href="#">Logout</a></li>
 						</ul>
 					</div>
 				</li>
