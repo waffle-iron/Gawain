@@ -154,6 +154,8 @@ class ApiController {
 		
 		
 		// Bypass grants check if selected so
+
+		// TODO: verify the correctness of the hasGrants call (it seems that no real check is performed)
 		if ($this->doGrantsCheck) {
 			if ($this->authManager->checkPermissions()) {
 				if ($this->authManager->hasGrants($this->sessionID, $this->module)) {

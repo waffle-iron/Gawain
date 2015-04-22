@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
+require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 
@@ -19,6 +20,9 @@ class PageRenderer {
 	// Internal module name
 	private $module;
 
+	// Internal AuthManager
+	private $authManager;
+
 
 	/** Constructor
 	 *
@@ -28,20 +32,35 @@ class PageRenderer {
 	 */
 	public function __construct($str_Module, $str_SessionID = NULL) {
 
+		$this->module = $str_Module;
+		$this->options = new Options();
+		$this->dbHandler = db_autodefine($this->options);
+		$this->authManager = new UserAuthManager();
+
 		// Check if session ID is null, if so try to get it from current cookies
 		if ($str_SessionID !== NULL) {
 			$this->sessionID = $str_SessionID;
 		} else {
 			if (isset($_COOKIE['GawainSessionID'])) {
 				$this->sessionID = $_COOKIE['GawainSessionID'];
+
+				// Checks if the session ID is valid
+				if ($this->authManager->isAuthenticated($this->sessionID)) {
+
+					// Checks if the user has the correct grants
+					if (!$this->authManager->hasGrants($this->sessionID, $this->module)) {
+						header('Location: /gawain/index.php', TRUE, 401);
+					}
+
+				} else {
+					header('Location: /gawain/index.php', TRUE, 401);
+				}
 			} else {
-				throw new Exception('Unauthorized');
+				header('Location: /gawain/index.php', TRUE, 401);
 			}
 		}
 
-		$this->module = $str_Module;
-		$this->options = new Options();
-		$this->dbHandler = db_autodefine($this->options);
+
 	}
 
 

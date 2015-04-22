@@ -151,17 +151,18 @@ class UserAuthManager {
 	}
 
 
-
-
-	public static function checkPermissions($bool_SendHeader = FALSE) {
+	/** Checks if the current user has permission for the current module
+	 *
+	 * @param bool $bool_SendHeader
+	 * @return bool
+	 */
+	public function checkPermissions($bool_SendHeader = FALSE) {
 		// If the cookies are not set, the request is automatically aborted
 		if (isset($_COOKIE['GawainSessionID'])) {
 			$str_SessionID = $_COOKIE['GawainSessionID'];
 
 			// If the user authentication is not valid, the request is automatically aborted
-			$obj_UserAuthManager = new UserAuthManager();
-
-			if (!$obj_UserAuthManager->isAuthenticated($str_SessionID)) {
+			if (!$this->isAuthenticated($str_SessionID)) {
 				if ($bool_SendHeader) {
 					header('Gawain-Response: Unauthorized', 0, 401);
 				}
