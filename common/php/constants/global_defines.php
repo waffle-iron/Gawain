@@ -81,3 +81,10 @@ define('PHP_CONSTANTS_DIR', PHP_DIR . 'constants/');
 define('PHP_FUNCTIONS_DIR', PHP_DIR . 'functions/');
 
 /* ==================================================================== */
+
+
+
+/**
+ * Default logout landing page
+ */
+define('LOGOUT_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/login/');

@@ -142,9 +142,7 @@ class ApiController {
 
 		// If the method is not forced during the call, it is taken from request
 		if ($str_Method === NULL) {
-			if($this->requestMethod == 'GET') {
-				$str_Method = 'read';
-			} elseif (array_key_exists($this->requestArgs['method'], $this->methods[$this->requestMethod])) {
+			if (array_key_exists($this->requestArgs['method'], $this->methods[$this->requestMethod])) {
 				$str_Method = $this->requestArgs['method'];
 			} else {
 				throw new Exception('Non existing method');				

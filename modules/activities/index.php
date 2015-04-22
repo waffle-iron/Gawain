@@ -1,3 +1,12 @@
+<?php
+
+require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
+require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
+require_once(PHP_CLASSES_DIR . 'auths/PageRenderer.php');
+$obj_PageRenderer = new PageRenderer('activities');
+
+?>
+
 <!doctype html>
 
 <html data-gawain-module="activities">
@@ -10,10 +19,6 @@
 
 	<?php
 
-	require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
-	require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
-	require_once(PHP_CLASSES_DIR . 'auths/PageRenderer.php');
-
 	$obj_Jierarchy = new Jierarchy(JS_DIR . 'dependencies/dependencies.json');
 	$obj_Jierarchy->load(array(
 		                     'jQuery',
@@ -24,13 +29,12 @@
 		                     'font-awesome'
 	                     ));
 
-	$obj_PageRenderer = new PageRenderer('activities');
-
 	?>
 
 </head>
 
 <body>
+
 <?php
 $obj_PageRenderer->renderNavbar();
 ?>

@@ -49,14 +49,17 @@ class PageRenderer {
 
 					// Checks if the user has the correct grants
 					if (!$this->authManager->hasGrants($this->sessionID, $this->module)) {
-						header('Location: /gawain/index.php', TRUE, 401);
+						header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+						exit;
 					}
 
 				} else {
-					header('Location: /gawain/index.php', TRUE, 401);
+					header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+					exit;
 				}
 			} else {
-				header('Location: /gawain/index.php', TRUE, 401);
+				header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+				exit;
 			}
 		}
 
@@ -152,7 +155,7 @@ class PageRenderer {
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="#">To be filled...</a></li>
 							<li class="divider"></li>
-							<li><a href="#">Logout</a></li>
+							<li><a href="/gawain/rest-api/authentication/logout/">Logout</a></li>
 						</ul>
 					</div>
 				</li>

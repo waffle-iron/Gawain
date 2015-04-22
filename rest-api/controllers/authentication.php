@@ -16,7 +16,7 @@ $obj_Controller->registerMethod('POST', 'authenticate', array(
 $obj_Controller->registerMethod('POST', 'isAuthenticated', array(
 		'writeGrant'	=>	0,
 		'arguments'		=>	array(
-				isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
+			isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
 		)
 ));
 
@@ -36,10 +36,10 @@ $obj_Controller->registerMethod('POST', 'login', array(
 ));
 
 
-$obj_Controller->registerMethod('POST', 'logout', array(
+$obj_Controller->registerMethod('GET', 'logout', array(
 		'writeGrant'	=>	0,
 		'arguments'		=>	array(
-				isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
+			isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
 		)
 ));
 
@@ -66,7 +66,9 @@ if ($mix_Response !== NULL) {
 			
 			
 		case 'logout':
-			header('Gawain-Response: Logged Out', 0, 200);
+			header('Gawain-Response: Logged Out', TRUE);
+			header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+			setcookie('GawainSessionID', '', time() - 3600, '/');
 			break;
 			
 			

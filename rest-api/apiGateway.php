@@ -40,8 +40,16 @@ if ($str_RequestMethod == 'POST') {
 	
 } elseif ($str_RequestMethod == 'GET') {
 	$arr_RedirectFields = $int_ID != '' ? array('ID'	=>	$int_ID) : array();
+
+	if ($str_Method != '') {
+		$arr_RedirectFields['method'] = $str_Method;
+	} else {
+		$arr_RedirectFields['method'] = 'read';
+	}
+
 	$arr_RedirectFields = array_merge($arr_RedirectFields, $_GET);
 }
+
 
 
 // Redirect the request
@@ -58,16 +66,17 @@ if ($str_RequestMethod == 'GET') {
 	$obj_Curl->post($str_RedirectUrl, $arr_RedirectFields);
 }
 
-if ($obj_Curl->error) {
-	header('Gawain-Response: ' . $obj_Curl->error_message, 0, $obj_Curl->error_code);
-	echo 'Error ' . $obj_Curl->error_code . ': ' . $obj_Curl->error_message;
-} else {
-	$arr_ResponseHeader = explode(PHP_EOL, trim($obj_Curl->raw_response_headers));
-	foreach ($arr_ResponseHeader as $str_ResponseHeader) {
+
+// Send the responses back
+$arr_ResponseHeader = explode(PHP_EOL, trim($obj_Curl->raw_response_headers));
+foreach ($arr_ResponseHeader as $str_ResponseHeader) {
+
+	// Removes the chunking since it is not necessary
+	if (!strpos($str_ResponseHeader, 'chunked')) {
 		header($str_ResponseHeader);
 	}
-	echo $obj_Curl->response;
 }
 
+header('Content-length: ' . strlen($obj_Curl->response));
 
-?>
+echo $obj_Curl->response;
