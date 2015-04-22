@@ -14,6 +14,18 @@ $(function() {
 		var str_ResponseTarget = $(this).attr('data-gawain-response-target');
 		var str_ResponseRedirect = $(this).attr('data-gawain-response-redirect');
 
+		var str_WaitingSpinner = '<i class="fa fa-refresh fa-spin fa-3x"></i>';
+
+		// Adds the waiting spinner to Response target, if exists
+		if (str_ResponseTarget !== undefined) {
+			$('#' + str_ResponseTarget)
+				.empty()
+				.html(str_WaitingSpinner)
+				.show();
+		}
+
+
+
 		// Retrieve values from target
 		var obj_Target = $('#' + str_RequestTarget);
 		var obj_RequestBody = {};
@@ -74,9 +86,10 @@ $(function() {
 		       })
 			.done(function(str_Data) {
 			                 $('#' + str_ResponseTarget)
-				                  .hide()
-				                  .html(str_Data)
-				                  .fadeIn(250);
+				                 .hide()
+				                 .empty()
+				                 .html(str_Data)
+				                 .fadeIn(250);
 
 			                 if (str_ResponseRedirect !== undefined) {
 				                 window.location.replace(str_ResponseRedirect);
