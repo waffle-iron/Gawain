@@ -298,7 +298,7 @@ abstract class Entity {
 	 * 		)
 	 * ))
 	 * 
-	 * @param array $arr_Wheres
+	 * @param mixed $arr_Wheres
 	 * @param string $str_RenderingType
 	 * @param string $str_OutputFormat
 	 * @return string
@@ -352,6 +352,9 @@ abstract class Entity {
 			}
 			
 		}
+
+		// In any case, always add main ID as first field
+		array_unshift($arr_SelectFields, $this->entityReferenceTable . '.' . $this->mainID . ' as _entityMainID');
 		
 		
 		$str_QueryString = 'select ' . PHP_EOL;
@@ -599,9 +602,10 @@ abstract class Entity {
 	 * 
 	 * @param array $arr_DataRows
 	 * @param string $str_RenderingType
+	 * @param boolean $bool_IsTabular
 	 * @return string
 	 */
-	protected function render($arr_DataRows, $str_RenderingType) {
+	protected function render($arr_DataRows, $str_RenderingType, $bool_IsTabular = FALSE) {
 		
 		$arr_Output = array();
 		
@@ -610,66 +614,71 @@ abstract class Entity {
 
 			foreach ($arr_DataRows as $arr_ItemRow) {
 				$arr_OutputRow = array();
+				$mix_EntityMainID = $arr_ItemRow['_entityMainID'];
 				
 				foreach ($arr_ItemRow as $str_ItemField => $str_ItemValue) {
 					// If base element is a select, fill the options using data from referential tables
 					$str_Options = '';
-					
-					if ($this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementBaseTag'] == 'select' &&
-							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] !== NULL &&
-							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] !== NULL &&
-							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'] !== NULL) {
+
+					if ($str_ItemField != '_entityMainID') {
+
+						if ($this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementBaseTag'] == 'select' &&
+						    $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] !== NULL &&
+						    $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] !== NULL &&
+						    $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'] !== NULL
+						) {
+
+							try {
+								$str_SelectStatement = 'select ' .
+								                       $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] . ' as ID, ' .
+								                       $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] . ' as value ' .
+								                       'from ' . $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'];
 								
-						try {
-							$str_SelectStatement = 'select ' .
-								$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] . ' as ID, ' .
-								$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] . ' as value ' .
-								'from ' . $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'];
-								
-							$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
-						} catch (Exception $exc_WrongReferential) {
-							echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
-							$obj_SelectResults = NULL;
+								$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
+							} catch (Exception $exc_WrongReferential) {
+								echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
+								$obj_SelectResults = NULL;
+							}
+
+
+							// NULL value if no option is present
+							$str_Options .= '<option value=\'NULL\'' .
+							                ($str_ItemValue == NULL ? 'selected' : '') . '>' .
+							                '---</option>';
+
+							foreach ($obj_SelectResults as $arr_SelectResult) {
+								$str_Options .= '<option value=\'' .
+								                $arr_SelectResult['ID'] . '\'' .
+								                ($arr_SelectResult['value'] == $str_ItemValue ? 'selected' : '') . '>' .
+								                $arr_SelectResult['value'] . '</option>';
+							}
 						}
-						
-						
-						// NULL value if no option is present
-						$str_Options .= '<option value=\'NULL\'' .
-								($str_ItemValue == NULL ? 'selected' : '') . '>' .
-								'---</option>';
-						
-						foreach ($obj_SelectResults as $arr_SelectResult) {
-							$str_Options .= '<option value=\'' .
-								$arr_SelectResult['ID'] . '\'' .
-								($arr_SelectResult['value'] == $str_ItemValue ? 'selected' : '') . '>' .
-								$arr_SelectResult['value'] . '</option>';
-						}
-					}
-					
-					
-					// Replace the element's markers with data
-					$arr_Substitutions = array(
+
+
+						// Replace the element's markers with data
+						$arr_Substitutions = array(
 							// TODO: add more substitution expressions
-							'%ID%'			=>	$str_ItemField,
-							'%TABLENAME%'	=>	$this->entityReferenceTable,
-							'%COLNAME%'		=>	$str_ItemField,
-							'%LABEL%'		=>	$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldLabel'],
-							'%VALUE%'		=>	$str_ItemValue,
-							'%IS_CHECKED%'	=>	(bool) $str_ItemValue ? 'checked' : '',
-							'%IS_REQUIRED%'	=>	(bool) $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldIsNillable'] ? '' : 'required',
-							'%OPTIONS%'		=>	$str_Options
-					);
+							'%ID%' => $mix_EntityMainID,
+							'%TABLENAME%' => $this->entityReferenceTable,
+							'%COLNAME%' => $str_ItemField,
+							'%LABEL%' => $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldLabel'],
+							'%VALUE%' => $str_ItemValue,
+							'%IS_CHECKED%' => (bool) $str_ItemValue ? 'checked' : '',
+							'%IS_REQUIRED%' => (bool) $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldIsNillable'] ? '' : 'required',
+							'%OPTIONS%' => $str_Options
+						);
 						
 						
-					
-					$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-							array_values($arr_Substitutions),
-							$this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementTemplate']);
+						$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
+						                                   array_values($arr_Substitutions),
+						                                   $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementTemplate']);
 						
-					// Regular expression replace to minify the code
-					//$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
-					
-					$arr_OutputRow[] = $str_RenderedElement;
+						// Regular expression replace to minify the code
+						//$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
+
+						$arr_OutputRow[] = $str_RenderedElement;
+
+					}
 				}
 				
 				$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
@@ -686,7 +695,8 @@ abstract class Entity {
 				if ($this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['renderingElementBaseTag'] == 'select' &&
 					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialCodeColumnName'] !== NULL &&
 					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialValueColumnName'] !== NULL &&
-					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialTableName'] !== NULL) {
+					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialTableName'] !== NULL &&
+				    $str_FieldName != '_entityMainID') {
 			
 						try {
 							$str_SelectStatement = 'select ' .
@@ -714,7 +724,6 @@ abstract class Entity {
 						
 						
 				$arr_Substitutions = array(
-						'%ID%'			=>	$str_FieldName,
 						'%TABLENAME%'	=>	$this->entityReferenceTable,
 						'%COLNAME%'		=>	$str_FieldName,
 						'%LABEL%'		=>	$arr_EnabledField['fieldLabel'],

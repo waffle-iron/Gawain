@@ -64,6 +64,22 @@
 		"dependencies" : []
 	},
 
+	"jquery-treegrid"                 : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/libs/jquery-treegrid/js/jquery.treegrid.min.js",
+				"/gawain/common/js/libs/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
+			],
+			"css" : [
+				"/gawain/common/js/libs/jquery-treegrid/css/jquery.treegrid.css"
+			]
+		},
+		"dependencies" : [
+			"jQuery",
+			"bootstrap"
+		]
+	},
+
 	"jquery-confirm"           : {
 		"path"         : {
 			"js"  : [
