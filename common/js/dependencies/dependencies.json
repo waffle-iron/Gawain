@@ -27,7 +27,8 @@
 	"highcharts"               : {
 		"path"         : {
 			"js"  : [
-				"/gawain/common/js/libs/Highcharts/highcharts.js"
+				"/gawain/common/js/libs/Highcharts/highcharts.js",
+				"/gawain/common/js/libs/Highcharts/themes/grid.js"
 			],
 			"css" : [
 				""
