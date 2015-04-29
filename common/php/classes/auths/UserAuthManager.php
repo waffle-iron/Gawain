@@ -306,7 +306,7 @@ class UserAuthManager {
 	                                            data-gawain-controller-method="login"
 	                                            data-gawain-request-method="POST"
 	                                            data-gawain-request-target="gawain-domain-selection-form"
-												data-gawain-response-redirect="/gawain/index.php">Set Domain</button>
+												data-gawain-response-redirect="' . LOGIN_LANDING_PAGE . '">Domain</button>
 									</div>
 								</div>' .
 				               '</form>';

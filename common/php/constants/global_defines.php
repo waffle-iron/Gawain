@@ -83,6 +83,12 @@ define('PHP_FUNCTIONS_DIR', PHP_DIR . 'functions/');
 /* ==================================================================== */
 
 
+/**
+ * Default login landing page
+ */
+define('LOGIN_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/activities/');
+
+
 
 /**
  * Default logout landing page
