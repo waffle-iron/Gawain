@@ -23,7 +23,10 @@ abstract class Renderer {
 	protected $template;
 
 
-
+	/** Constructor
+	 *
+	 * @param object $obj_Dataset
+	 */
 	public function __construct($obj_Dataset) {
 		$this->dataset = $obj_Dataset;
 		$this->options = new Options();
