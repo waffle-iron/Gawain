@@ -1,19 +1,9 @@
 <?php
 
-require_once('../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'misc/Options.php');
-require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
+require_once(__DIR__ . '/../../constants/global_defines.php');
 
 
-abstract class Renderer {
-
-	// Internal DB handler
-	protected $dbHandler;
-
-
-	// Internal options
-	protected $options;
-
+abstract class RenderingEngine {
 
 	// Input dataset
 	protected $dataset;
@@ -23,14 +13,24 @@ abstract class Renderer {
 	protected $template;
 
 
+	// Internal working directory
+	protected $workingDir;
+
+
 	/** Constructor
+	 *
+	 */
+	public function __construct() {
+
+	}
+
+
+	/** Sets the internal dataset
 	 *
 	 * @param object $obj_Dataset
 	 */
-	public function __construct($obj_Dataset) {
+	public function importDataset($obj_Dataset) {
 		$this->dataset = $obj_Dataset;
-		$this->options = new Options();
-		$this->dbHandler = db_autodefine($this->options);
 	}
 
 
