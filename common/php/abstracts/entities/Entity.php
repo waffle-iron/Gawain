@@ -3,6 +3,9 @@
 require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
+require_once(PHP_CLASSES_DIR . 'rendering/Renderer.php');
+
+
 
 abstract class Entity {
 
@@ -46,6 +49,10 @@ abstract class Entity {
 	protected $options;
 
 
+	// Renderer
+	protected $renderer;
+
+
 
 	/** Constructor
 	 * 
@@ -64,6 +71,8 @@ abstract class Entity {
 		$this->getEntityInfo();
 		$this->getAvailableFields();
 		$this->getEnabledFields();
+
+		$this->renderer = new Renderer($this->currentCustomerID, 'entity', $this->entityCode);
 
 	}
 
@@ -388,6 +397,14 @@ abstract class Entity {
 		
 		// Execute the query and get raw data
 		$arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
+
+		$arr_Dataset = array();
+
+		foreach ($arr_GetResult as $arr_GetRow) {
+			$arr_Dataset[$arr_GetRow['_entityMainID']] = $arr_GetRow;
+		}
+
+		var_dump($arr_Dataset);
 		
 		
 		// Set output type according to specified format
@@ -417,6 +434,153 @@ abstract class Entity {
 		return $str_Output;
 
 	}
+
+
+
+
+
+
+	public function read2($arr_Wheres, $str_RenderingType, $str_OutputFormat = NULL) {
+
+		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
+		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
+			$arr_Wheres = array(
+				$this->mainID => array(
+					'operator' => '=',
+					'arguments' => array(
+						$arr_Wheres
+					)
+				)
+			);
+		}
+
+		// Variables initialization
+		$arr_SelectFields = array();
+		$arr_CustomerDependency = array();
+		$arr_Joins = array();
+
+		// First compile the select query string
+		foreach ($this->availableFields as $str_FieldName => $arr_FieldEntry) {
+
+			// Checks if the field references another table
+			if ($arr_FieldEntry['referentialJoinType'] !== NULL && $arr_FieldEntry['referentialTableName'] !== NULL && $arr_FieldEntry['referentialCodeColumnName'] !== NULL && $arr_FieldEntry['referentialValueColumnName'] !== NULL) {
+
+				$str_Random = generate_random_string();
+
+				$arr_Joins[] = array(
+					'table' => $arr_FieldEntry['referentialTableName'],
+					'alias' => $str_Random,
+					'customerColumnName' => $arr_FieldEntry['referentialCustomerDependencyColumnName'],
+					'join' => array(
+						'type' => $arr_FieldEntry['referentialJoinType'],
+						'innerColumnName' => $str_FieldName,
+						'outerColumnName' => $arr_FieldEntry['referentialCodeColumnName']
+					)
+				);
+
+				// Checks if the referenced table has a customer dependency
+				if ($arr_FieldEntry['referentialCustomerDependencyColumnName'] !== NULL) {
+					$arr_CustomerDependency[] = $str_Random . '.' . $arr_FieldEntry['referentialCustomerDependencyColumnName'] . ' = ' . $this->currentCustomerID;
+				}
+
+				$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $str_FieldName;
+			} else {
+				$arr_SelectFields[] = $this->entityReferenceTable . '.' . $str_FieldName;
+			}
+
+		}
+
+		// In any case, always add main ID as first field
+		array_unshift($arr_SelectFields, $this->entityReferenceTable . '.' . $this->mainID . ' as _entityMainID');
+
+
+		$str_QueryString = 'select ' . PHP_EOL;
+		$str_QueryString .= implode(', ' . PHP_EOL, $arr_SelectFields) . PHP_EOL;
+		$str_QueryString .= 'from ' . $this->entityReferenceTable . PHP_EOL;
+
+
+		// Create join part
+		$str_JoinString = '';
+
+		foreach ($arr_Joins as $arr_RefData) {
+			if ($arr_RefData['customerColumnName'] !== NULL) {
+				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  PHP_EOL;
+				$str_JoinString .= '(select * from ' . $arr_RefData['table'] . ' where ' . $arr_RefData['customerColumnName'] . ' = ' . $this->currentCustomerID . ') '. $arr_RefData['alias'] . PHP_EOL;
+			} else {
+				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  $arr_RefData['table'] . ' ' . $arr_RefData['alias'] . PHP_EOL;
+			}
+
+			$str_JoinString .= 'on ' . $this->entityReferenceTable . '.' . $arr_RefData['join']['innerColumnName'] . ' = ' .
+			                   $arr_RefData['alias'] . '.' . $arr_RefData['join']['outerColumnName'] . PHP_EOL;
+		}
+
+		$str_QueryString .= $str_JoinString;
+
+
+		// Chains all the input where conditions
+		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->enabledFields[$str_RenderingType]['fields'], $this->entityReferenceTable);
+
+		$str_QueryString .= $arr_WhereOutput['query'];
+		$arr_Parameters = $arr_WhereOutput['parameters'];
+
+
+		// Execute the query and get raw data
+		$arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
+
+		$arr_Dataset = array();
+
+
+		// Groups data using main ID as key
+		foreach ($arr_GetResult as $arr_GetRow) {
+			$str_MainID = $arr_GetRow['_entityMainID'];
+			unset($arr_GetRow['_entityMainID']);
+			$arr_Dataset[$str_MainID] = $arr_GetRow;
+		}
+
+		var_dump($arr_Dataset);
+
+		$this->renderer->setOutputFormat('html');
+		$this->renderer->setTemplate('display__block_text');
+
+
+		// Set output type according to specified format
+		/*switch ($str_OutputFormat) {
+			case 'json':
+				// Outputs the required data in JSON format
+				$str_Output = json_encode($arr_GetResult);
+				break;
+
+			case 'array':
+				// Returns the result as PHP array
+				$str_Output = $arr_GetResult;
+				break;
+
+			case 'blank':
+				// Outputs a blank rendered form for data insertion
+				$str_Output = $this->render(NULL, $str_RenderingType);
+				break;
+
+			default:
+				// Parse the results and render the result using display elements
+				$str_Output = $this->render($arr_GetResult, $str_RenderingType);
+				break;
+		}*/
+
+
+		return $str_Output;
+
+	}
+
+
+
+
+
+
+
+
+
+
+
 	
 	
 	

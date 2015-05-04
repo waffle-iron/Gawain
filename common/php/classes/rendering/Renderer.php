@@ -8,12 +8,12 @@ require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 class Renderer {
 
-	// Internal DB handler
-	private $dbHandler;
+	// Data type (entity or report)
+	private $dataType;
 
 
-	// Internal options
-	private $options;
+	// Data type ID (entity name or report ID)
+	private $dataTypeID;
 
 
 	// Renderer dataset
@@ -24,23 +24,29 @@ class Renderer {
 	private $engine;
 
 
-	// Rendering template
-	private $renderingTemplate;
-
-
-	// Renderer output format
-	private $outputFormat;
+	// Current domain
+	private $domainID;
 
 
 
-	public function __construct($obj_Dataset) {
+
+	public function __construct($int_DomainID, $str_DataType, $str_DataTypeID) {
+		$this->domainID = $int_DomainID;
+		$this->dataType = $str_DataType;
+		$this->dataTypeID = $str_DataTypeID;
+	}
+
+
+
+	public function importDataset($obj_Dataset) {
 		$this->dataset = $obj_Dataset;
 	}
 
 
 
 	public function setOutputFormat($str_OutputFormat) {
-		$this->engine = rendering_engine_autodefine($str_OutputFormat);
+		$this->engine = rendering_engine_autodefine($this->domainID, $this->dataType, $this->dataTypeID, $str_OutputFormat);
+		$this->engine->importDataset($this->dataset);
 	}
 
 

@@ -32,13 +32,13 @@ function db_autodefine($obj_OptionHandler) {
 
 
 
-function rendering_engine_autodefine($str_OutputFormat) {
+function rendering_engine_autodefine($int_DomainID, $str_DataType, $str_DataTypeID, $str_OutputFormat) {
 	$obj_Return = NULL;
 
 	switch($str_OutputFormat) {
 		case 'html':
 			require_once(PHP_CLASSES_DIR . 'rendering/HtmlRenderingEngine.php');
-			$obj_Return = new HtmlRenderingEngine();
+			$obj_Return = new HtmlRenderingEngine($int_DomainID, $str_DataType, $str_DataTypeID);
 			break;
 
 		case 'json':
