@@ -381,7 +381,7 @@ abstract class Entity {
 		
 		
 		// Chains all the input where conditions
-		$arr_WhereOutput = parse_where_array($arr_Wheres, $this->enabledFields[$str_RenderingType]['fields'], $this->entityReferenceTable);
+		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->enabledFields[$str_RenderingType]['fields'], $this->entityReferenceTable);
 		
 		$str_QueryString .= $arr_WhereOutput['query'];
 		$arr_Parameters = $arr_WhereOutput['parameters'];
@@ -431,7 +431,7 @@ abstract class Entity {
 	 */
 	public function insert($arr_DataRows) {
 		// TODO: correct check and selection from available fields to enabled fields
-		// First, check if the proposed datarows keys are contained in entity avaiable fields
+		// First, check if the proposed datarows keys are contained in entity available fields
 		$arr_DataRowsFields = array_keys($arr_DataRows);
 		$arr_AvailableFields = array_keys($this->availableFields);
 		
@@ -523,7 +523,7 @@ abstract class Entity {
 			
 			
 			// Create the 'where' part
-			$arr_WhereOutput = parse_where_array($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+			$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
 			$str_Where = $arr_WhereOutput['query'];
 			$str_Query .= $str_Where;
 			
@@ -581,7 +581,7 @@ abstract class Entity {
 		$str_Query = 'delete from ' . $this->entityReferenceTable . PHP_EOL;
 		
 		// Create the 'where' part
-		$arr_WhereOutput = parse_where_array($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
 		$str_Query .= $arr_WhereOutput['query'];
 		$arr_Parameters = $arr_WhereOutput['parameters'];
 		
@@ -751,6 +751,59 @@ abstract class Entity {
 			implode($this->enabledFields[$str_RenderingType]['global']['renderingTypeBetweenEachRecordSnippet'], $arr_Output) .
 			$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterAllSnippet'];
 		
+	}
+
+
+
+
+	/** Parses Where array to compose a well formed Where condition
+	 *
+	 * @param array $arr_Wheres
+	 * @param array $arr_EntityFieldsData
+	 * @param string $str_TableName
+	 *
+	 * @return array
+	 */
+	protected function parseWhereArray($arr_Wheres, $arr_EntityFieldsData, $str_TableName) {
+		if ($arr_Wheres !== NULL) {
+			$arr_WhereFields = array();
+			$arr_Parameters = array();
+
+			foreach ($arr_Wheres as $str_WhereColumn => $arr_WhereCondition) {
+				$str_WhereCondition = $str_TableName . '.' .
+				                      $str_WhereColumn . ' ' . $arr_WhereCondition['operator'] . ' ';
+
+				// Currently the array arguments feature is used only in 'IN' conditions.
+				// TODO: add support to more clauses that uses multiple arguments
+
+				switch (strtolower($arr_WhereCondition['operator'])) {
+					case 'in':
+						$str_WhereCondition .= '(' . implode(', ', array_fill(1, count($arr_WhereCondition['arguments']), '?')) . ')';
+						break;
+					default:
+						$str_WhereCondition .= implode(', ', array_fill(1, count($arr_WhereCondition['arguments']), '?'));
+						break;
+				}
+
+				foreach ($arr_WhereCondition['arguments'] as $str_Argument) {
+					$arr_Parameters[] = array($str_Argument => $arr_EntityFieldsData[$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's');
+				}
+
+				$arr_WhereFields[] = $str_WhereCondition;
+			}
+
+			$str_QueryString = ' where ' . implode(' and ', $arr_WhereFields);
+		} else {
+			$arr_Parameters = NULL;
+			$str_QueryString = NULL;
+		}
+
+		$arr_Output = array(
+			'query'			=>	$str_QueryString,
+			'parameters'	=>	$arr_Parameters
+		);
+
+		return($arr_Output);
 	}
 	
 	
