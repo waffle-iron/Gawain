@@ -2,7 +2,7 @@
 	"jQuery"                   : {
 		"path"         : {
 			"js"  : [
-				"/gawain/common/js/libs/jQuery/jquery.min.js"
+				"/gawain/common/js/vendor/jQuery/jquery.min.js"
 			],
 			"css" : []
 		},
@@ -12,11 +12,11 @@
 	"bootstrap"                : {
 		"path"         : {
 			"js"  : [
-				"/gawain/common/js/libs/Bootstrap/js/bootstrap.min.js"
+				"/gawain/common/js/vendor/Bootstrap/js/bootstrap.min.js"
 			],
 			"css" : [
-				"/gawain/common/js/libs/Bootstrap/css/bootstrap.min.css",
-				"/gawain/common/js/libs/Bootstrap/css/bootstrap-theme.css"
+				"/gawain/common/js/vendor/Bootstrap/css/bootstrap.min.css",
+				"/gawain/common/js/vendor/Bootstrap/css/bootstrap-theme.css"
 			]
 		},
 		"dependencies" : [
@@ -27,8 +27,8 @@
 	"highcharts"               : {
 		"path"         : {
 			"js"  : [
-				"/gawain/common/js/libs/Highcharts/highcharts.js",
-				"/gawain/common/js/libs/Highcharts/themes/grid.js"
+				"/gawain/common/js/vendor/Highcharts/highcharts.js",
+				"/gawain/common/js/vendor/Highcharts/themes/grid.js"
 			],
 			"css" : [
 				""
@@ -56,7 +56,7 @@
 	"CryptoJS"                 : {
 		"path"         : {
 			"js"  : [
-				"/gawain/common/js/libs/CryptoJS/sha3.js"
+				"/gawain/common/js/vendor/CryptoJS/sha3.js"
 			],
 			"css" : [
 				""
@@ -68,11 +68,11 @@
 	"jquery-treegrid"                 : {
 		"path"         : {
 			"js"  : [
-				"/gawain/common/js/libs/jquery-treegrid/js/jquery.treegrid.min.js",
-				"/gawain/common/js/libs/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
+				"/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.min.js",
+				"/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
 			],
 			"css" : [
-				"/gawain/common/js/libs/jquery-treegrid/css/jquery.treegrid.css"
+				"/gawain/common/js/vendor/jquery-treegrid/css/jquery.treegrid.css"
 			]
 		},
 		"dependencies" : [
