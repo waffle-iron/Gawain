@@ -27,35 +27,3 @@ function db_autodefine($obj_OptionHandler) {
 
 	return $obj_Return;
 }
-
-
-
-
-
-function rendering_engine_autodefine($int_DomainID, $str_DataType, $str_DataTypeID, $str_OutputFormat) {
-	$obj_Return = NULL;
-
-	switch($str_OutputFormat) {
-		case 'html':
-			require_once(PHP_CLASSES_DIR . 'rendering/HtmlRenderingEngine.php');
-			$obj_Return = new HtmlRenderingEngine($int_DomainID, $str_DataType, $str_DataTypeID);
-			break;
-
-		case 'json':
-			break;
-
-		case 'php':
-			break;
-
-		case 'pdf':
-			break;
-
-		case 'excel':
-			break;
-
-		default:
-			$obj_Return = NULL;
-	}
-
-	return $obj_Return;
-}

@@ -55,6 +55,12 @@ define('SQL_DIR', COMMON_DIR . 'sql/');
  */
 define('JS_DIR', COMMON_DIR . 'js/');
 
+
+/**
+ * Twig templates folder path
+ */
+define('TEMPLATE_DIR', COMMON_DIR . 'templates/');
+
 /* -------------------------------------------------------------------- */
 
 /**
@@ -79,6 +85,12 @@ define('PHP_CONSTANTS_DIR', PHP_DIR . 'constants/');
  * PHP Functions folder path
  */
 define('PHP_FUNCTIONS_DIR', PHP_DIR . 'functions/');
+
+
+/**
+ * PHP Vendor libraries folder path
+ */
+define('PHP_VENDOR_DIR', PHP_DIR . 'vendor/');
 
 /* ==================================================================== */
 
