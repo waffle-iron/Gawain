@@ -3,7 +3,6 @@
 require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
-require_once(PHP_CLASSES_DIR . 'rendering/Renderer.php');
 
 
 
@@ -71,8 +70,6 @@ abstract class Entity {
 		$this->getEntityInfo();
 		$this->getAvailableFields();
 		$this->getEnabledFields();
-
-		$this->renderer = new Renderer($this->currentCustomerID, 'entity', $this->entityCode);
 
 	}
 
@@ -537,37 +534,8 @@ abstract class Entity {
 			$arr_Dataset[$str_MainID] = $arr_GetRow;
 		}
 
-		var_dump($arr_Dataset);
 
-		$this->renderer->setOutputFormat('html');
-		$this->renderer->setTemplate('display__block_text');
-
-
-		// Set output type according to specified format
-		/*switch ($str_OutputFormat) {
-			case 'json':
-				// Outputs the required data in JSON format
-				$str_Output = json_encode($arr_GetResult);
-				break;
-
-			case 'array':
-				// Returns the result as PHP array
-				$str_Output = $arr_GetResult;
-				break;
-
-			case 'blank':
-				// Outputs a blank rendered form for data insertion
-				$str_Output = $this->render(NULL, $str_RenderingType);
-				break;
-
-			default:
-				// Parse the results and render the result using display elements
-				$str_Output = $this->render($arr_GetResult, $str_RenderingType);
-				break;
-		}*/
-
-
-		return $str_Output;
+		return $arr_Dataset;
 
 	}
 
