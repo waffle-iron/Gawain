@@ -1,7 +1,6 @@
 <?php
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
 
 
@@ -46,7 +45,7 @@ abstract class Renderer {
 	public function __construct() {
 
 		Twig_Autoloader::register();
-		$this->twigLoader = new Twig_Loader_Filesystem(TEMPLATE_DIR);
+		$this->twigLoader = new Twig_Loader_Filesystem(TEMPLATES_DIR);
 		$this->twig = new Twig_Environment($this->twigLoader);
 
 	}
@@ -124,9 +123,9 @@ abstract class Renderer {
 			throw new Exception('Rendering style not defined');
 		}
 
-		$str_FullTemplatePath = $this->renderingFormat . '/' . $this->style . '/' . $this->templatePath;
+		$this->twigLoader->addPath(TEMPLATES_DIR . $this->renderingFormat . '/' . $this->style);
 
-		return $this->twig->render($str_FullTemplatePath, $this->data);
+		return $this->twig->render($this->templatePath, $this->data);
 
 	}
 

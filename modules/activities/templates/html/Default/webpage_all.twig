@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html data-gawain-module="activities">
+
+<head>
+    <title>Gawain - Activities</title>
+
+    <meta charset="UTF-8">
+    <meta name="author" content="Stefano Romanò (Rumix87)">
+
+    {% for css_entry in page_dependencies.css %}
+        <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
+    {% endfor %}
+
+
+    {% for js_entry in page_dependencies.js %}
+        <script src="{{ js_entry }}"></script>
+    {% endfor %}
+
+</head>
+
+<body>
+
+
+{% include 'page_navbar.twig' %}
+
+
+</body>
+
+</html>

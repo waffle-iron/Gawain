@@ -155,14 +155,10 @@ class ApiController {
 
 		// TODO: verify the correctness of the hasGrants call (it seems that no real check is performed)
 		if ($this->doGrantsCheck) {
-			if ($this->authManager->checkPermissions()) {
-				if ($this->authManager->hasGrants($this->sessionID, $this->module)) {
-					$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
-							$this->methods[$this->requestMethod][$str_Method]['arguments']);
-					return $str_Output;
-				} else {
-					throw new Exception('Insufficient grants');
-				}
+			if ($this->authManager->checkPermissions($this->module)) {
+				$str_Output = call_user_func_array(array($this->classInstance, $str_Method),
+						$this->methods[$this->requestMethod][$str_Method]['arguments']);
+				return $str_Output;
 			} else {
 				throw new Exception('Insufficient grants');
 			}

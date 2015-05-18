@@ -15,7 +15,7 @@ $obj_AuthManager = new UserAuthManager();
 
 //$obj_AuthManager->logout($obj_Output['sessionID']);
 
-var_dump($obj_Manager->read(NULL, 'edit__block_text'));
+var_dump($obj_Manager->read(NULL));
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 

@@ -153,10 +153,11 @@ class UserAuthManager {
 
 	/** Checks if the current user has permission for the current module
 	 *
+	 * @param string $str_Module
 	 * @param bool $bool_SendHeader
 	 * @return bool
 	 */
-	public function checkPermissions($bool_SendHeader = FALSE) {
+	/*public function checkPermissions($bool_SendHeader = FALSE) {
 		// If the cookies are not set, the request is automatically aborted
 		if (isset($_COOKIE['GawainSessionID'])) {
 			$str_SessionID = $_COOKIE['GawainSessionID'];
@@ -177,6 +178,45 @@ class UserAuthManager {
 			}
 			return FALSE;
 		}
+	}*/
+
+
+	public function checkPermissions($str_Module, $bool_SendHeader = FALSE) {
+
+		if (isset($_COOKIE['GawainSessionID'])) {
+			$str_SessionID = $_COOKIE['GawainSessionID'];
+
+			// Checks if the session ID is valid
+			if ($this->isAuthenticated($str_SessionID)) {
+
+				// Checks if the user has the correct grants
+				if (!$this->hasGrants($str_SessionID, $str_Module)) {
+
+					if ($bool_SendHeader) {
+						header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+						header('Gawain-Response: Unauthorized', 0, 401);
+						exit;
+					}
+					return FALSE;
+				}
+
+			} else {
+				if ($bool_SendHeader) {
+					header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+					header('Gawain-Response: Unauthorized', 0, 401);
+					exit;
+				}
+				return FALSE;
+			}
+		} else {
+			if ($bool_SendHeader) {
+				header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
+				header('Gawain-Response: Unauthorized', 0, 401);
+				exit;
+			}
+			return FALSE;
+		}
+
 	}
 
 	

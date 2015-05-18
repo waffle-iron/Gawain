@@ -59,7 +59,7 @@ define('JS_DIR', COMMON_DIR . 'js/');
 /**
  * Twig templates folder path
  */
-define('TEMPLATE_DIR', COMMON_DIR . 'templates/');
+define('TEMPLATES_DIR', COMMON_DIR . 'templates/');
 
 /* -------------------------------------------------------------------- */
 

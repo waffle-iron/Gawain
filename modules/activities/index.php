@@ -2,43 +2,42 @@
 
 require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
-require_once(PHP_CLASSES_DIR . 'auths/PageRenderer.php');
-$obj_PageRenderer = new PageRenderer('activities');
+require_once(PHP_CLASSES_DIR . 'rendering/HtmlRenderer.php');
+require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
+require_once(TEMPLATES_DIR . 'html/Default/page_navbar.php');
 
-?>
 
-<!doctype html>
+// Check permission for the current page
+$obj_AuthManager = new UserAuthManager($_SERVER['REMOTE_ADDR']);
+$obj_AuthManager->checkPermissions('activities', TRUE);
 
-<html data-gawain-module="activities">
 
-<head>
-	<title>Gawain - Activities</title>
 
-	<meta charset="UTF-8">
-	<meta name="author" content="Stefano Romanò (Rumix87)">
+// Loads the navbar data
+$arr_Data = common\page_navbar\data_source();
 
-	<?php
 
-	$obj_Jierarchy = new Jierarchy(JS_DIR . 'dependencies/dependencies.json');
-	$obj_Jierarchy->load(array(
-		                     'jQuery',
-		                     'bootstrap',
-		                     'bootstrap-cerulean-theme',
-		                     'gawain-style-settings',
-		                     'gawain-button-bindings',
-		                     'font-awesome'
-	                     ));
 
-	?>
+// Calculates and prepares the page library dependencies
+$obj_Jierarchy = new Jierarchy(JS_DIR . 'dependencies/dependencies.json');
+$arr_Data['page_dependencies'] = $obj_Jierarchy->load(array(
+	                     'jQuery',
+	                     'bootstrap',
+	                     'bootstrap-cerulean-theme',
+	                     'gawain-style-settings',
+	                     'gawain-button-bindings',
+	                     'font-awesome'
+                     ));
 
-</head>
 
-<body>
 
-<?php
-$obj_PageRenderer->renderNavbar();
-?>
+// Renders the webpage
+$obj_Renderer = new HtmlRenderer();
+$obj_Renderer->addTemplatePath(__DIR__ . '/templates/html/Default');
+$obj_Renderer->importData($arr_Data);
+$obj_Renderer->setStyle('Default');
+$obj_Renderer->setTemplate('webpage_all.twig');
 
-</body>
+//var_dump($arr_Data);
 
-</html>
+echo $obj_Renderer->render();
