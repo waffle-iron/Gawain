@@ -33,24 +33,11 @@ class Jierarchy {
 	public function load($arr_LibraryNames) {
 		
 		$this->calculateDependencies($arr_LibraryNames);
-		
-		$arr_OutputJs = array();
-		$arr_OutputCss = array();
-		
-		// Foreach loop to create all the script tags
-		foreach ($this->JsPaths as $str_JsPath) {
-			$arr_OutputJs[] = '<script src="' . $str_JsPath . '"></script>';
-		}
-		
-		// Foreach loop to create all the stylesheet tags
-		foreach ($this->CssPaths as $str_CssPath) {
-			$arr_OutputCss[] = '<link href="' . $str_CssPath . '" rel="stylesheet" type="text/css">';
-		}
-		
-		
-		echo implode(PHP_EOL, $arr_OutputCss);
-		echo PHP_EOL;
-		echo implode(PHP_EOL, $arr_OutputJs);
+
+		$arr_Output['css'] = $this->CssPaths;
+		$arr_Output['js'] = $this->JsPaths;
+
+		return $arr_Output;
 	}
 	
 	

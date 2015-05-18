@@ -1,6 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `gawain` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `gawain`;
--- MySQL dump 10.13  Distrib 5.6.13, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.6.23, for Win64 (x86_64)
 --
 -- Host: 10.0.0.12    Database: gawain
 -- ------------------------------------------------------
@@ -88,7 +88,7 @@ CREATE TABLE `activities` (
   CONSTRAINT `projectReleaseStateID` FOREIGN KEY (`activityEnvironmentID`) REFERENCES `environment` (`environmentID`) ON UPDATE CASCADE,
   CONSTRAINT `projectStatusID` FOREIGN KEY (`activityStatusID`) REFERENCES `activity_status` (`statusID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `projectTypeID` FOREIGN KEY (`activityTypeID`) REFERENCES `activity_type` (`activityTypeID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=4096;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=4096;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `activities` (
 
 LOCK TABLES `activities` WRITE;
 /*!40000 ALTER TABLE `activities` DISABLE KEYS */;
-INSERT INTO `activities` VALUES (9,NULL,NULL,1,'Prova padre',1,'123456','Prova di inserimento progetto padre',1,1,'Nome cliente','admin',50.00,1,'2015-03-26',1,40.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(10,9,9,1,'Prova figlio',1,'2245','Prova progetto figlio',1,1,'Pippo','admin',20.00,1,'2015-03-26',1,20.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(11,NULL,NULL,1,'Prova a caso',1,NULL,'Prova a caso',NULL,NULL,NULL,NULL,0.00,1,NULL,NULL,0.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `activities` VALUES (9,NULL,NULL,1,'Prova padre',1,'123456','Prova di inserimento progetto padre',1,1,'Nome cliente','admin',50.00,1,'2015-03-26',1,40.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(10,9,9,1,'Prova figlio',1,'2245','Prova progetto figlio',1,1,'Pippo','admin',20.00,1,'2015-03-26',1,20.00,1,0,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `activities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -345,6 +345,7 @@ CREATE TABLE `application_log` (
 
 LOCK TABLES `application_log` WRITE;
 /*!40000 ALTER TABLE `application_log` DISABLE KEYS */;
+INSERT INTO `application_log` VALUES ('2015-03-30 19:33:46.405849','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:55.424221','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:55.847820','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:56.127533','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:56.337381','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:56.551921','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:56.721674','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:56.959757','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:33:57.210617','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:34:28.250713','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:34:28.417287','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:34:28.603863','INFO','localhost','admin','activity','','Testo di prova'),('2015-03-30 19:34:28.772254','INFO','localhost','admin','activity','','Testo di prova');
 /*!40000 ALTER TABLE `application_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -376,32 +377,6 @@ LOCK TABLES `areas` WRITE;
 /*!40000 ALTER TABLE `areas` DISABLE KEYS */;
 INSERT INTO `areas` VALUES (1,1,'Cliente','Progetti che impattano direttamente col cliente',100);
 /*!40000 ALTER TABLE `areas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `auths`
---
-
-DROP TABLE IF EXISTS `auths`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `auths` (
-  `authCode` varchar(64) NOT NULL,
-  `authName` varchar(64) NOT NULL,
-  `authComment` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`authCode`),
-  UNIQUE KEY `authID_UNIQUE` (`authCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `auths`
---
-
-LOCK TABLES `auths` WRITE;
-/*!40000 ALTER TABLE `auths` DISABLE KEYS */;
-INSERT INTO `auths` VALUES ('1','ADMIN','Autorizzazione di amministratore');
-/*!40000 ALTER TABLE `auths` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -445,7 +420,7 @@ CREATE TABLE `customers` (
   `customerComment` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`customerID`),
   UNIQUE KEY `ID_CUST_UNIQUE` (`customerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -454,7 +429,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,'Prova 1','Commento di Prova 1');
+INSERT INTO `customers` VALUES (1,'Prova 1','Commento di Prova 1'),(2,'Prova 2','Secondo cliente');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -490,94 +465,6 @@ LOCK TABLES `document_repository` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `dos_event_type`
---
-
-DROP TABLE IF EXISTS `dos_event_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dos_event_type` (
-  `dosTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dosTypeCustomerID` int(10) unsigned NOT NULL,
-  `dosTypeName` varchar(64) NOT NULL,
-  `dosTypeComment` varchar(128) DEFAULT NULL,
-  `dosTypeOrderIndex` int(10) unsigned NOT NULL DEFAULT '100',
-  PRIMARY KEY (`dosTypeID`),
-  UNIQUE KEY `dosTypeID_UNIQUE` (`dosTypeID`),
-  KEY `dosTypeCustomerID_idx` (`dosTypeCustomerID`),
-  CONSTRAINT `dosTypeCustomerID` FOREIGN KEY (`dosTypeCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `dos_event_type`
---
-
-LOCK TABLES `dos_event_type` WRITE;
-/*!40000 ALTER TABLE `dos_event_type` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dos_event_type` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `dos_events`
---
-
-DROP TABLE IF EXISTS `dos_events`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dos_events` (
-  `dosID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dosTypeID` int(10) unsigned NOT NULL,
-  `dosDescription` mediumtext,
-  `dosStartDate` datetime NOT NULL,
-  `dosEndDate` datetime NOT NULL,
-  `dosAffectedEnvironments` varchar(256) DEFAULT NULL,
-  `dosAffectedAreas` varchar(256) DEFAULT NULL,
-  `dosAffectedActivitiesIDs` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`dosID`),
-  UNIQUE KEY `dosID_UNIQUE` (`dosID`),
-  KEY `dosStartEndDate` (`dosStartDate`,`dosEndDate`),
-  KEY `dosTypeID_idx` (`dosTypeID`),
-  CONSTRAINT `dosTypeID` FOREIGN KEY (`dosTypeID`) REFERENCES `dos_event_type` (`dosTypeID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `dos_events`
---
-
-LOCK TABLES `dos_events` WRITE;
-/*!40000 ALTER TABLE `dos_events` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dos_events` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `dos_events_affected_activities`
---
-
-DROP TABLE IF EXISTS `dos_events_affected_activities`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dos_events_affected_activities` (
-  `dosID` int(10) unsigned NOT NULL,
-  `dosAffectedActivityID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`dosID`,`dosAffectedActivityID`),
-  KEY `FK_dos_events_affected_activities_wp_activities_activityID` (`dosAffectedActivityID`),
-  CONSTRAINT `FK_dos_events_affected_activities_wp_activities_activityID` FOREIGN KEY (`dosAffectedActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_dos_events_affected_activities_wp_dos_events_dosID` FOREIGN KEY (`dosID`) REFERENCES `dos_events` (`dosID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `dos_events_affected_activities`
---
-
-LOCK TABLES `dos_events_affected_activities` WRITE;
-/*!40000 ALTER TABLE `dos_events_affected_activities` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dos_events_affected_activities` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `entities`
 --
 
@@ -599,7 +486,7 @@ CREATE TABLE `entities` (
 
 LOCK TABLES `entities` WRITE;
 /*!40000 ALTER TABLE `entities` DISABLE KEYS */;
-INSERT INTO `entities` VALUES ('activity','Activity','activities','Attività generica'),('timeslot_item','Timeslot Item','','Elemento di timeslot inserito dall\'utente');
+INSERT INTO `entities` VALUES ('activity','Activity','activities','Attività generica'),('timeslot','Timeslot','','Elemento di timeslot inserito dall\'utente');
 /*!40000 ALTER TABLE `entities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -681,6 +568,7 @@ DROP TABLE IF EXISTS `entities_reference_fields`;
 CREATE TABLE `entities_reference_fields` (
   `entityCode` varchar(64) NOT NULL,
   `columnName` varchar(128) NOT NULL,
+  `fieldIsMainID` tinyint(1) NOT NULL DEFAULT '0',
   `fieldIsAutoIncrement` tinyint(1) NOT NULL DEFAULT '0',
   `fieldIsNillable` tinyint(1) NOT NULL DEFAULT '1',
   `fieldType` enum('NUM','CHAR','DATE') NOT NULL DEFAULT 'CHAR',
@@ -703,7 +591,7 @@ CREATE TABLE `entities_reference_fields` (
 
 LOCK TABLES `entities_reference_fields` WRITE;
 /*!40000 ALTER TABLE `entities_reference_fields` DISABLE KEYS */;
-INSERT INTO `entities_reference_fields` VALUES ('activity','activityAreaID',0,1,'NUM','inner','areas','areaID','areaName','areaCustomerID',NULL),('activity','activityCode',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityColorHexCode',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityComment',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityCompletion',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityCustomerID',0,1,'NUM','inner','customers','customerID','customerName','customerID',NULL),('activity','activityCustomerReference',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityDescription',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityEnvironmentID',0,1,'NUM','inner','environment','environmentID','environmentName','environmentCustomerID',NULL),('activity','activityEstimatedEffortHours',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityID',1,0,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsCompleted',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsCompletionAuto',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsEstimatedEffortHoursAuto',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsOfficial',0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityManagerNick',0,1,'CHAR','inner','users','userNick','userName',NULL,NULL),('activity','activityName',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityParentID',0,1,'NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activity','activityQcConnectionID',0,1,'NUM','left','qc_connections','connID','connName','connCustomerID',NULL),('activity','activityQcIdentificationQuery',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityRootID',0,1,'NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activity','activityStartDate',0,1,'DATE',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityStatusID',0,1,'NUM','inner','activity_status','statusID','statusName','statusCustomerID',NULL),('activity','activityTypeID',0,1,'NUM','inner','activity_type','activityTypeID','activityTypeName','activityTypeCustomerID',NULL),('activity','activityUserField01',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField02',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField03',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField04',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField05',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField06',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField07',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField08',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField09',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField10',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField11',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField12',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField13',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField14',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField15',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField16',0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `entities_reference_fields` VALUES ('activity','activityAreaID',0,0,1,'NUM','inner','areas','areaID','areaName','areaCustomerID',NULL),('activity','activityCode',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityColorHexCode',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityComment',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityCompletion',0,0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityCustomerID',0,0,1,'NUM','inner','customers','customerID','customerName','customerID',NULL),('activity','activityCustomerReference',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityDescription',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityEnvironmentID',0,0,1,'NUM','inner','environment','environmentID','environmentName','environmentCustomerID',NULL),('activity','activityEstimatedEffortHours',0,0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityID',1,1,0,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsCompleted',0,0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsCompletionAuto',0,0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsEstimatedEffortHoursAuto',0,0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityIsOfficial',0,0,1,'NUM',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityManagerNick',0,0,1,'CHAR','inner','users','userNick','userName',NULL,NULL),('activity','activityName',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityParentID',0,0,1,'NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activity','activityQcConnectionID',0,0,1,'NUM','left','qc_connections','connID','connName','connCustomerID',NULL),('activity','activityQcIdentificationQuery',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityRootID',0,0,1,'NUM','left','activities','activityID','activityName','activityCustomerID',NULL),('activity','activityStartDate',0,0,1,'DATE',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityStatusID',0,0,1,'NUM','inner','activity_status','statusID','statusName','statusCustomerID',NULL),('activity','activityTypeID',0,0,1,'NUM','inner','activity_type','activityTypeID','activityTypeName','activityTypeCustomerID',NULL),('activity','activityUserField01',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField02',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField03',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField04',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField05',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField06',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField07',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField08',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField09',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField10',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField11',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField12',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField13',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField14',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField15',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL),('activity','activityUserField16',0,0,1,'CHAR',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `entities_reference_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -775,84 +663,88 @@ LOCK TABLES `meeting_logs` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `pages`
+-- Table structure for table `modules`
 --
 
-DROP TABLE IF EXISTS `pages`;
+DROP TABLE IF EXISTS `modules`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pages` (
-  `pageCode` varchar(64) NOT NULL,
-  `pageUrl` varchar(128) NOT NULL,
-  PRIMARY KEY (`pageCode`)
+CREATE TABLE `modules` (
+  `moduleCode` varchar(64) NOT NULL,
+  `moduleName` varchar(128) NOT NULL,
+  `moduleComment` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`moduleCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pages`
+-- Dumping data for table `modules`
 --
 
-LOCK TABLES `pages` WRITE;
-/*!40000 ALTER TABLE `pages` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pages` ENABLE KEYS */;
+LOCK TABLES `modules` WRITE;
+/*!40000 ALTER TABLE `modules` DISABLE KEYS */;
+INSERT INTO `modules` VALUES ('activities','Activities',NULL),('login','Login',NULL);
+/*!40000 ALTER TABLE `modules` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `pages_auths`
+-- Table structure for table `modules_auths`
 --
 
-DROP TABLE IF EXISTS `pages_auths`;
+DROP TABLE IF EXISTS `modules_auths`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pages_auths` (
-  `pageCode` varchar(64) NOT NULL,
+CREATE TABLE `modules_auths` (
+  `moduleCode` varchar(64) NOT NULL,
   `customerID` int(10) unsigned NOT NULL,
-  `authCode` varchar(64) NOT NULL,
-  `pageReadWrite` enum('READ','WRITE') NOT NULL DEFAULT 'WRITE',
-  `pageFocus` enum('USER','USER_TEAM','ALL') NOT NULL DEFAULT 'ALL',
-  PRIMARY KEY (`pageCode`,`customerID`,`authCode`),
-  KEY `FK_pages_auths_auths_authCode` (`authCode`),
+  `groupCode` varchar(64) NOT NULL,
+  `writePermission` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`moduleCode`,`customerID`,`groupCode`),
+  KEY `FK_pages_auths_auths_authCode` (`groupCode`),
   KEY `FK_pages_auths_customers_customerID` (`customerID`),
-  CONSTRAINT `FK_pages_auths_auths_authCode` FOREIGN KEY (`authCode`) REFERENCES `auths` (`authCode`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_pages_auths_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_pages_auths_pages_pageCode` FOREIGN KEY (`pageCode`) REFERENCES `pages` (`pageCode`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_modules_auths_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_modules_auths_modules_moduleCode` FOREIGN KEY (`moduleCode`) REFERENCES `modules` (`moduleCode`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_modules_auths_user_groups_groupCode` FOREIGN KEY (`groupCode`) REFERENCES `user_groups` (`groupCode`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pages_auths`
+-- Dumping data for table `modules_auths`
 --
 
-LOCK TABLES `pages_auths` WRITE;
-/*!40000 ALTER TABLE `pages_auths` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pages_auths` ENABLE KEYS */;
+LOCK TABLES `modules_auths` WRITE;
+/*!40000 ALTER TABLE `modules_auths` DISABLE KEYS */;
+INSERT INTO `modules_auths` VALUES ('activities',1,'admin',1),('activities',1,'user',0);
+/*!40000 ALTER TABLE `modules_auths` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `pages_label`
+-- Table structure for table `modules_label`
 --
 
-DROP TABLE IF EXISTS `pages_label`;
+DROP TABLE IF EXISTS `modules_label`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pages_label` (
-  `pageCode` varchar(64) NOT NULL,
+CREATE TABLE `modules_label` (
+  `moduleCode` varchar(64) NOT NULL,
   `customerID` int(10) unsigned NOT NULL,
-  `pageLabel` varchar(128) NOT NULL,
-  PRIMARY KEY (`customerID`,`pageCode`),
-  KEY `FK_pages_label_pages_pageCode` (`pageCode`),
-  CONSTRAINT `FK_pages_label_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_pages_label_pages_pageCode` FOREIGN KEY (`pageCode`) REFERENCES `pages` (`pageCode`) ON DELETE CASCADE ON UPDATE CASCADE
+  `moduleLabel` varchar(128) NOT NULL,
+  `moduleDisplayOrder` int(10) NOT NULL DEFAULT '1000',
+  PRIMARY KEY (`customerID`,`moduleCode`),
+  KEY `FK_pages_label_pages_pageCode` (`moduleCode`),
+  CONSTRAINT `FK_modules_label_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_modules_label_modules_moduleCode` FOREIGN KEY (`moduleCode`) REFERENCES `modules` (`moduleCode`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pages_label`
+-- Dumping data for table `modules_label`
 --
 
-LOCK TABLES `pages_label` WRITE;
-/*!40000 ALTER TABLE `pages_label` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pages_label` ENABLE KEYS */;
+LOCK TABLES `modules_label` WRITE;
+/*!40000 ALTER TABLE `modules_label` DISABLE KEYS */;
+INSERT INTO `modules_label` VALUES ('activities',1,'Attività',1000),('login',1,'Login',1000);
+/*!40000 ALTER TABLE `modules_label` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -977,7 +869,7 @@ CREATE TABLE `rendering_elements` (
 
 LOCK TABLES `rendering_elements` WRITE;
 /*!40000 ALTER TABLE `rendering_elements` DISABLE KEYS */;
-INSERT INTO `rendering_elements` VALUES ('form-horizontal-checkbox','checkbox','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%ID%-value\" %IS_CHECKED% data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\"> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox'),('form-horizontal-disabled-checkbox','checkbox','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%ID%-value\" %IS_CHECKED% data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" disabled> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox disabilitata'),('form-horizontal-input-date','input','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<input type=\"date\" class=\"form-control\" id=\"%ID%-value\" placeholder=\"%LABEL%\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" value=\"%VALUE%\">\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura'),('form-horizontal-input-text','input','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<input type=\"text\" class=\"form-control\" id=\"%ID%-value\" placeholder=\"%LABEL%\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" value=\"%VALUE%\">\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura'),('form-horizontal-select','select','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<select class=\"form-control\" id=\"%ID%-value\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\">%OPTIONS%</select>\r\n	</div>\r\n</div>','Template per combobox in editing'),('form-horizontal-text','p','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%ID%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<p class=\"form-control-static\" id=\"%ID%-value\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\">%VALUE%</p>\r\n	</div>\r\n</div>','Template per campo di inserimento testo');
+INSERT INTO `rendering_elements` VALUES ('form-horizontal-checkbox','checkbox','<div class=\"form-group\" id=\"%ID%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%ID%-value\" %IS_CHECKED% data-gawain-table=\"%TABLENAME%\" data-gawain-field=\"%COLNAME%\"> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox'),('form-horizontal-disabled-checkbox','checkbox','<div class=\"form-group\" id=\"%COLNAME%-container\">\r\n	<div class=\"col-sm-offset-2 col-sm-10\">\r\n		<div class=\"checkbox\">\r\n			<label id=\"%ID%-label\">\r\n				<input type=\"checkbox\" id=\"%COLNAME%-value\" %IS_CHECKED% data-gawain-table=\"%TABLENAME%\" data-gawain-field=\"%COLNAME%\" disabled> %LABEL%\r\n			</label>\r\n		</div>\r\n	</div>\r\n</div>','Template per checkbox disabilitata'),('form-horizontal-input-date','input','<div class=\"form-group\" id=\"%COLNAME%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%COLNAME%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<input type=\"date\" class=\"form-control\" id=\"%ID%-value\" placeholder=\"%LABEL%\" data-table=\"%TABLENAME%\" data-field=\"%COLNAME%\" value=\"%VALUE%\">\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura'),('form-horizontal-input-text','input','<div class=\"form-group\" id=\"%COLNAME%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%COLNAME%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<input type=\"text\" class=\"form-control\" id=\"%COLNAME%-value\" placeholder=\"%LABEL%\" data-gawain-table=\"%TABLENAME%\" data-gawain-field=\"%COLNAME%\" value=\"%VALUE%\">\r\n	</div>\r\n</div>','Template per campo di testo in sola lettura'),('form-horizontal-select','select','<div class=\"form-group\" id=\"%COLNAME%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%COLNAME%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<select class=\"form-control\" id=\"%COLNAME%-value\" data-gawain-table=\"%TABLENAME%\" data-gawain-field=\"%COLNAME%\">%OPTIONS%</select>\r\n	</div>\r\n</div>','Template per combobox in editing'),('form-horizontal-text','p','<div class=\"form-group\" id=\"%COLNAME%-container\">\r\n	<label class=\"col-sm-2 control-label\" id=\"%COLNAME%-label\">%LABEL%</label>\r\n	<div class=\"col-sm-10\">\r\n		<p class=\"form-control-static\" id=\"%COLNAME%-value\" data-gawain-table=\"%TABLENAME%\" data-gawain-field=\"%COLNAME%\">%VALUE%</p>\r\n	</div>\r\n</div>','Template per campo di inserimento testo'),('table-cell','td','<td>%VALUE%</td>','Template per elemento tablla');
 /*!40000 ALTER TABLE `rendering_elements` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1036,7 +928,7 @@ CREATE TABLE `rendering_types` (
 
 LOCK TABLES `rendering_types` WRITE;
 /*!40000 ALTER TABLE `rendering_types` DISABLE KEYS */;
-INSERT INTO `rendering_types` VALUES ('display__block_text','Block textual (display mode)',NULL,NULL,'<hr>',NULL,NULL,'Il campo viene mostrato testualmente allineato a blocchi (sola lettura)'),('edit__block_text','Block textual (edit mode)',NULL,NULL,'<hr>',NULL,NULL,'Il campo viene mostrato testualmente allineato a blocchi (inserimento)'),('graphical','Graphical',NULL,NULL,NULL,NULL,NULL,'Il campo viene mostrato graficamente'),('inline_text','Inline textual',NULL,NULL,NULL,NULL,NULL,'Il campo viene mostrato testualmente in modo inline');
+INSERT INTO `rendering_types` VALUES ('display__block_text','Block textual (display mode)',NULL,NULL,'<hr>',NULL,NULL,'Il campo viene mostrato testualmente allineato a blocchi (sola lettura)'),('display__tabular','Tabular (display mode)','<tbody>','<tr data-gawain-main-entity-ID=\"%ID%\">',NULL,'</tr>','</tbody>','Il campo viene mostrato in formato tabellare'),('edit__block_text','Block textual (edit mode)',NULL,NULL,'<hr>',NULL,NULL,'Il campo viene mostrato testualmente allineato a blocchi (inserimento)'),('graphical','Graphical',NULL,NULL,NULL,NULL,NULL,'Il campo viene mostrato graficamente'),('inline_text','Inline textual',NULL,NULL,NULL,NULL,NULL,'Il campo viene mostrato testualmente in modo inline');
 /*!40000 ALTER TABLE `rendering_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1170,14 +1062,15 @@ DROP TABLE IF EXISTS `sessions`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sessions` (
   `sessionID` char(40) NOT NULL,
-  `userID` int(10) unsigned NOT NULL,
-  `customerID` int(10) unsigned NOT NULL,
+  `userNick` varchar(64) NOT NULL,
+  `customerID` int(10) unsigned DEFAULT NULL,
   `sessionStartDate` datetime NOT NULL,
-  `sessionOriginIP` varchar(15) DEFAULT NULL,
+  `sessionHostName` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`sessionID`),
   KEY `FK_sessions_customers_customerID` (`customerID`),
-  KEY `FK_sessions_users_userID` (`userID`),
-  CONSTRAINT `FK_sessions_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON UPDATE CASCADE
+  KEY `FK_sessions_users_userID` (`userNick`),
+  CONSTRAINT `FK_sessions_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_sessions_users_userNick` FOREIGN KEY (`userNick`) REFERENCES `users` (`userNick`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1187,7 +1080,7 @@ CREATE TABLE `sessions` (
 
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-INSERT INTO `sessions` VALUES ('AAA',1,1,'2014-12-18 17:41:10','127.0.0.1');
+INSERT INTO `sessions` VALUES ('AAA','admin',1,'2014-12-18 17:41:10','127.0.0.1');
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1242,7 +1135,7 @@ CREATE TABLE `timeslots` (
   CONSTRAINT `FK_timeslots_users_userNick` FOREIGN KEY (`timeslotUserNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `timeslotProjectID` FOREIGN KEY (`timeslotActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `timeslotTagID` FOREIGN KEY (`timeslotTagID`) REFERENCES `tags` (`tagID`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1264,13 +1157,13 @@ DROP TABLE IF EXISTS `user_enabled_customers`;
 CREATE TABLE `user_enabled_customers` (
   `userNick` varchar(64) NOT NULL,
   `authorizedCustomerID` int(10) unsigned NOT NULL,
-  `userAuthCode` varchar(64) NOT NULL,
+  `groupCode` varchar(64) NOT NULL,
   PRIMARY KEY (`userNick`,`authorizedCustomerID`),
-  KEY `FK_user_enabled_customers_auths_authCode` (`userAuthCode`),
+  KEY `FK_user_enabled_customers_auths_authCode` (`groupCode`),
   KEY `FK_user_enabled_customers_customers_customerID` (`authorizedCustomerID`),
+  CONSTRAINT `FK_user_enabled_customers_customers_customerID` FOREIGN KEY (`authorizedCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_user_enabled_customers_users_userNick` FOREIGN KEY (`userNick`) REFERENCES `users` (`userNick`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_enabled_customers_auths_authCode` FOREIGN KEY (`userAuthCode`) REFERENCES `auths` (`authCode`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_enabled_customers_customers_customerID` FOREIGN KEY (`authorizedCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_user_enabled_customers_user_groups_groupCode` FOREIGN KEY (`groupCode`) REFERENCES `user_groups` (`groupCode`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1280,7 +1173,34 @@ CREATE TABLE `user_enabled_customers` (
 
 LOCK TABLES `user_enabled_customers` WRITE;
 /*!40000 ALTER TABLE `user_enabled_customers` DISABLE KEYS */;
+INSERT INTO `user_enabled_customers` VALUES ('admin',1,'admin'),('admin',2,'user'),('test2',1,'user');
 /*!40000 ALTER TABLE `user_enabled_customers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_groups`
+--
+
+DROP TABLE IF EXISTS `user_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_groups` (
+  `groupCode` varchar(64) NOT NULL,
+  `groupName` varchar(64) NOT NULL,
+  `groupComment` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`groupCode`),
+  UNIQUE KEY `authID_UNIQUE` (`groupCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_groups`
+--
+
+LOCK TABLES `user_groups` WRITE;
+/*!40000 ALTER TABLE `user_groups` DISABLE KEYS */;
+INSERT INTO `user_groups` VALUES ('admin','Administrator','Autorizzazione di amministratore'),('user','User','Autorizzazioni di utente normale');
+/*!40000 ALTER TABLE `user_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1292,7 +1212,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `userNick` varchar(64) NOT NULL,
-  `userPassword` char(40) DEFAULT NULL,
+  `userPassword` char(128) DEFAULT NULL,
   `userName` varchar(128) DEFAULT NULL,
   `userDailyWorkingHours` decimal(4,2) DEFAULT '8.00',
   `userIsActive` tinyint(1) NOT NULL DEFAULT '1',
@@ -1307,7 +1227,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('admin','D033E22AE348AEB5660FC2140AEC35850C4DA997','Admin',8.00,1),('test2','A94A8FE5CCB19BA61C4C0873D391E987982FBBD3','Test2',8.00,1);
+INSERT INTO `users` VALUES ('admin','7407946a7a90b037ba5e825040f184a142161e4c61d81feb83ec8c7f011a99b0d77f39c9170c3231e1003c5cf859c69bd93043b095feff5cce6f6d45ec513764','Admin',8.00,1),('test2','0cd1637c9bf218414ab5b734f21a946d6131f5510b8ae2525538053f8d9d96384025ed1377bc9d606e695598c3504b4f3cfe84517a7b6c5f4ca0ae0abcf4f10a','Test2',8.00,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1328,4 +1248,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-03-26  0:23:25
+-- Dump completed on 2015-05-06 23:01:42

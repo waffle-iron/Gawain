@@ -14,7 +14,7 @@ require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
 
 $obj_Jierarchy = new Jierarchy(JS_DIR . 'dependencies/dependencies.json');
-$obj_Jierarchy->load(array(
+$arr_Libraries = $obj_Jierarchy->load(array(
 		'jQuery',
 		'bootstrap',
 		'bootstrap-cerulean-theme',
@@ -22,6 +22,15 @@ $obj_Jierarchy->load(array(
         'CryptoJS',
         'gawain-button-bindings'
 	));
+
+
+foreach ($arr_Libraries['css'] as $str_CssPaths) {
+	echo '<link href="' . $str_CssPaths . '" rel="stylesheet" type="text/css">';
+}
+
+foreach ($arr_Libraries['js'] as $str_JsPaths) {
+	echo '<script src="' . $str_JsPaths . '"></script>';
+}
 
 ?>
 	
