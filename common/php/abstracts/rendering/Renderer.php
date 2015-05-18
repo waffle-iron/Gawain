@@ -34,6 +34,12 @@ abstract class Renderer {
 	protected $templatePath;
 
 
+	// Rendering format
+	protected $renderingFormat;
+
+
+
+
 	/** Constructor
 	 *
 	 */
@@ -44,6 +50,20 @@ abstract class Renderer {
 		$this->twig = new Twig_Environment($this->twigLoader);
 
 	}
+
+
+
+	/** Add a path (typically an entity custom path) to the loader
+	 *
+	 * @param string $str_TemplatePath
+	 * @throws Twig_Error_Loader
+	 */
+	public function addTemplatePath($str_TemplatePath) {
+
+		$this->twigLoader->addPath($str_TemplatePath);
+
+	}
+
 
 
 	/** Imports the data to be rendered
@@ -57,6 +77,7 @@ abstract class Renderer {
 	}
 
 
+
 	/** Sets the template to be used for document generation
 	 *
 	 * @param string $str_TemplatePath
@@ -66,6 +87,7 @@ abstract class Renderer {
 		$this->templatePath = $str_TemplatePath;
 
 	}
+
 
 
 	/** Sets the style for the rendering
@@ -79,10 +101,33 @@ abstract class Renderer {
 	}
 
 
+
 	/** Renders the given data
 	 *
 	 * @return mixed
 	 */
 	abstract function render();
+
+
+
+	/** Provides a basic rendering method to be used in more complex render implementations
+	 *
+	 * @throws Exception
+	 */
+	protected function basicRender() {
+
+		if (!isset($this->renderingFormat)) {
+			throw new Exception('Rendering format not defined');
+		}
+
+		if (!isset($this->style)) {
+			throw new Exception('Rendering style not defined');
+		}
+
+		$str_FullTemplatePath = $this->renderingFormat . '/' . $this->style . '/' . $this->templatePath;
+
+		return $this->twig->render($str_FullTemplatePath, $this->data);
+
+	}
 
 }
