@@ -192,10 +192,9 @@ abstract class Entity {
 	 * ))
 	 * 
 	 * @param mixed $arr_Wheres
-	 * @param string $str_RenderingType
 	 * @return array
 	 */
-	public function read($arr_Wheres, $str_RenderingType) {
+	public function read($arr_Wheres) {
 
 		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
 		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
@@ -304,21 +303,42 @@ abstract class Entity {
 			$arr_Dataset['fields'][$str_ColumnName]['type'] = $arr_ColumnSpec['fieldType'];
 			$arr_Dataset['fields'][$str_ColumnName]['autoIncrement'] = (boolean) $arr_ColumnSpec['fieldIsAutoIncrement'];
 			$arr_Dataset['fields'][$str_ColumnName]['nillable'] = (boolean) $arr_ColumnSpec['fieldIsNillable'];
+
+
+			if ($arr_ColumnSpec['referentialJoinType'] !== NULL) {
+				$str_ReferentialFieldsQuery = 'select ' .
+				                              $arr_ColumnSpec['referentialCodeColumnName'] . ' as ID, ' .
+				                              $arr_ColumnSpec['referentialValueColumnName'] . ' as value ' .
+				                              ' from ' . $arr_ColumnSpec['referentialTableName'];
+
+				if ($arr_ColumnSpec['referentialCustomerDependencyColumnName'] !== NULL) {
+					$str_ReferentialFieldsQuery .= ' where ' . $arr_ColumnSpec['referentialCustomerDependencyColumnName'] . ' = ?';
+					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
+					                                                   array(
+						                                                   array($this->currentCustomerID  =>  'i')
+					                                                   ));
+
+				} else {
+					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, NULL);
+				}
+
+
+				$arr_Referentials = array();
+
+				foreach ($arr_Resultset as $arr_Row) {
+					$arr_Referentials[$arr_Row['ID']] = $arr_Row['value'];
+				}
+
+				$arr_Dataset['fields'][$str_ColumnName]['referentials'] = $arr_Referentials;
+			} else {
+				$arr_Dataset['fields'][$str_ColumnName]['referentials'] = NULL;
+			}
 		}
 
 
 		return $arr_Dataset;
 
 	}
-
-
-
-
-
-
-
-
-
 
 
 	
@@ -494,166 +514,6 @@ abstract class Entity {
 		$this->dbHandler->commit();
 		
 		return TRUE;
-	}
-	
-	
-	
-	
-	
-
-	/** Renders the given items into their respective elements
-	 * 
-	 * @param array $arr_DataRows
-	 * @param string $str_RenderingType
-	 * @param boolean $bool_IsTabular
-	 * @return string
-	 */
-	protected function render($arr_DataRows, $str_RenderingType, $bool_IsTabular = FALSE) {
-		
-		$arr_Output = array();
-		
-		// If the input data row set is not null, renders the given data...
-		if ($arr_DataRows !== NULL) {
-
-			foreach ($arr_DataRows as $arr_ItemRow) {
-				$arr_OutputRow = array();
-				$mix_EntityMainID = $arr_ItemRow['_entityMainID'];
-				
-				foreach ($arr_ItemRow as $str_ItemField => $str_ItemValue) {
-					// If base element is a select, fill the options using data from referential tables
-					$str_Options = '';
-
-					if ($str_ItemField != '_entityMainID') {
-
-						if ($this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementBaseTag'] == 'select' &&
-						    $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] !== NULL &&
-						    $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] !== NULL &&
-						    $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'] !== NULL
-						) {
-
-							try {
-								$str_SelectStatement = 'select ' .
-								                       $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialCodeColumnName'] . ' as ID, ' .
-								                       $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialValueColumnName'] . ' as value ' .
-								                       'from ' . $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['referentialTableName'];
-								
-								$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
-							} catch (Exception $exc_WrongReferential) {
-								echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
-								$obj_SelectResults = NULL;
-							}
-
-
-							// NULL value if no option is present
-							$str_Options .= '<option value=\'NULL\'' .
-							                ($str_ItemValue == NULL ? 'selected' : '') . '>' .
-							                '---</option>';
-
-							foreach ($obj_SelectResults as $arr_SelectResult) {
-								$str_Options .= '<option value=\'' .
-								                $arr_SelectResult['ID'] . '\'' .
-								                ($arr_SelectResult['value'] == $str_ItemValue ? 'selected' : '') . '>' .
-								                $arr_SelectResult['value'] . '</option>';
-							}
-						}
-
-
-						// Replace the element's markers with data
-						$arr_Substitutions = array(
-							// TODO: add more substitution expressions
-							'%ID%' => $mix_EntityMainID,
-							'%TABLENAME%' => $this->entityReferenceTable,
-							'%COLNAME%' => $str_ItemField,
-							'%LABEL%' => $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldLabel'],
-							'%VALUE%' => $str_ItemValue,
-							'%IS_CHECKED%' => (bool) $str_ItemValue ? 'checked' : '',
-							'%IS_REQUIRED%' => (bool) $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['fieldIsNillable'] ? '' : 'required',
-							'%OPTIONS%' => $str_Options
-						);
-						
-						
-						$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-						                                   array_values($arr_Substitutions),
-						                                   $this->enabledFields[$str_RenderingType]['fields'][$str_ItemField]['renderingElementTemplate']);
-						
-						// Regular expression replace to minify the code
-						//$str_RenderedElement = preg_replace(['/\>[^\S ]+/s','/[^\S ]+\</s','/(\s)+/s'], ['>','<','\\1'], $str_RenderedElement);
-
-						$arr_OutputRow[] = $str_RenderedElement;
-
-					}
-				}
-				
-				$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
-					implode(PHP_EOL, $arr_OutputRow) .
-					$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
-				
-			}
-			
-		} else {	// ... Else it returns empty or edit-ready rendering
-			foreach ($this->enabledFields[$str_RenderingType]['fields'] as $str_FieldName => $arr_EnabledField) {
-				// If base element is a select, fill the options using data from referential tables
-				$str_Options = '';
-					
-				if ($this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['renderingElementBaseTag'] == 'select' &&
-					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialCodeColumnName'] !== NULL &&
-					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialValueColumnName'] !== NULL &&
-					$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialTableName'] !== NULL &&
-				    $str_FieldName != '_entityMainID') {
-			
-						try {
-							$str_SelectStatement = 'select ' .
-									$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialCodeColumnName'] . ' as ID, ' .
-									$this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialValueColumnName'] . ' as value ' .
-									'from ' . $this->enabledFields[$str_RenderingType]['fields'][$str_FieldName]['referentialTableName'];
-			
-							$obj_SelectResults = $this->dbHandler->executePrepared($str_SelectStatement, NULL);
-						} catch (Exception $exc_WrongReferential) {
-							echo 'Wrong referential: ' . $exc_WrongReferential->getMessage();
-							$obj_SelectResults = NULL;
-						}
-			
-			
-						// NULL value if no option is present
-						$str_Options .= '<option value=\'NULL\' selected>' .
-								'---</option>';
-			
-						foreach ($obj_SelectResults as $arr_SelectResult) {
-							$str_Options .= '<option value=\'' .
-									$arr_SelectResult['ID'] . '\'>' .
-									$arr_SelectResult['value'] . '</option>';
-						}
-					}
-						
-						
-				$arr_Substitutions = array(
-						'%TABLENAME%'	=>	$this->entityReferenceTable,
-						'%COLNAME%'		=>	$str_FieldName,
-						'%LABEL%'		=>	$arr_EnabledField['fieldLabel'],
-						'%VALUE%'		=>	'',
-						'%IS_CHECKED%'	=>	'',
-						'%IS_REQUIRED%'	=>	(bool) $arr_EnabledField['fieldIsNillable'] ? '' : 'required',
-						'%OPTIONS%'		=>	$str_Options
-					);
-				
-				$str_RenderedElement = str_replace(array_keys($arr_Substitutions),
-						array_values($arr_Substitutions),
-						$arr_EnabledField['renderingElementTemplate']);
-					
-				$arr_OutputRow[] = $str_RenderedElement;
-			}
-			
-			$arr_Output[] = $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeEachRecordSnippet'] .
-				implode(PHP_EOL, $arr_OutputRow) .
-				$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterEachRecordSnippet'];
-			
-		}
-	
-		
-		return $this->enabledFields[$str_RenderingType]['global']['renderingTypeBeforeAllSnippet'] . 
-			implode($this->enabledFields[$str_RenderingType]['global']['renderingTypeBetweenEachRecordSnippet'], $arr_Output) .
-			$this->enabledFields[$str_RenderingType]['global']['renderingTypeAfterAllSnippet'];
-		
 	}
 
 
