@@ -34,8 +34,8 @@ class Jierarchy {
 		
 		$this->calculateDependencies($arr_LibraryNames);
 
-		$arr_Output['css'] = $this->CssPaths;
-		$arr_Output['js'] = $this->JsPaths;
+		$arr_Output['css'] = array_filter($this->CssPaths);
+		$arr_Output['js'] = array_filter($this->JsPaths);
 
 		return $arr_Output;
 	}
@@ -69,7 +69,7 @@ class Jierarchy {
 		}
 		
 		
-		// 'Flip flip' method to get a unique array �_�
+		// 'Flip flip' method to get a unique array °_°
 		$this->JsPaths = array_merge(array_flip(array_flip($this->JsPaths)));
 		$this->CssPaths = array_merge(array_flip(array_flip($this->CssPaths)));
 		

@@ -1,4 +1,4 @@
-/* CSS file containing all the default page settings for gawain */
+/* CSS file containing all the default page settings for Gawain */
 
 
 /* This leaves space for header navbar and footer */
@@ -11,4 +11,11 @@ body {
 /* This fixes the navbar-right bad alignment to the right */
 .navbar-right {
 	margin-right: 0;
+}
+
+
+/* General class to make elements horizontally centered (must be applied to container's row) */
+.gawain-h-center {
+	float: none;
+	margin: 0 auto;
 }

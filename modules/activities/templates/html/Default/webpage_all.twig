@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="Stefano Romanò (Rumix87)">
 
-    {% for css_entry in page_dependencies.css %}
+    {% for css_entry in page_dependencies.css if css_entry is not null%}
         <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
     {% endfor %}
 
@@ -23,6 +23,61 @@
 
 
 {% include 'page_navbar.twig' %}
+
+
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+            <h1>{{ module_label }}</h1>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+            <table class="table table-striped table-hover gawain-treegrid">
+                <thead>
+                    <tr>
+                        <th>{{ activities.fields.activityID.label }}</th>
+                        <th>{{ activities.fields.activityName.label }}</th>
+                        <th>{{ activities.fields.activityCode.label }}</th>
+                        <th>{{ activities.fields.activityManagerNick.label }}</th>
+                        <th>{{ activities.fields.activityCustomerReference.label }}</th>
+                        <th>{{ activities.fields.activityStatusID.label }}</th>
+                        <th>{{ activities.fields.activityCompletion.label }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for ID,activity in activities.data %}
+
+                    <tr id="{{ ID }}" class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
+                        <td>{{ activity.activityID }}</td>
+                        <td>{{ activity.activityName }}</td>
+                        <td>{{ activity.activityCode }}</td>
+                        <td>{{ activity.activityManagerNick }}</td>
+                        <td>{{ activity.activityCustomerReference }}</td>
+                        <td>{{ activity.activityStatusID }}</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="{{ activity.activityCompletion|round }}"
+                                     aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;  width: {{ activity.activityCompletion|round }}%;">
+                                    {{ activity.activityCompletion|round }}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 
 </body>

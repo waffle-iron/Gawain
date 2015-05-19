@@ -1,0 +1,11 @@
+/* This file contains alla the styles associated with progress bars */
+
+/* For progress bars in tables, delete the margin and shrink them */
+td .progress {
+	width: 90%;
+	margin: 0;
+}
+
+td .progress-bar {
+	font-size: 80%;
+}

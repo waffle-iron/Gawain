@@ -96,21 +96,6 @@
 		]
 	},
 
-	"jquery-treegrid"          : {
-		"path"         : {
-			"js"  : [
-				""
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : [
-			"jQuery",
-			"bootstrap"
-		]
-	},
-
 	"dhtmlx-Gantt"             : {
 		"path"         : {
 			"js"  : [
@@ -162,7 +147,8 @@
 			"js"  : [],
 			"css" : [
 				"/gawain/common/css/gawain/page.css",
-				"/gawain/common/css/gawain/viewports.css"
+				"/gawain/common/css/gawain/viewports.css",
+				"/gawain/common/css/gawain/progressbars.css"
 			]
 		},
 		"dependencies" : [
@@ -179,6 +165,18 @@
 		},
 		"dependencies" : [
 			"jQuery"
+		]
+	},
+
+	"gawain-treegrid-onload"   : {
+		"path"         : {
+			"js" : [
+				"/gawain/common/js/onloads/treegrid.js"
+			],
+			"css"   :   []
+		},
+		"dependencies" : [
+			"jquery-treegrid"
 		]
 	}
 }
