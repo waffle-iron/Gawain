@@ -182,19 +182,24 @@ abstract class Entity {
 
 	/**
 	 * Reads data
-	 * 
+	 *
+	 * <p>
 	 * The Where conditions are expressed in this way:
+	 * <pre>
 	 * array(column_name => array(
 	 * 		'operator' => '=',
 	 * 		'arguments' => array(
 	 * 			1
 	 * 		)
 	 * ))
-	 * 
+	 * </pre>
+	 * </p>
+	 *
 	 * @param mixed $arr_Wheres
+	 * @param array $arr_SkipReferentialsFor
 	 * @return array
 	 */
-	public function read($arr_Wheres) {
+	public function read($arr_Wheres, $arr_SkipReferentialsFor = array()) {
 
 		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
 		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
@@ -217,7 +222,11 @@ abstract class Entity {
 		foreach ($this->availableFields as $str_FieldName => $arr_FieldEntry) {
 
 			// Checks if the field references another table
-			if ($arr_FieldEntry['referentialJoinType'] !== NULL && $arr_FieldEntry['referentialTableName'] !== NULL && $arr_FieldEntry['referentialCodeColumnName'] !== NULL && $arr_FieldEntry['referentialValueColumnName'] !== NULL) {
+			if ($arr_FieldEntry['referentialJoinType'] !== NULL
+			    && $arr_FieldEntry['referentialTableName'] !== NULL
+			    && $arr_FieldEntry['referentialCodeColumnName'] !== NULL
+			    && $arr_FieldEntry['referentialValueColumnName'] !== NULL
+				&& !in_array($str_FieldName, $arr_SkipReferentialsFor)) {
 
 				$str_Random = generate_random_string();
 
