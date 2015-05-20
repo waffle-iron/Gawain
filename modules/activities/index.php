@@ -37,6 +37,7 @@ $arr_Data['page_dependencies'] = $obj_Jierarchy->load(array(
 $obj_Activity = new Activity($_COOKIE['GawainSessionID']);
 $arr_Data['activities'] = $obj_Activity->read(NULL, array('activityParentID'));
 $arr_Data['module_label'] = $obj_Activity->entityLabel;
+$arr_Data['activity_types'] = $obj_Activity->getActivityTypes();
 
 
 // Renders the webpage
@@ -46,6 +47,6 @@ $obj_Renderer->importData($arr_Data);
 $obj_Renderer->setStyle('Default');
 $obj_Renderer->setTemplate('webpage_all.twig');
 
-//var_dump($arr_Data['module_label']);
+//var_dump($arr_Data['activities']);
 
 echo $obj_Renderer->render();

@@ -2,7 +2,7 @@
 
 /* For progress bars in tables, delete the margin and shrink them */
 td .progress {
-	width: 90%;
+	width: 95%;
 	margin: 0;
 }
 
