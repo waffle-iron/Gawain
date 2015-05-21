@@ -38,74 +38,35 @@
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
 
-            <ul class="nav nav-tabs" role="tablist">
-                {% for typeID,activity_type in activity_types %}
-                    <li{% if loop.first %} class="active"{% endif %}>
-                        <a data-toggle="tab" href="#gawain-activities-tab-{{ typeID }}">{{ activity_type.name }}</a>
-                    </li>
-                {% endfor %}
+            <ul class="nav nav-pills gawain-nav-level-1">
+                <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab" data-toggle="tab">Table View</a></li>
+                <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
             </ul>
 
-
-
             <div class="tab-content">
-            {% for typeID,activity_type in activity_types %}
 
-                <div role="tabpanel" class="tab-pane {% if loop.first %} active{% endif %}" id="gawain-activities-tab-{{ typeID }}">
+                <div role="tabpanel" class="tab-pane active" id="gawain-activities-table-view">
                     <div class="row">
                         <div class="col-md-12">
 
-                            <table class="table table-striped table-hover gawain-treegrid">
-                                <thead>
-                                    <tr>
-                                        <th>{{ activities.fields.activityID.label }}</th>
-                                        <th>{{ activities.fields.activityName.label }}</th>
-                                        <th>{{ activities.fields.activityCode.label }}</th>
-                                        <th>{{ activities.fields.activityManagerNick.label }}</th>
-                                        <th>{{ activities.fields.activityCustomerReference.label }}</th>
-                                        <th>{{ activities.fields.activityStatusID.label }}</th>
-                                        <th>{{ activities.fields.activityCompletion.label }}</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-
-                                {% for ID,activity in activities.data %}
-
-                                    {%  if activity.activityTypeID == activity_type.name %}
-
-                                        <tr id="{{ ID }}" class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
-                                            <td>{{ activity.activityID }}</td>
-                                            <td>{{ activity.activityName }}</td>
-                                            <td>{{ activity.activityCode }}</td>
-                                            <td>{{ activity.activityManagerNick }}</td>
-                                            <td>{{ activity.activityCustomerReference }}</td>
-                                            <td>{{ activity.activityStatusID }}</td>
-                                            <td>
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="{{ activity.activityCompletion|round }}"
-                                                         aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;  width: {{ activity.activityCompletion|round }}%;">
-                                                        {{ activity.activityCompletion|round }}%
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                    {%  endif %}
-
-                                {% endfor %}
-
-                                </tbody>
-                            </table>
+                            {% include 'activities_table.twig' %}
 
                         </div>
                     </div>
                 </div>
 
-            {% endfor %}
+
+                <div role="tabpanel" class="tab-pane" id="gawain-activities-gantt-chart">
+                    <div class="row">
+                        <div class="col-md-12">
+
+
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-
 
         </div>
     </div>

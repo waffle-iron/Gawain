@@ -148,7 +148,8 @@
 			"css" : [
 				"/gawain/common/css/gawain/page.css",
 				"/gawain/common/css/gawain/viewports.css",
-				"/gawain/common/css/gawain/progressbars.css"
+				"/gawain/common/css/gawain/progressbars.css",
+				"/gawain/common/css/gawain/navs.css"
 			]
 		},
 		"dependencies" : [
