@@ -1,0 +1,11 @@
+/* This file contains the styles of selectors, navigation items like tabs and pills and so on */
+
+.gawain-nav-level-1 {
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
+
+
+.gawain-nav-level-2 {
+	margin-bottom: 1em;
+}
