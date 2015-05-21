@@ -99,10 +99,11 @@
 	"dhtmlx-Gantt"             : {
 		"path"         : {
 			"js"  : [
-				""
+				"/gawain/common/js/vendor/dhtmlx-Gantt/dhtmlxgantt.js",
+				"/gawain/common/js/vendor/dhtmlx-Gantt/locale/locale_it.js"
 			],
 			"css" : [
-				""
+				"/gawain/common/js/vendor/dhtmlx-Gantt/dhtmlxgantt.css"
 			]
 		},
 		"dependencies" : []

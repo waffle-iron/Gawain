@@ -29,7 +29,8 @@ $arr_Data['page_dependencies'] = $obj_Jierarchy->load(array(
 	                     'gawain-button-bindings',
 	                     'font-awesome',
 	                     'jquery-treegrid',
-                         'gawain-treegrid-onload'
+                         'gawain-treegrid-onload',
+	                     "dhtmlx-Gantt"
                      ));
 
 

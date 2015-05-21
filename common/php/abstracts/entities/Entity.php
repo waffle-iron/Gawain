@@ -135,15 +135,13 @@ abstract class Entity {
 				field.referentialCustomerDependencyColumnName,
 				field.fieldComment,
 				label.fieldLabel,
-				label.fieldTooltip,
-				label.fieldOrderingIndex
+				label.fieldComment
 			from entities_reference_fields field
 			inner join entities_columns_label label
 				on field.entityCode = label.entityCode
 				and field.columnName = label.ColumnName
 			where label.customerID = ?
-				and label.entityCode = ?
-			order by label.fieldOrderingIndex';
+				and label.entityCode = ?';
 	
 		$obj_Result = $this->dbHandler->executePrepared($str_AvailableFieldsPrepQuery,
 			array(
@@ -166,8 +164,8 @@ abstract class Entity {
 			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
 
 			$this->availableFields[$obj_ResultEntry['columnName']]['fieldLabel'] = $obj_ResultEntry['fieldLabel'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldTooltip'] = $obj_ResultEntry['fieldTooltip'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldOrderingIndex'] = $obj_ResultEntry['fieldOrderingIndex'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
+
 			
 			if ($obj_ResultEntry['fieldIsMainID'] == 1) {
 				$this->mainID = $obj_ResultEntry['columnName'];
@@ -307,8 +305,7 @@ abstract class Entity {
 		// Add fields info to dataset
 		foreach ($this->availableFields as $str_ColumnName => $arr_ColumnSpec) {
 			$arr_Dataset['fields'][$str_ColumnName]['label'] = $arr_ColumnSpec['fieldLabel'];
-			$arr_Dataset['fields'][$str_ColumnName]['tooltip'] = $arr_ColumnSpec['fieldTooltip'];
-			$arr_Dataset['fields'][$str_ColumnName]['orderingIndex'] = $arr_ColumnSpec['fieldOrderingIndex'];
+			$arr_Dataset['fields'][$str_ColumnName]['comment'] = $arr_ColumnSpec['fieldComment'];
 			$arr_Dataset['fields'][$str_ColumnName]['type'] = $arr_ColumnSpec['fieldType'];
 			$arr_Dataset['fields'][$str_ColumnName]['autoIncrement'] = (boolean) $arr_ColumnSpec['fieldIsAutoIncrement'];
 			$arr_Dataset['fields'][$str_ColumnName]['nillable'] = (boolean) $arr_ColumnSpec['fieldIsNillable'];

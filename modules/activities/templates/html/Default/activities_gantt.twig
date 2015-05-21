@@ -1,0 +1,72 @@
+{# Template for Gantt chart for activities #}
+
+<div class="gawain-graph-viewport" id="gawain-activities-gantt-chart">
+
+    <script type="text/javascript">
+        var obj_GanttData = {
+            data: [
+                {% for typeID,activity_type in activity_types %}
+                    {
+                        "id": "type-{{ activity_type.name }}",
+                        "text": "{{ activity_type.name }}",
+                        "type":gantt.config.types.project,
+                        progress: 0,
+                        open: true
+                    }{% if not loop.last %},{% endif %}
+
+                    {% for ID,activity in activities.data %}
+
+                        {%  if activity.activityTypeID == activity_type.name %}
+                            {
+                                "id": "{{ activity.activityID }}",
+                                "text": "{{ activity.activityName }}",
+                                "start_date": "{{ activity.activityStartDate }}",
+                                progress: {{ activity.activityCompletion / 100 }},
+                                "duration": {{ activity.activityEstimatedEffortHours / 8 }},
+                                "parent": {% if activity.activityParentID is not null %}"{{ activity.activityParentID }}"{% else %}"type-{{ activity.activityTypeID }}"{% endif %},
+                                open: true
+                            }{% if not loop.last %},{% endif %}
+                        {% endif %}
+
+                    {% endfor %}
+                {% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+
+            links: []
+        };
+
+
+        gantt.templates.scale_cell_class = function(date){
+            if(date.getDay()==0||date.getDay()==6){
+                return "weekend";
+            }
+        };
+        gantt.templates.task_cell_class = function(item,date){
+            if(date.getDay()==0||date.getDay()==6){
+                return "weekend" ;
+            }
+        };
+
+        gantt.config.columns = [
+            {name:"text",       label:"{{ activities.fields.activityName.label }}",  width:"*", tree:true },
+            {name:"start_time",   label:"{{ activities.fields.activityStartDate.label }}",  template:function(obj){
+                return gantt.templates.date_grid(obj.start_date);
+            }, align: "center", width:"*" },
+            {name:"duration",   label:"{{ activities.fields.activityEstimatedEffortHours.label }}", align:"center", width:"*  "}
+        ];
+
+        gantt.config.grid_width = 390;
+        gantt.config.date_grid = "%F %d"
+        gantt.config.scale_height  = 60;
+        gantt.config.subscales = [
+            { unit:"week", step:1, date:"Week #%W"}
+        ];
+
+
+        gantt.init("gawain-activities-gantt-chart");
+        gantt.parse(obj_GanttData);
+
+    </script>
+
+</div>
