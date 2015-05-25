@@ -1,0 +1,53 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>Gawain -
+        {% block page_title %}
+            Module Label
+        {% endblock %}
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="author" content="Stefano Romanò (Rumix87)">
+
+    {% block dependencies %}
+
+
+
+    {% endblock %}
+
+</head>
+
+<body>
+
+{% block navbar %}
+    {% include 'page_navbar.twig' %}
+{% endblock %}
+
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 main">
+            <h1 class="page-header">
+                {{ block('page_title') }}
+            </h1>
+
+
+            {% block page_content %}
+
+                <p>Here goes the page content</p>
+
+            {% endblock %}
+
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+</html>

@@ -1,12 +1,14 @@
-<!doctype html>
+{% extends 'page_base.twig' %}
 
-<html data-gawain-module="activities">
 
-<head>
-    <title>Gawain - Activities</title>
 
-    <meta charset="UTF-8">
-    <meta name="author" content="Stefano Romanò (Rumix87)">
+
+{% block page_title %}
+    {{ module_label }}
+{% endblock %}
+
+
+{% block dependencies %}
 
     {% for css_entry in page_dependencies.css if css_entry is not null%}
         <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
@@ -17,62 +19,43 @@
         <script src="{{ js_entry }}"></script>
     {% endfor %}
 
-</head>
-
-<body>
+{% endblock %}
 
 
-{% include 'page_navbar.twig' %}
 
 
-<div class="container-fluid">
+{% block page_content %}
 
 
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
-            <h1>{{ module_label }}</h1>
-        </div>
-    </div>
+    <ul class="nav nav-pills gawain-nav-level-1">
+        <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab" data-toggle="tab">Table View</a></li>
+        <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
+    </ul>
 
+    <div class="tab-content">
 
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+        <div role="tabpanel" class="tab-pane active" id="gawain-activities-table-view">
+            <div class="row">
+                <div class="col-md-12 table-responsive">
 
-            <ul class="nav nav-pills gawain-nav-level-1">
-                <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab" data-toggle="tab">Table View</a></li>
-                <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
-            </ul>
+                    {% include 'activities_table.twig' %}
 
-            <div class="tab-content">
-
-                <div role="tabpanel" class="tab-pane active" id="gawain-activities-table-view">
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            {% include 'activities_table.twig' %}
-
-                        </div>
-                    </div>
                 </div>
-
-
-                <div role="tabpanel" class="tab-pane" id="gawain-activities-gantt-chart">
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            {% include 'activities_gantt.twig' %}
-
-                        </div>
-                    </div>
-                </div>
-
             </div>
-
         </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="gawain-activities-gantt-chart">
+            <div class="row">
+                <div class="col-md-12">
+
+                    {% include 'activities_gantt.twig' %}
+
+                </div>
+            </div>
+        </div>
+
     </div>
-</div>
 
 
-</body>
-
-</html>
+{% endblock %}
