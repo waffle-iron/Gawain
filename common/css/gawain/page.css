@@ -19,3 +19,9 @@ body {
 	float: none;
 	margin: 0 auto;
 }
+
+
+/* Restyled page-header class to remove top margin */
+.page-header {
+	margin-top: 0.5em;
+}

@@ -1,11 +1,13 @@
 /* This file contains the styles of selectors, navigation items like tabs and pills and so on */
 
+
+/* First level navigation bar */
 .gawain-nav-level-1 {
-	margin-top: 1em;
-	margin-bottom: 2em;
+	margin-bottom: 1em;
 }
 
 
+/* Second level navigation bar */
 .gawain-nav-level-2 {
-	margin-bottom: 1em;
+	margin-bottom: 0.5em;
 }
