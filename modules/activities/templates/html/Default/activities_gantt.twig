@@ -10,7 +10,7 @@
                         id: "type-{{ activity_type.name }}",
                         text: "{{ activity_type.name }}",
                         progress: 0,
-                        open: true
+                        open: false
                     }{% if not loop.last %},{% endif %}
 
                     {% for ID,activity in activities.data %}
@@ -23,7 +23,7 @@
                                 progress: {{ activity.activityCompletion / 100 }},
                                 duration: {{ activity.activityEstimatedEffortHours / 8 }},
                                 parent: {% if activity.activityParentID is not null %}"{{ activity.activityParentID }}"{% else %}"type-{{ activity.activityTypeID }}"{% endif %},
-                                open: true
+                                open: false
                             }{% if not loop.last %},{% endif %}
                         {% endif %}
 
@@ -91,6 +91,7 @@
         gantt.config.work_time = true;
         gantt.config.correct_work_time = true;
         gantt.config.date_grid = "%d/%m/%Y";
+        gantt.config.date_scale = "%D %d";
 
         gantt.init("gawain-activities-gantt-chart-container");
         gantt.parse(obj_GanttData);
