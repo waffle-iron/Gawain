@@ -24,6 +24,10 @@ abstract class Entity {
 	protected $entityReferenceTable;
 
 
+	// Entity domain dependency column
+	protected $entityDomainDependencyColumn;
+
+
 	// All available fields for selected entity
 	protected $availableFields;
 
@@ -98,8 +102,9 @@ abstract class Entity {
 
 		$str_InfoPrepQuery =
 			'select
-				entityLabel,
-				entityReferenceTable
+				entities_label.entityLabel,
+				entities.entityReferenceTable,
+				entities.entityDomainDependencyColumnName
 			from entities_label
 			inner join entities
 				on entities.entityCode = entities_label.entityCode
@@ -114,6 +119,7 @@ abstract class Entity {
 
 		$this->entityLabel = $obj_Result[0]['entityLabel'];
 		$this->entityReferenceTable = $obj_Result[0]['entityReferenceTable'];
+		$this->entityDomainDependencyColumn = $obj_Result[0]['entityDomainDependencyColumnName'];
 	}
 
 
@@ -139,7 +145,7 @@ abstract class Entity {
 			from entities_reference_fields field
 			inner join entities_columns_label label
 				on field.entityCode = label.entityCode
-				and field.columnName = label.ColumnName
+				and field.columnName = label.columnName
 			where label.customerID = ?
 				and label.entityCode = ?';
 	
@@ -257,7 +263,16 @@ abstract class Entity {
 
 		$str_QueryString = 'select ' . PHP_EOL;
 		$str_QueryString .= implode(', ' . PHP_EOL, $arr_SelectFields) . PHP_EOL;
-		$str_QueryString .= 'from ' . $this->entityReferenceTable . PHP_EOL;
+
+		// If the domain dependency is set, a subquery is printed instead of the raw table name
+		if ($this->entityDomainDependencyColumn !== NULL) {
+			$str_QueryString .= 'from (select * from ' .
+			                    $this->entityReferenceTable .
+			                    ' where ' . $this->entityDomainDependencyColumn . ' = ' .
+			                    $this->currentCustomerID . ') ' . $this->entityReferenceTable . PHP_EOL;
+		} else {
+			$str_QueryString .= 'from ' . $this->entityReferenceTable . PHP_EOL;
+		}
 
 
 		// Create join part
@@ -279,7 +294,7 @@ abstract class Entity {
 
 
 		// Chains all the input where conditions
-		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres);
 
 		$str_QueryString .= $arr_WhereOutput['query'];
 		$arr_Parameters = $arr_WhereOutput['parameters'];
@@ -359,7 +374,7 @@ abstract class Entity {
 	 * @return boolean
 	 */
 	public function insert($arr_DataRows) {
-		// TODO: correct check and selection from available fields to enabled fields
+		// TODO: add multitenancy enforcement to insert statement
 		// First, check if the proposed datarows keys are contained in entity available fields
 		$arr_DataRowsFields = array_keys($arr_DataRows);
 		$arr_AvailableFields = array_keys($this->availableFields);
@@ -452,9 +467,10 @@ abstract class Entity {
 			
 			
 			// Create the 'where' part
-			$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+			$arr_WhereOutput = $this->parseWhereArray($arr_Wheres);
 			$str_Where = $arr_WhereOutput['query'];
 			$str_Query .= $str_Where;
+
 			
 			// Create the parameters array
 			$arr_PreparedMarks = array();
@@ -510,7 +526,7 @@ abstract class Entity {
 		$str_Query = 'delete from ' . $this->entityReferenceTable . PHP_EOL;
 		
 		// Create the 'where' part
-		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres, $this->availableFields, $this->entityReferenceTable);
+		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres);
 		$str_Query .= $arr_WhereOutput['query'];
 		$arr_Parameters = $arr_WhereOutput['parameters'];
 		
@@ -528,18 +544,16 @@ abstract class Entity {
 	/** Parses Where array to compose a well formed Where condition
 	 *
 	 * @param array $arr_Wheres
-	 * @param array $arr_EntityFieldsData
-	 * @param string $str_TableName
 	 *
 	 * @return array
 	 */
-	protected function parseWhereArray($arr_Wheres, $arr_EntityFieldsData, $str_TableName) {
+	protected function parseWhereArray($arr_Wheres) {
 		if ($arr_Wheres !== NULL) {
 			$arr_WhereFields = array();
 			$arr_Parameters = array();
 
 			foreach ($arr_Wheres as $str_WhereColumn => $arr_WhereCondition) {
-				$str_WhereCondition = $str_TableName . '.' .
+				$str_WhereCondition = $this->entityReferenceTable . '.' .
 				                      $str_WhereColumn . ' ' . $arr_WhereCondition['operator'] . ' ';
 
 				// Currently the array arguments feature is used only in 'IN' conditions.
@@ -555,16 +569,20 @@ abstract class Entity {
 				}
 
 				foreach ($arr_WhereCondition['arguments'] as $str_Argument) {
-					$arr_Parameters[] = array($str_Argument => $arr_EntityFieldsData[$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's');
+					$arr_Parameters[] = array($str_Argument => $this->availableFields[$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's');
 				}
 
 				$arr_WhereFields[] = $str_WhereCondition;
 			}
 
 			$str_QueryString = ' where ' . implode(' and ', $arr_WhereFields);
+
+			$str_QueryString .= ' and ' . $this->entityReferenceTable . '.' . $this->entityDomainDependencyColumn . ' = ' . $this->currentCustomerID;
+
+
 		} else {
 			$arr_Parameters = NULL;
-			$str_QueryString = NULL;
+			$str_QueryString = ' where ' . $this->entityReferenceTable . '.' . $this->entityDomainDependencyColumn . ' = ' . $this->currentCustomerID;
 		}
 
 		$arr_Output = array(
