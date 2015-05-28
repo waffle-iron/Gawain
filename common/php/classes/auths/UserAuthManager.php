@@ -113,7 +113,7 @@ class UserAuthManager {
 	 * @throws Exception
 	 * @return boolean
 	 */
-	public function hasGrants($str_SessionID, $str_ModuleCode, $int_RequiredPermission = 0) {
+	public function hasGrants_old($str_SessionID, $str_ModuleCode, $int_RequiredPermission = 0) { // TODO: modify fuction and DB to add CRUD permissions
 		$str_Query = '
 				select
 					auth.writePermission
@@ -190,7 +190,7 @@ class UserAuthManager {
 			if ($this->isAuthenticated($str_SessionID)) {
 
 				// Checks if the user has the correct grants
-				if (!$this->hasGrants($str_SessionID, $str_Module)) {
+				if (!$this->hasGrants_old($str_SessionID, $str_Module)) {
 
 					if ($bool_SendHeader) {
 						header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
