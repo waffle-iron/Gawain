@@ -14,10 +14,7 @@
 			"js"  : [
 				"/gawain/common/js/vendor/Bootstrap/js/bootstrap.min.js"
 			],
-			"css" : [
-				"/gawain/common/js/vendor/Bootstrap/css/bootstrap.min.css",
-				"/gawain/common/js/vendor/Bootstrap/css/bootstrap-theme.css"
-			]
+			"css" : []
 		},
 		"dependencies" : [
 			"jQuery"
