@@ -1,19 +1,44 @@
 <?php
 
 require_once(__DIR__ . '/common/php/constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
+require_once(PHP_CLASSES_DIR . 'middlewares/CheckAuthenticationMiddleware.php');
+require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
 
-$obj_AthManager = new UserAuthManager();
 
-if (isset($_COOKIE['GawainSessionID'])) {
-	$str_SessionID = $_COOKIE['GawainSessionID'];
+\Slim\Slim::registerAutoloader();
 
-	// Checks if the session ID is valid
-	if (!$obj_AthManager->isAuthenticated($str_SessionID)) {
-		header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
-		exit;
-	}
-} else {
-	header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
-	exit;
-}
+
+// Creation of Slim app
+$app = new \Slim\Slim();
+
+
+// Settings
+$app->config(array(
+	             'debug' =>  true
+             ));
+
+
+// Middleware declaration
+$app->add(new \CheckAuthenticationMiddleware());
+
+
+
+// Default routing rule if the simple path is provided
+$app->get('/', function () use ($app) {
+	$app->redirect('/login');
+});
+
+
+
+// Login route
+$app->get('/login', function () use ($app) {
+
+})->name('loginPage');
+
+
+
+
+
+
+// Run the application
+$app->run();
