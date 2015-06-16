@@ -1,0 +1,67 @@
+{% extends 'page_base.twig' %}
+
+{% block navbar %}
+{% endblock %}
+
+
+{% block page_title %}
+    Gawain
+{% endblock %}
+
+
+{% block dependencies %}
+
+    {% for css_entry in page_dependencies.css if css_entry is not null%}
+        <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
+    {% endfor %}
+
+
+    {% for js_entry in page_dependencies.js %}
+        <script src="{{ js_entry }}"></script>
+    {% endfor %}
+
+{% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form class="form-horizontal" id="gawain-authentication-form">
+                <div class="form-group">
+                    <label for="gawain-login-username" class="col-md-2 control-label">Username</label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="gawain-login-username" placeholder="Username" name="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gawain-login-password" class="col-md-2 control-label">Password</label>
+                    <div class="col-md-10">
+                        <input type="password" class="form-control" id="gawain-login-password" placeholder="Password" name="password" data-gawain-hash="hash">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-primary gawain-controller-button" id="gawain-authentication-button"
+                                data-gawain-controller="authentication"
+                                data-gawain-controller-method="authenticate"
+                                data-gawain-request-method="POST"
+                                data-gawain-request-target="gawain-authentication-form"
+                                data-gawain-response-target="gawain-domain-viewport">Authenticate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12  gawain-viewport" id="gawain-domain-viewport">
+
+        </div>
+    </div>
+
+{% endblock %}
