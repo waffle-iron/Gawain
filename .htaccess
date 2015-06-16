@@ -1,4 +1,4 @@
 DirectoryIndex index.php index.html
 
 
-#FallbackResource /gawain/rest-api/apiGateway.php
+FallbackResource /gawain/rest-api/apiGateway.php
