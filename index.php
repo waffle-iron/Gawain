@@ -48,7 +48,7 @@ $app->add(new \CheckAuthenticationMiddleware());
 
 // Default routing rule if the simple path is provided
 $app->get('/', function () use ($app) {
-	$app->redirect('/login');
+	$app->redirect($app->urlFor('loginPage'));
 });
 
 
@@ -68,14 +68,42 @@ $app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
 
 	$app->view()->set('page_dependencies', $arr_PageDependencies);
 
-	$loader->addPath(MODULES_DIR . 'login/templates/html/Default');
-	$app->render('webpage.twig');
+	$loader->addPath(TEMPLATES_DIR . 'html/Default');
+	$app->render('login.twig');
 
 })->name('loginPage');
 
 
 
 
+// Modules routes group
+$app->group('/modules', function () use ($app, $loader, $obj_Jierarchy) {
+
+	$arr_ModulesList = array_diff(scandir(MODULES_DIR), array('..', '.'));
+
+	foreach ($arr_ModulesList as $str_Module) {
+		if (file_exists(MODULES_DIR . $str_Module . '/controller.php')) {
+			require(MODULES_DIR . $str_Module . '/controller.php');
+		}
+	}
+
+});
+
+
+
+
+
+
+// REST API routes group
+$app->group('/rest-api', function () use ($app, $loader, $obj_Jierarchy) {
+
+	$arr_ControllersList = array_diff(scandir(RESTAPI_DIR . 'controllers'), array('..', '.'));
+
+	foreach ($arr_ControllersList as $str_Controller) {
+		require(RESTAPI_DIR . 'controllers/' . $str_Controller);
+	}
+
+});
 
 
 // Run the application

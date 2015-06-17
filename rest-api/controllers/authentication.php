@@ -1,90 +1,74 @@
 <?php
 
 require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'net/ApiController.php');
+require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
-$obj_Controller = new ApiController('UserAuthManager', PHP_CLASSES_DIR . 'auths/UserAuthManager.php', 'login', $_COOKIE['GawainClientIP'], FALSE, array($_COOKIE['GawainClientIP']), FALSE, FALSE);
+$obj_UserAuthManager = new UserAuthManager($app->request->getIp());
 
-
-// Define custom methods for authentication
-$obj_Controller->registerMethod('POST', 'authenticate', array(
-		'writeGrant'	=>	0,
-		'arguments'		=>	isset($obj_Controller->requestArgs['data']) ? $obj_Controller->requestArgs['data'] : NULL
-));
+$app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 
 
-$obj_Controller->registerMethod('POST', 'isAuthenticated', array(
-		'writeGrant'	=>	0,
-		'arguments'		=>	array(
-			isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
-		)
-));
+	$app->post('/authenticate', function () use ($app, $obj_UserAuthManager) {
+
+		$str_Body = $app->request->getBody();
+		$arr_Body = json_decode($str_Body, true);
+
+		$str_Username = $arr_Body['username'];
+		$str_Password = $arr_Body['password'];
 
 
-/*$obj_Controller->registerMethod('POST', 'hasGrants', array(
-		'writeGrant'	=>	0,
-		'arguments'		=>	$obj_Controller->requestArgs['data']
-));*/
+		try {
+			$arr_Results = $obj_UserAuthManager->authenticate($str_Username, $str_Password);
+			$app->setCookie('GawainSessionID', $arr_Results['sessionID']);
+			$app->response->body($arr_Results['enabledCustomers']);
+		} catch (Exception $exc) {
+			$app->response->setStatus(401);
+		}
 
-
-$obj_Controller->registerMethod('POST', 'login', array(
-		'writeGrant'	=>	0,
-		'arguments'		=>	array(
-				isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL,
-				isset($obj_Controller->requestArgs['data']['selectedCustomer']) ? $obj_Controller->requestArgs['data']['selectedCustomer'] : NULL
-		)
-));
-
-
-$obj_Controller->registerMethod('GET', 'logout', array(
-		'writeGrant'	=>	0,
-		'arguments'		=>	array(
-			isset($_COOKIE['GawainSessionID']) ? $_COOKIE['GawainSessionID'] : NULL
-		)
-));
+	});
 
 
 
-// Call the requests method
-$mix_Response = $obj_Controller->callMethod();
+	$app->post('/login', function () use ($app, $obj_UserAuthManager) {
+
+		$str_Body = $app->request->getBody();
+		$arr_Body = json_decode($str_Body, true);
+
+		$str_SessionID = $app->getCookie('GawainSessionID');
+		$int_SelectedCustomer = $arr_Body['selectedCustomer'];
+
+		if ($obj_UserAuthManager->login($str_SessionID, $int_SelectedCustomer)) {
+			$app->redirect('/modules/activities');
+		} else {
+			$app->response->setStatus(403);
+		}
+
+	});
 
 
 
-// Different actions depending on method
-if ($mix_Response !== NULL) {
-	switch ($obj_Controller->requestArgs['method']) {
-		case 'authenticate':
-			setcookie('GawainSessionID', $mix_Response['sessionID'], NULL, '/');
-			header('Gawain-Response: Authenticated', 0, 200);
-			echo $mix_Response['enabledCustomers'];
-			break;
-			
-			
-		case 'login':
-			header('Gawain-Response: Logged In', 0, 200);
-			break;
-			
-			
-		case 'logout':
-			header('Gawain-Response: Logged Out', TRUE);
-			header('Location: ' . LOGOUT_LANDING_PAGE, TRUE);
-			setcookie('GawainSessionID', '', time() - 3600, '/');
-			break;
-			
-			
-		case 'isAuthenticated':
-			if ($mix_Response) {
-				header('Gawain-Response: Authorized', 0, 200);
-			} else {
-				header('Gawain-Response: Unauthorized', 0, 401);
-			}
-			break;
-			
-			
-		case 'hasGrants':
-			break;
-	}
-}
+	$app->get('/isAuthenticated', function () use ($app, $obj_UserAuthManager) {
+
+		if ($obj_UserAuthManager->isAuthenticated($app->getCookie('GawainSessionID'))) {
+			$app->response->setStatus(200);
+		} else {
+			$app->response->setStatus(401);
+		}
+
+	});
 
 
-?>
+	$app->post('/logout', function () use ($app, $obj_UserAuthManager) {
+
+		$str_SessionID = $app->getCookie('GawainSessionID');
+
+		if ($obj_UserAuthManager->logout($str_SessionID)) {
+			$app->redirect($app->urlFor('loginPage'));
+		} else {
+			$app->response->setStatus(403);
+		}
+
+	});
+
+
+});

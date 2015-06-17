@@ -15,10 +15,20 @@ class CheckAuthenticationMiddleware extends \Slim\Middleware {
 		// Get reference to application
 		$app = $this->app;
 
-		// Check if the current request is the login... in this case pass through the middleware
-		if (strpos($this->app->request()->getPathInfo(), 'login') !== false) {
-			$this->next->call();
-			return;
+
+		// List of exceptions that needs to pass through the check
+		$arr_RoutesExceptions = array(
+			'login',
+			'authentication'
+		);
+
+
+		// Check if the current request is the list of exceptions... in this case pass through the middleware
+		foreach ($arr_RoutesExceptions as $str_RouteException) {
+			if (strpos($this->app->request()->getPathInfo(), $str_RouteException) !== FALSE) {
+				$this->next->call();
+				return;
+			}
 		}
 
 		// Check if GawainSession cookie exists
