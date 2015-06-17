@@ -27,11 +27,23 @@ class CheckAuthenticationMiddleware extends \Slim\Middleware {
 		$obj_AuthManager = new UserAuthManager($app->request->getHost());
 
 
+		// Check if path is part of REST API, in this case no redirect is performed but only a halt
+		$bool_IsApi = strpos($this->app->request()->getPathInfo(), 'rest-api') !== false;
+
+
 		// If cookie is null, redirects to login
 		if (is_null($str_SessionCookie)) {
-			$app->response->redirect($app->urlFor('loginPage'));
+			if ($bool_IsApi) {
+				$app->response->setStatus(401);
+			} else {
+				$app->response->redirect($app->urlFor('loginPage'), 401);
+			}
 		} elseif (!$obj_AuthManager->isAuthenticated($str_SessionCookie)) { // If session is not valid, redirect to login
-			$app->response->redirect($app->urlFor('loginPage'));
+			if ($bool_IsApi) {
+				$app->response->setStatus(401);
+			} else {
+				$app->response->redirect($app->urlFor('loginPage'), 401);
+			}
 		} else {
 			$this->next->call();
 		}
