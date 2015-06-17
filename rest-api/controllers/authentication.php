@@ -3,7 +3,10 @@
 require_once(__DIR__ . '/../../common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
+
+
 $obj_UserAuthManager = new UserAuthManager($app->request->getIp());
+
 
 $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 
