@@ -41,7 +41,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 		$int_SelectedCustomer = $arr_Body['selectedCustomer'];
 
 		if ($obj_UserAuthManager->login($str_SessionID, $int_SelectedCustomer)) {
-			$app->redirect('/modules/activities');
+			$app->redirect($app->urlFor('activities_all'));
 		} else {
 			$app->response->setStatus(403);
 		}
