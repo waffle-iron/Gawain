@@ -12,7 +12,6 @@ $(function() {
 		var str_RequestMethod = $(this).attr('data-gawain-request-method');
 		var str_RequestTarget = $(this).attr('data-gawain-request-target');
 		var str_ResponseTarget = $(this).attr('data-gawain-response-target');
-		var str_ResponseRedirect = $(this).attr('data-gawain-response-redirect');
 
 		var str_WaitingSpinner = '<i class="fa fa-refresh fa-spin fa-3x"></i>';
 
@@ -85,15 +84,13 @@ $(function() {
 			       data:   JSON.stringify(obj_RequestBody)
 		       })
 			.done(function(str_Data) {
-			                 $('#' + str_ResponseTarget)
-				                 .hide()
-				                 .empty()
-				                 .html(str_Data)
-				                 .fadeIn(250);
-
-			                 if (str_ResponseRedirect !== undefined) {
-				                 window.location.replace(str_ResponseRedirect);
-			                 }
+			                  if (str_ResponseTarget !== undefined) {
+				                  $('#' + str_ResponseTarget)
+					                  .hide()
+					                  .empty()
+					                  .html(str_Data)
+					                  .fadeIn(250);
+			                  }
 			      });
 	});
 

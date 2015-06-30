@@ -15,7 +15,7 @@ $obj_AuthManager = new UserAuthManager();
 
 //$obj_AuthManager->logout($obj_Output['sessionID']);
 
-var_dump($obj_Manager->read(NULL));
+var_dump($obj_Manager->getReferentialValuesFor('activityStatusID'));
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 

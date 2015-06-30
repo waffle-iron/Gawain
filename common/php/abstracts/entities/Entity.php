@@ -32,10 +32,6 @@ abstract class Entity {
 	protected $availableFields;
 
 
-	// Currently enabled fields
-	protected $enabledFields;
-
-
 	// Current customer ID
 	public $currentCustomerID;
 
@@ -536,6 +532,47 @@ abstract class Entity {
 		$this->dbHandler->commit();
 		
 		return TRUE;
+	}
+
+
+	/** Gets the referential values for the given column
+	 *
+	 * @param string $str_ColumnName
+	 * @return mixed
+	 */
+	public function getReferentialValuesFor($str_ColumnName) {
+
+		if ($this->availableFields[$str_ColumnName]['referentialJoinType'] !== NULL
+			&& $this->availableFields[$str_ColumnName]['referentialTableName'] !== NULL
+			&& $this->availableFields[$str_ColumnName]['referentialCodeColumnName'] !== NULL
+			&& $this->availableFields[$str_ColumnName]['referentialValueColumnName'] !== NULL) {
+
+			$str_Query = '
+				select
+					' . $this->availableFields[$str_ColumnName]['referentialCodeColumnName'] . ' as ID,
+					' . $this->availableFields[$str_ColumnName]['referentialValueColumnName'] . ' as value
+				from ' . $this->availableFields[$str_ColumnName]['referentialTableName'] . ' ';
+
+			if ($this->availableFields[$str_ColumnName]['referentialCustomerDependencyColumnName'] !== NULL) {
+				$str_Query .= 'where ' .
+				              $this->availableFields[$str_ColumnName]['referentialCustomerDependencyColumnName'] .
+				              ' = ' . $this->currentCustomerID;
+			}
+
+			$arr_Result = $this->dbHandler->executePrepared($str_Query, NULL);
+			$arr_Output = array();
+
+			foreach ($arr_Result as $str_Value) {
+				$arr_Output[$str_Value['ID']] = $str_Value['value'];
+			}
+
+			return $arr_Output;
+
+
+		} else {
+			return false;
+		}
+
 	}
 
 
