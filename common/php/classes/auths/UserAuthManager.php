@@ -330,7 +330,7 @@ class UserAuthManager {
 				}
 				
 				$mix_Return =  '<hr>' .
-				               '<form class="form-horizontal" id="gawain-domain-selection-form">' .
+				               '<form class="form-horizontal" id="gawain-domain-selection-form" action="/gawain/rest-api/authentication/login" method="POST">' .
 				               '<div class="form-group">' .
 				               '<label for="gawain-domain-selector" class="col-md-2 control-label">Domain</label>' .
 				               '<div class="col-md-10">' .
@@ -341,12 +341,7 @@ class UserAuthManager {
 				               '</div>' .
 				               '<div class="form-group">
 									<div class="col-sm-offset-2 col-sm-10">
-										<button type="button" class="btn btn-primary gawain-controller-button" id="gawain-domain-selection-button"
-	                                            data-gawain-controller="authentication"
-	                                            data-gawain-controller-method="login"
-	                                            data-gawain-request-method="POST"
-	                                            data-gawain-request-target="gawain-domain-selection-form"
-												data-gawain-response-redirect="' . LOGIN_LANDING_PAGE . '">Login</button>
+										<button type="submit" class="btn btn-primary" id="gawain-domain-selection-button">Login</button>
 									</div>
 								</div>' .
 				               '</form>';

@@ -6,7 +6,7 @@ require_once(__DIR__ . '/../../../php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
-function data_source() {
+function data_source($str_SessionID, $str_CurrentModuleID = null) {
 
 	$obj_Options = new \Options();
 	$obj_DbHandler = db_autodefine($obj_Options);
@@ -36,11 +36,13 @@ function data_source() {
 				order by labels.moduleDisplayOrder, labels.moduleLabel';
 
 	$obj_Resultset = $obj_DbHandler->executePrepared($str_Query, array(
-		array($_COOKIE['GawainSessionID']  =>  's')
+		array($str_SessionID  =>  's')
 	));
 
 
-	$arr_Output['modules_data'] = $obj_Resultset;
+	$arr_Output['navbar_modules'] = $obj_Resultset;
+
+	$arr_Output['current_module'] = $str_CurrentModuleID;
 
 
 

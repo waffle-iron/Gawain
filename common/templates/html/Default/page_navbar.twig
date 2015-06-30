@@ -12,8 +12,8 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
 
-                {%  for row in modules_data %}
-                <li><a href="/gawain/modules/{{ row.moduleCode }}/">{{ row.moduleLabel }}</a></li>
+                {%  for row in navbar_data.navbar_modules %}
+                <li{% if navbar_data.current_module == row.moduleCode %} class="active"{% endif %}><a href="{{ urlFor(row.moduleCode) }}">{{ row.moduleLabel }}</a></li>
                 {% endfor %}
 
             </ul>
@@ -24,12 +24,12 @@
                 <li>
                     <div class="btn-group navbar-btn">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-user"></i> {{ username }} <i class="fa fa-caret-down"></i></button>
+                            <i class="fa fa-user"></i> {{ navbar_data.username }} <i class="fa fa-caret-down"></i></button>
 
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#">To be filled...</a></li>
                             <li class="divider"></li>
-                            <li><a href="/gawain/rest-api/authentication/logout/">Logout</a></li>
+                            <li><a href="{{ urlFor('logout') }}">Logout</a></li>
                         </ul>
                     </div>
                 </li>

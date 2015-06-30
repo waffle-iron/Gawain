@@ -6,13 +6,12 @@ require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
 
 require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
 require_once(PHP_VENDOR_DIR . 'Slim-Views/Twig.php');
-require_once(PHP_VENDOR_DIR . 'Slim-Views/TwigExtension.php');
-
-require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
-
 
 \Slim\Slim::registerAutoloader();
 Twig_Autoloader::register();
+
+require_once(PHP_VENDOR_DIR . 'Slim-Views/TwigExtension.php');
+require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
 
 
 // Creation of Slim app with Twig rendering engine (Uber coool)
@@ -77,17 +76,13 @@ $app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
 
 
 // Modules routes group
-$app->group('/modules', function () use ($app, $loader, $obj_Jierarchy) {
+$arr_ModulesList = array_diff(scandir(MODULES_DIR), array('..', '.'));
 
-	$arr_ModulesList = array_diff(scandir(MODULES_DIR), array('..', '.'));
-
-	foreach ($arr_ModulesList as $str_Module) {
-		if (file_exists(MODULES_DIR . $str_Module . '/controller.php')) {
-			require(MODULES_DIR . $str_Module . '/controller.php');
-		}
+foreach ($arr_ModulesList as $str_Module) {
+	if (file_exists(MODULES_DIR . $str_Module . '/controller.php')) {
+		require(MODULES_DIR . $str_Module . '/controller.php');
 	}
-
-});
+}
 
 
 

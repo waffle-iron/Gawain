@@ -35,13 +35,12 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 	$app->post('/login', function () use ($app, $obj_UserAuthManager) {
 
 		$str_Body = $app->request->getBody();
-		$arr_Body = json_decode($str_Body, true);
 
 		$str_SessionID = $app->getCookie('GawainSessionID');
-		$int_SelectedCustomer = $arr_Body['selectedCustomer'];
+		$int_SelectedCustomer = $app->request->post('selectedCustomer');
 
 		if ($obj_UserAuthManager->login($str_SessionID, $int_SelectedCustomer)) {
-			$app->redirect($app->urlFor('activities_all'));
+			$app->redirect($app->urlFor('activities'));
 		} else {
 			$app->response->setStatus(403);
 		}
@@ -61,7 +60,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 	});
 
 
-	$app->post('/logout', function () use ($app, $obj_UserAuthManager) {
+	$app->get('/logout', function () use ($app, $obj_UserAuthManager) {
 
 		$str_SessionID = $app->getCookie('GawainSessionID');
 
@@ -71,7 +70,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 			$app->response->setStatus(403);
 		}
 
-	});
+	})->name('logout');
 
 
 });
