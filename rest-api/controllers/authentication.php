@@ -22,7 +22,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 
 		try {
 			$arr_Results = $obj_UserAuthManager->authenticate($str_Username, $str_Password);
-			$app->setCookie('GawainSessionID', $arr_Results['sessionID']);
+			$app->setCookie('GawainSessionID', $arr_Results['sessionID'], 0);
 			$app->response->body($arr_Results['enabledCustomers']);
 		} catch (Exception $exc) {
 			$app->response->setStatus(401);
@@ -65,6 +65,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 		$str_SessionID = $app->getCookie('GawainSessionID');
 
 		if ($obj_UserAuthManager->logout($str_SessionID)) {
+			$app->deleteCookie('GawainSessionID');
 			$app->redirect($app->urlFor('loginPage'));
 		} else {
 			$app->response->setStatus(403);
