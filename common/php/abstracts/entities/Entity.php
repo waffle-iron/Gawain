@@ -14,6 +14,10 @@ abstract class Entity {
 
 	// Reference entity label
 	public $entityLabel;
+
+
+	// Reference entity item label
+	public $entityItemLabel;
 	
 	
 	// Entity main ID field
@@ -99,6 +103,7 @@ abstract class Entity {
 		$str_InfoPrepQuery =
 			'select
 				entities_label.entityLabel,
+				entities_label.entityItemLabel,
 				entities.entityReferenceTable,
 				entities.entityDomainDependencyColumnName
 			from entities_label
@@ -114,6 +119,7 @@ abstract class Entity {
 			));
 
 		$this->entityLabel = $obj_Result[0]['entityLabel'];
+		$this->entityItemLabel = $obj_Result[0]['entityItemLabel'];
 		$this->entityReferenceTable = $obj_Result[0]['entityReferenceTable'];
 		$this->entityDomainDependencyColumn = $obj_Result[0]['entityDomainDependencyColumnName'];
 	}
