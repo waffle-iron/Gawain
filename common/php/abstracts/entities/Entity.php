@@ -380,7 +380,11 @@ abstract class Entity {
 	 * @return boolean
 	 */
 	public function insert($arr_DataRows) {
-		// TODO: add multitenancy enforcement to insert statement
+
+		// Add multitenancy enforcement to insert statement
+		array_push($arr_DataRows, array($this->entityDomainDependencyColumn => $this->currentCustomerID));
+
+
 		// First, check if the proposed datarows keys are contained in entity available fields
 		$arr_DataRowsFields = array_keys($arr_DataRows);
 		$arr_AvailableFields = array_keys($this->availableFields);
@@ -400,7 +404,8 @@ abstract class Entity {
 			
 			foreach ($arr_DataRowsFields as $str_FieldName) {
 				$arr_PreparedMarks[] = '?';
-				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's';
+				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ||
+				                        $this->availableFields[$str_FieldName]['fieldType'] == 'BOOL' ? 'i' : 's';
 			}
 			
 			$str_Query .= 'values (' . implode(', ', $arr_PreparedMarks) . ')';
@@ -485,7 +490,8 @@ abstract class Entity {
 				
 			foreach ($arr_DataRowsFields as $str_FieldName) {
 				$arr_PreparedMarks[] = '?';
-				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ? 'i' : 's';
+				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ||
+				                        $this->availableFields[$str_FieldName]['fieldType'] == 'BOOL' ? 'i' : 's';
 			}
 				
 			$arr_ParametersValue = array_values($arr_DataRows);
@@ -616,7 +622,8 @@ abstract class Entity {
 				}
 
 				foreach ($arr_WhereCondition['arguments'] as $str_Argument) {
-					$arr_Parameters[] = array($str_Argument => $this->availableFields[$str_WhereColumn]['fieldType'] == 'NUM' ? 'i' : 's');
+					$arr_Parameters[] = array($str_Argument => $this->availableFields[$str_WhereColumn]['fieldType'] == 'NUM' ||
+					                                           $this->availableFields[$str_WhereColumn]['fieldType'] == 'BOOL' ? 'i' : 's');
 				}
 
 				$arr_WhereFields[] = $str_WhereCondition;
