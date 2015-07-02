@@ -1,8 +1,8 @@
 {% extends 'page_base.twig' %}
 
 
-{% block page_title %}
-    {{ module_item_label }} #{{ activity_ID }}
+{% block page_header %}
+    <h1 class="page-header">{{ module_item_label }} #{{ activity_ID }} <small>{{ activity_data.activityName }}</small></h1>
 {% endblock %}
 
 
@@ -22,15 +22,35 @@
 
 {% block page_content %}
 
-    <h2>{{ activity_data.activityName }}</h2>
+    <ul class="nav nav-pills gawain-nav-level-1">
+        <li role="presentation" class="active"><a href="#gawain-activity-details" role="tab" data-toggle="tab">Details</a></li>
+        <li role="presentation"><a href="#gawain-activity-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
+    </ul>
 
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-sm-2 col-md-3 control-label">{{ activity_fields['activityTypeID'].label }}</label>
-            <div class="col-sm-10 col-md-9">
-                <p class="form-control-static">{{ activity_data['activityTypeID'] }}</p>
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane active" id="gawain-activity-details">
+            <div class="row">
+                <div class="col-md-12">
+
+                    {% include 'activity_details.twig' %}
+
+                </div>
             </div>
         </div>
-    </form>
+
+
+        <div role="tabpanel" class="tab-pane" id="gawain-activity-gantt-chart">
+            <div class="row">
+                <div class="col-md-12">
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 
 {% endblock %}
