@@ -1,0 +1,9 @@
+/* This file contains the styles associated to buttons and various commands */
+
+/* Relocates the buttons in the page header (according to existing page header settings) */
+.gawain-navbar-buttongroup {
+	/*position : relative;
+	bottom: 0.2em;*/
+	margin-right : auto;
+	margin-left: 0;
+}

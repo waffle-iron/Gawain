@@ -17,7 +17,7 @@
 
                         {%  if activity.activityTypeID == activity_type.name %}
                             {
-                                id: "{{ activity.activityID }}",
+                                id: "{{ ID }}",
                                 text: "{{ activity.activityName }}",
                                 start_date: "{{ activity.activityStartDate|date('d/m/Y') }}",
                                 progress: {{ activity.activityCompletion / 100 }},

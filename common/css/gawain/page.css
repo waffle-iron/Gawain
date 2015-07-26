@@ -21,7 +21,8 @@ body {
 }
 
 
-/* Restyled page-header class to remove top margin */
+/* Restyled page-header class to remove top margin and bottom padding */
 .page-header {
 	margin-top: 0.5em;
+	padding-bottom: 0;
 }

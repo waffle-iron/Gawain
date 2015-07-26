@@ -92,6 +92,6 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
 		$app->render('webpage_single_show.twig');
 
-	});
+	})->name('activity_details_show');
 
 });

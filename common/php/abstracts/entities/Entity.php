@@ -8,52 +8,70 @@ require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 abstract class Entity {
 
-	// Reference entity code
+	/** Reference entity code
+	 * @var Integer
+	 */
 	protected $entityCode;
 
 
-	// Reference entity label
+	/** Reference entity label
+	 * @var string
+	 */
 	public $entityLabel;
 
 
-	// Reference entity item label
+	/** Reference entity item label
+	 * @var string
+	 */
 	public $entityItemLabel;
 	
-	
-	// Entity main ID field
+
+	/** Entity main ID field
+	 * @var string
+	 */
 	public $mainID;
 	
-	
-	// Entity reference table
+
+	/** Entity reference table
+	 * @var string
+	 */
 	protected $entityReferenceTable;
 
 
-	// Entity domain dependency column
+	/** Entity domain dependency column
+	 * @var string
+	 */
 	protected $entityDomainDependencyColumn;
 
 
-	// All available fields for selected entity
+	/** All available fields for selected entity
+	 * @var array
+	 */
 	protected $availableFields;
 
 
-	// Current customer ID
+	/** Current customer ID
+	 * @var integer
+	 */
 	public $currentCustomerID;
 
 
-	// Session code
+	/** Session code
+	 * @var string
+	 */
 	protected $sessionID;
 
 
-	// Database Hanlder
+	/** Database Hanlder
+	 * @var dbHandler
+	 */
 	protected $dbHandler;
 
 
-	// Options
+	/** Options
+	 * @var Options
+	 */
 	protected $options;
-
-
-	// Renderer
-	protected $renderer;
 
 
 
@@ -77,7 +95,9 @@ abstract class Entity {
 	}
 
 
-	// Get current customer ID
+	/** Get current customer ID
+	 *
+	 */
 	private function getCurrentCustomer() {
 
 		$str_CustomerPrepQuery =
@@ -97,7 +117,9 @@ abstract class Entity {
 
 
 
-	// Get entity info
+	/** Get entity info
+	 *
+	 */
 	private function getEntityInfo() {
 
 		$str_InfoPrepQuery =
@@ -118,15 +140,17 @@ abstract class Entity {
 				array($this->entityCode => 's')
 			));
 
-		$this->entityLabel = $obj_Result[0]['entityLabel'];
-		$this->entityItemLabel = $obj_Result[0]['entityItemLabel'];
-		$this->entityReferenceTable = $obj_Result[0]['entityReferenceTable'];
-		$this->entityDomainDependencyColumn = $obj_Result[0]['entityDomainDependencyColumnName'];
+		$this->entityLabel = isset($obj_Result[0]['entityLabel']) ? $obj_Result[0]['entityLabel'] : NULL;
+		$this->entityItemLabel = isset($obj_Result[0]['entityItemLabel']) ? $obj_Result[0]['entityItemLabel'] : NULL;
+		$this->entityReferenceTable = isset($obj_Result[0]['entityReferenceTable']) ? $obj_Result[0]['entityReferenceTable'] : NULL;
+		$this->entityDomainDependencyColumn = isset($obj_Result[0]['entityDomainDependencyColumnName']) ? $obj_Result[0]['entityDomainDependencyColumnName'] : NULL;
 	}
 
 
 
-	// Get all the available fields for selected entity
+	/** Get all the available fields for selected entity
+	 *
+	 */
 	private function getAvailableFields() {
 
 		$str_AvailableFieldsPrepQuery = 
@@ -189,8 +213,7 @@ abstract class Entity {
 
 
 
-	/**
-	 * Reads data
+	/** Reads data
 	 *
 	 * <p>
 	 * The Where conditions are expressed in this way:
@@ -230,34 +253,40 @@ abstract class Entity {
 		// First compile the select query string
 		foreach ($this->availableFields as $str_FieldName => $arr_FieldEntry) {
 
-			// Checks if the field references another table
-			if ($arr_FieldEntry['referentialJoinType'] !== NULL
-			    && $arr_FieldEntry['referentialTableName'] !== NULL
-			    && $arr_FieldEntry['referentialCodeColumnName'] !== NULL
-			    && $arr_FieldEntry['referentialValueColumnName'] !== NULL
-				&& !in_array($str_FieldName, $arr_SkipReferentialsFor)) {
+			// Skip printing of customer dependency column (hidden multitenancy) and main index printing (always included further in the code)
+			if ($str_FieldName != $this->entityDomainDependencyColumn
+				&& $str_FieldName != $this->mainID) {
 
-				$str_Random = generate_random_string();
+				// Checks if the field references another table
+				if ($arr_FieldEntry['referentialJoinType'] !== NULL
+				    && $arr_FieldEntry['referentialTableName'] !== NULL
+				    && $arr_FieldEntry['referentialCodeColumnName'] !== NULL
+				    && $arr_FieldEntry['referentialValueColumnName'] !== NULL
+				    && !in_array($str_FieldName, $arr_SkipReferentialsFor)
+				) {
 
-				$arr_Joins[] = array(
-					'table' => $arr_FieldEntry['referentialTableName'],
-					'alias' => $str_Random,
-					'customerColumnName' => $arr_FieldEntry['referentialCustomerDependencyColumnName'],
-					'join' => array(
-						'type' => $arr_FieldEntry['referentialJoinType'],
-						'innerColumnName' => $str_FieldName,
-						'outerColumnName' => $arr_FieldEntry['referentialCodeColumnName']
-					)
-				);
+					$str_Random = generate_random_string();
 
-				// Checks if the referenced table has a customer dependency
-				if ($arr_FieldEntry['referentialCustomerDependencyColumnName'] !== NULL) {
-					$arr_CustomerDependency[] = $str_Random . '.' . $arr_FieldEntry['referentialCustomerDependencyColumnName'] . ' = ' . $this->currentCustomerID;
+					$arr_Joins[] = array(
+						'table' => $arr_FieldEntry['referentialTableName'],
+						'alias' => $str_Random,
+						'customerColumnName' => $arr_FieldEntry['referentialCustomerDependencyColumnName'],
+						'join' => array(
+							'type' => $arr_FieldEntry['referentialJoinType'],
+							'innerColumnName' => $str_FieldName,
+							'outerColumnName' => $arr_FieldEntry['referentialCodeColumnName']
+						)
+					);
+
+					// Checks if the referenced table has a customer dependency
+					if ($arr_FieldEntry['referentialCustomerDependencyColumnName'] !== NULL) {
+						$arr_CustomerDependency[] = $str_Random . '.' . $arr_FieldEntry['referentialCustomerDependencyColumnName'] . ' = ' . $this->currentCustomerID;
+					}
+
+					$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $str_FieldName;
+				} else {
+					$arr_SelectFields[] = $this->entityReferenceTable . '.' . $str_FieldName;
 				}
-
-				$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $str_FieldName;
-			} else {
-				$arr_SelectFields[] = $this->entityReferenceTable . '.' . $str_FieldName;
 			}
 
 		}

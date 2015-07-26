@@ -1,8 +1,21 @@
 {% extends 'page_base.twig' %}
 
 
+{% block page_title %}
+    {{ module_item_label }} #{{ activity_ID }} - {{ activity_data.activityName }}
+{% endblock %}
+
+
 {% block page_header %}
-    <h1 class="page-header">{{ module_item_label }} #{{ activity_ID }} <small>{{ activity_data.activityName }}</small></h1>
+        <h1>{{ module_item_label }} #{{ activity_ID }} <small>{{ activity_data.activityName }}</small>
+
+            <div class="btn-group gawain-navbar-buttongroup" role="group">
+                <button type="button" class="btn btn-default">Edit</button>
+                <button type="button" class="btn btn-default">Clone</button>
+                <button type="button" class="btn btn-default">Delete</button>
+            </div>
+
+        </h1>
 {% endblock %}
 
 
