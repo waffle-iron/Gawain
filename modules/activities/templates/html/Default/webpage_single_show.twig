@@ -7,12 +7,26 @@
 
 
 {% block page_header %}
-        <h1>{{ module_item_label }} #{{ activity_ID }} <small>{{ activity_data.activityName }}</small>
+        <h1>{{ module_item_label }} #{{ activity_ID }} <small>{{ activity_data.activityName }}
+                <span class="label label-info">
+                    {{ activity_data.activityTypeID }}
+                </span>
+                {% if activity_data.activityIsCompleted == 1 %}
+                    <span class="label label-success">
+                        Completed
+                    </span>
+                {% endif %}
+                {% if activity_data.activityIsOfficial == 0 %}
+                    <span class="label label-warning">
+                        Internal
+                    </span>
+                {% endif %}
+            </small>
 
             <div class="btn-group pull-right" role="group">
-                <button type="button" class="btn btn-default">Edit</button>
-                <button type="button" class="btn btn-default">Clone</button>
-                <button type="button" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Edit</button>
+                <button type="button" class="btn btn-default"><i class="fa fa-clone"></i> Clone</button>
+                <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
             </div>
 
         </h1>
@@ -36,8 +50,10 @@
 {% block page_content %}
 
     <ul class="nav nav-pills gawain-nav-level-1">
-        <li role="presentation" class="active"><a href="#gawain-activity-details" role="tab" data-toggle="tab">Details</a></li>
+        <li role="presentation" class="active"><a href="#gawain-activity-details" role="tab" data-toggle="tab">Dashboard</a></li>
         <li role="presentation"><a href="#gawain-activity-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
+        <li role="presentation"><a href="#gawain-activity-posts" role="tab" data-toggle="tab">Posts</a></li>
+        <li role="presentation"><a href="#gawain-resources-timeslots" role="tab" data-toggle="tab">Resources and Timeslots</a></li>
     </ul>
 
     <div class="tab-content">
@@ -54,6 +70,28 @@
 
 
         <div role="tabpanel" class="tab-pane" id="gawain-activity-gantt-chart">
+            <div class="row">
+                <div class="col-md-12">
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="gawain-activity-posts">
+            <div class="row">
+                <div class="col-md-12">
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="gawain-resources-timeslots">
             <div class="row">
                 <div class="col-md-12">
 
