@@ -87,6 +87,8 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('module_item_label', $str_ItemLabel);
 
+		var_dump($arr_ActivityData);
+
 
 		// Renders the page
 		$loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
