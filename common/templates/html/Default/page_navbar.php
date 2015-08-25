@@ -56,7 +56,7 @@ function data_source($str_SessionID, $str_CurrentModuleID = null) {
 			where sessions.sessionID = ?';
 
 	$obj_Resultset = $obj_DbHandler->executePrepared($str_Query, array(
-		array($_COOKIE['GawainSessionID']  =>  's')
+		array($str_SessionID  =>  's')
 	));
 
 	$arr_Output['username'] = $obj_Resultset[0]['userName'];
