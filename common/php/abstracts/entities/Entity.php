@@ -337,58 +337,12 @@ abstract class Entity {
 		// Execute the query and get raw data
 		$arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
 
-		$arr_Dataset = array(
-			'data'      =>  array(),
-			'fields'    =>  array()
-		);
-
 
 		// Groups data using main ID as key
 		foreach ($arr_GetResult as $arr_GetRow) {
 			$str_MainID = $arr_GetRow['_entityMainID'];
 			unset($arr_GetRow['_entityMainID']);
-			$arr_Dataset['data'][$str_MainID] = $arr_GetRow;
-		}
-
-
-		// Add fields info to dataset
-		foreach ($this->availableFields as $str_ColumnName => $arr_ColumnSpec) {
-			$arr_Dataset['fields'][$str_ColumnName]['label'] = $arr_ColumnSpec['fieldLabel'];
-			$arr_Dataset['fields'][$str_ColumnName]['orderingIndex'] = $arr_ColumnSpec['fieldOrderingIndex'];
-			$arr_Dataset['fields'][$str_ColumnName]['comment'] = $arr_ColumnSpec['fieldComment'];
-			$arr_Dataset['fields'][$str_ColumnName]['type'] = $arr_ColumnSpec['fieldType'];
-			$arr_Dataset['fields'][$str_ColumnName]['autoIncrement'] = (boolean) $arr_ColumnSpec['fieldIsAutoIncrement'];
-			$arr_Dataset['fields'][$str_ColumnName]['nillable'] = (boolean) $arr_ColumnSpec['fieldIsNillable'];
-
-
-			if ($arr_ColumnSpec['referentialJoinType'] !== NULL) {
-				$str_ReferentialFieldsQuery = 'select ' .
-				                              $arr_ColumnSpec['referentialCodeColumnName'] . ' as ID, ' .
-				                              $arr_ColumnSpec['referentialValueColumnName'] . ' as value ' .
-				                              ' from ' . $arr_ColumnSpec['referentialTableName'];
-
-				if ($arr_ColumnSpec['referentialCustomerDependencyColumnName'] !== NULL) {
-					$str_ReferentialFieldsQuery .= ' where ' . $arr_ColumnSpec['referentialCustomerDependencyColumnName'] . ' = ?';
-					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
-					                                                   array(
-						                                                   array($this->currentCustomerID  =>  'i')
-					                                                   ));
-
-				} else {
-					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, NULL);
-				}
-
-
-				$arr_Referentials = array();
-
-				foreach ($arr_Resultset as $arr_Row) {
-					$arr_Referentials[$arr_Row['ID']] = $arr_Row['value'];
-				}
-
-				$arr_Dataset['fields'][$str_ColumnName]['referentials'] = $arr_Referentials;
-			} else {
-				$arr_Dataset['fields'][$str_ColumnName]['referentials'] = NULL;
-			}
+			$arr_Dataset[$str_MainID] = $arr_GetRow;
 		}
 
 
@@ -674,6 +628,67 @@ abstract class Entity {
 		);
 
 		return($arr_Output);
+	}
+
+
+	/** Gets information about entity fields (name, format, referentials and so on)
+	 *
+	 * @return array
+	 */
+	public function getFieldsData() {
+
+		$arr_Fields = array();
+
+		foreach ($this->availableFields as $str_ColumnName => $arr_ColumnSpec) {
+			$arr_Fields[$str_ColumnName]['label'] = $arr_ColumnSpec['fieldLabel'];
+			$arr_Fields[$str_ColumnName]['orderingIndex'] = $arr_ColumnSpec['fieldOrderingIndex'];
+			$arr_Fields[$str_ColumnName]['comment'] = $arr_ColumnSpec['fieldComment'];
+			$arr_Fields[$str_ColumnName]['type'] = $arr_ColumnSpec['fieldType'];
+			$arr_Fields[$str_ColumnName]['autoIncrement'] = (boolean) $arr_ColumnSpec['fieldIsAutoIncrement'];
+			$arr_Fields[$str_ColumnName]['nillable'] = (boolean) $arr_ColumnSpec['fieldIsNillable'];
+
+
+			if ($arr_ColumnSpec['referentialJoinType'] !== NULL) {
+				$str_ReferentialFieldsQuery = 'select ' .
+				                              $arr_ColumnSpec['referentialCodeColumnName'] . ' as ID, ' .
+				                              $arr_ColumnSpec['referentialValueColumnName'] . ' as value ' .
+				                              ' from ' . $arr_ColumnSpec['referentialTableName'];
+
+				if ($arr_ColumnSpec['referentialCustomerDependencyColumnName'] !== NULL) {
+					$str_ReferentialFieldsQuery .= ' where ' . $arr_ColumnSpec['referentialCustomerDependencyColumnName'] . ' = ?';
+					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
+					                                                   array(
+						                                                   array($this->currentCustomerID  =>  'i')
+					                                                   ));
+
+				} else {
+					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, NULL);
+				}
+
+
+				$arr_Referentials = array();
+
+				foreach ($arr_Resultset as $arr_Row) {
+					$arr_Referentials[$arr_Row['ID']] = $arr_Row['value'];
+				}
+
+				$arr_Fields[$str_ColumnName]['referentials'] = $arr_Referentials;
+			} else {
+				$arr_Fields[$str_ColumnName]['referentials'] = NULL;
+			}
+		}
+
+		return $arr_Fields;
+
+	}
+
+
+	/** Gets the domain dependency column for the given entity
+	 *
+	 * @return string
+	 */
+	public function getDomainDependencyColumn() {
+		return $this->entityDomainDependencyColumn;
 	}
 	
 	
