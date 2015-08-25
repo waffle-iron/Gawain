@@ -21,24 +21,24 @@
                     <table class="table table-striped gawain-treegrid">
                         <thead>
                         <tr>
-                            <th>{{ activities.fields.activityID.label }}</th>
-                            <th>{{ activities.fields.activityName.label }}</th>
-                            <th>{{ activities.fields.activityCode.label }}</th>
-                            <th>{{ activities.fields.activityManagerNick.label }}</th>
-                            <th>{{ activities.fields.activityCustomerReference.label }}</th>
-                            <th>{{ activities.fields.activityStatusID.label }}</th>
-                            <th>{{ activities.fields.activityCompletion.label }}</th>
+                            <th>{{ activities_fields.activityID.label }}</th>
+                            <th>{{ activities_fields.activityName.label }}</th>
+                            <th>{{ activities_fields.activityCode.label }}</th>
+                            <th>{{ activities_fields.activityManagerNick.label }}</th>
+                            <th>{{ activities_fields.activityCustomerReference.label }}</th>
+                            <th>{{ activities_fields.activityStatusID.label }}</th>
+                            <th>{{ activities_fields.activityCompletion.label }}</th>
                         </tr>
                         </thead>
 
                         <tbody>
 
-                        {% for ID,activity in activities.data %}
+                        {% for ID,activity in activities_data %}
 
                             {%  if activity.activityTypeID == activity_type.name %}
 
                                 <tr id="{{ ID }}" class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
-                                    <td><a href="{{ urlFor('activity_details_show', {activityID: ID}) }}">{{ ID }}</a></td>
+                                    <td><a href="{{ urlFor('activity_show', {activityID: ID}) }}">{{ ID }}</a></td>
                                     <td>{{ activity.activityName }}</td>
                                     <td>{{ activity.activityCode }}</td>
                                     <td>{{ activity.activityManagerNick }}</td>
@@ -63,7 +63,11 @@
 
                 </div>
             </div>
+
+            <button class="btn btn-primary"><i class="fa fa-plus-circle"></i> New Activity ({{ activity_type.name }})</button>
+
         </div>
 
     {% endfor %}
+
 </div>

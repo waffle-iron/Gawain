@@ -13,7 +13,7 @@
                         open: false
                     }{% if not loop.last %},{% endif %}
 
-                    {% for ID,activity in activities.data %}
+                    {% for ID,activity in activities_data %}
 
                         {%  if activity.activityTypeID == activity_type.name %}
                             {

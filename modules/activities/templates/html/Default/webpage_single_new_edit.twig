@@ -1,0 +1,112 @@
+{% extends 'page_base.twig' %}
+
+{% block page_title %}
+    New {{ module_item_label }}
+{% endblock %}
+
+
+{% block dependencies %}
+
+    {% for css_entry in page_dependencies.css if css_entry is not null%}
+        <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
+    {% endfor %}
+
+
+    {% for js_entry in page_dependencies.js %}
+        <script src="{{ js_entry }}"></script>
+    {% endfor %}
+
+{% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <form class="form-horizontal" id="gawain-activity-edit-form" method="post" action="{{ urlFor('activity_new_save') }}">
+
+        {% for activity_field_ID in activity_fields|keys %}
+            <div class="form-group">
+                
+                {% if activity_field_ID != activity_domain_dependency_column and activity_field_ID != activity_main_id %}
+
+                    <label class="col-sm-4 col-md-3 control-label" for="{{ activity_field_ID }}">{{ activity_fields[activity_field_ID].label }}</label>
+
+                    {% if activity_fields[activity_field_ID].type == 'BOOL' %}
+
+                        <div class="col-sm-8 col-md-9 checkbox disabled">
+                            <label>
+                                <input type="checkbox" value="" {% if activity_data[activity_field_ID] == 1 %}checked{% endif %}>
+                            </label>
+                        </div>
+
+
+
+                    {% elseif activity_fields[activity_field_ID].type == 'NUM' and activity_fields[activity_field_ID].referentials is null %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <input type="number" class="form-control" name="{{ activity_field_ID }}" id="{{ activity_field_ID }}" value="{{ activity_data[activity_field_ID] }}">
+                        </div>
+
+
+
+                    {% elseif activity_fields[activity_field_ID].referentials is not null %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <select class="form-control" name="{{ activity_field_ID }}" id="{{ activity_field_ID }}">
+
+                                {% if activity_fields[activity_field_ID].nillable %}
+                                    <option value=""></option>
+                                {% endif %}
+
+                                {% for item_referential_key,item_referential_value in activity_fields[activity_field_ID].referentials %}
+                                    <option value="{{ item_referential_key }}" {% if item_referential_value == activity_data[activity_field_ID] %}selected{% endif %}>{{ item_referential_value }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+
+
+
+                    {% elseif activity_fields[activity_field_ID].type == 'LONGTEXT' %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <textarea class="form-control" rows="5" name="{{ activity_field_ID }}" id="{{ activity_field_ID }}">{{ activity_data[activity_field_ID] }}</textarea>
+                        </div>
+
+
+
+                    {% elseif activity_fields[activity_field_ID].type == 'DATE' %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <input type="date" class="form-control" name="{{ activity_field_ID }}" id="{{ activity_field_ID }}" value="{{ activity_data[activity_field_ID] }}">
+                        </div>
+
+
+
+                    {% elseif activity_fields[activity_field_ID].type == 'CHAR' %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <input type="text" class="form-control" name="{{ activity_field_ID }}" id="{{ activity_field_ID }}" value="{{ activity_data[activity_field_ID] }}">
+                        </div>
+
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+        {% endfor %}
+
+        <hr>
+
+        <div class="pull-right">
+            <button type="reset" class="btn btn-warning" form="gawain-activity-edit-form">Clean all fields</button>
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+
+
+    </form>
+
+
+{% endblock %}
