@@ -249,6 +249,7 @@ abstract class Entity {
 		$arr_SelectFields = array();
 		$arr_CustomerDependency = array();
 		$arr_Joins = array();
+		$arr_Dataset = array();
 
 		// First compile the select query string
 		foreach ($this->availableFields as $str_FieldName => $arr_FieldEntry) {
@@ -365,7 +366,10 @@ abstract class Entity {
 	public function insert($arr_DataRows) {
 
 		// Add multitenancy enforcement to insert statement
-		array_push($arr_DataRows, array($this->entityDomainDependencyColumn => $this->currentCustomerID));
+		if (isset($arr_DataRows[$this->entityDomainDependencyColumn])) {
+			unset($arr_DataRows[$this->entityDomainDependencyColumn]);
+		}
+		$arr_DataRows[$this->entityDomainDependencyColumn] = $this->currentCustomerID;
 
 
 		// First, check if the proposed datarows keys are contained in entity available fields
@@ -386,20 +390,24 @@ abstract class Entity {
 			$arr_Parameters = array();
 			
 			foreach ($arr_DataRowsFields as $str_FieldName) {
-				$arr_PreparedMarks[] = '?';
-				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ||
-				                        $this->availableFields[$str_FieldName]['fieldType'] == 'BOOL' ? 'i' : 's';
+				if (!is_null($arr_DataRows[$str_FieldName])) {
+					$arr_PreparedMarks[] = '?';
+					$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ||
+					                        $this->availableFields[$str_FieldName]['fieldType'] == 'BOOL' ? 'i' : 's';
+				} else {
+					$arr_PreparedMarks[] = 'null';
+				}
 			}
 			
 			$str_Query .= 'values (' . implode(', ', $arr_PreparedMarks) . ')';
 			
-			$arr_ParametersValue = array_values($arr_DataRows);
+			$arr_ParametersValue = array_values(array_filter($arr_DataRows));
 			
 			for ($int_ParameterCounter = 0; $int_ParameterCounter < sizeof($arr_ParametersType); $int_ParameterCounter++) {
 				$arr_Parameters[] = array($arr_ParametersValue[$int_ParameterCounter] => $arr_ParametersType[$int_ParameterCounter]);
 			}
-			
-			
+
+
 			// Starts transaction and insert data
 			$this->dbHandler->beginTransaction();
 			$this->dbHandler->executePrepared($str_Query, $arr_Parameters);
