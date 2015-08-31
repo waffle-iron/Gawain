@@ -159,8 +159,28 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 
 
 
-	$app->post('/new/save', function () use ($app) {
+	$app->post('/new/save', function () use ($app, $str_SessionID) {
 
+		// Get all the POST variables
+		$arr_PostVariables = $app->request->post();
+
+		// Get all activity fields info
+		$obj_Activity = new Activity($str_SessionID);
+		$arr_ActivityFields = $obj_Activity->getFieldsData();
+
+		// Iterate over array to nullify empty strings
+		foreach (array_keys($arr_PostVariables) as $str_PostKey) {
+			if ($arr_PostVariables[$str_PostKey] == '') {
+				if ($arr_ActivityFields[$str_PostKey]['type'] == 'BOOL') {
+					$arr_PostVariables[$str_PostKey] = 0;
+				} else {
+					$arr_PostVariables[$str_PostKey] = NULL;
+				}
+			}
+		}
+
+		// Save activity data
+		$obj_Activity->insert($arr_PostVariables);
 		$app->redirect($app->urlFor('activities'));
 
 	})->name('activity_new_save');
