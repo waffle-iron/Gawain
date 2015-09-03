@@ -8,6 +8,27 @@
 {% endblock %}
 
 
+
+{% block page_header %}
+
+    <h1>
+        {{ module_label }}
+
+
+        <div class="pull-right" role="group">
+            <a class="btn btn-primary"
+               role="button"
+               href="{{ urlFor('activity_new') }}">
+                <i class="fa fa-plus-circle"></i> New Activity
+            </a>
+        </div>
+
+    </h1>
+
+{% endblock %}
+
+
+
 {% block dependencies %}
 
     {% for css_entry in page_dependencies.css if css_entry is not null%}
