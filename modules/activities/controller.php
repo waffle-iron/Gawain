@@ -38,6 +38,32 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$arr_ActivityTypes = $obj_Activity->getActivityTypes();
 
 
+		// Prepare Gantt chart data outside the template
+		$arr_GanttData = array();
+		foreach ($arr_ActivityTypes as $str_ActivityTypeID => $arr_ActivityType) {
+			$arr_GanttData[] = array(
+				'id'    =>  'type-' . $arr_ActivityType['name'],
+				'text'  =>  $arr_ActivityType['name'],
+				'progress'  =>  0,
+				'open'  =>  FALSE
+			);
+
+			foreach ($arr_Activities as $str_ActivityID => $arr_Activity) {
+				if ($arr_Activity['activityTypeID'] == $arr_ActivityType['name']) {
+					$arr_GanttData[] = array(
+						'id'    =>  $str_ActivityID,
+						'text'  =>  $arr_Activity['activityName'],
+						'start_date'    =>  date_format(date_create($arr_Activity['activityStartDate']), 'd-m-Y'),
+						'progress'  =>  round($arr_Activity['activityCompletion'] / 100, 5),
+						'duration'  =>  $arr_Activity['activityEstimatedEffortHours'] / 8,
+						'parent'    =>  is_null($arr_Activity['activityParentID']) ? 'type-' . $arr_ActivityType['name'] : $arr_Activity['activityParentID'],
+						'open'      => FALSE
+					);
+				}
+			}
+		}
+
+
 		// Prepare the view
 		$app->view()->set('page_dependencies', $arr_PageDependencies);
 		$app->view()->set('navbar_data', $arr_NavbarData);
@@ -45,6 +71,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('activities_fields', $arr_ActivityFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('activity_types', $arr_ActivityTypes);
+		$app->view()->set('gantt_data', json_encode($arr_GanttData));
 
 
 		// Renders the page

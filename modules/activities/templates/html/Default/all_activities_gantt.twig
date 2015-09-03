@@ -4,88 +4,60 @@
 
     <script type="text/javascript">
         var obj_GanttData = {
-            data: [
-                {% for typeID,activity_type in activity_types %}
-                    {
-                        id: "type-{{ activity_type.name }}",
-                        text: "{{ activity_type.name }}",
-                        progress: 0,
-                        open: false
-                    }{% if not loop.last %},{% endif %}
-
-                    {% for ID,activity in activities_data %}
-
-                        {%  if activity.activityTypeID == activity_type.name %}
-                            {
-                                id: "{{ ID }}",
-                                text: "{{ activity.activityName }}",
-                                start_date: "{{ activity.activityStartDate|date('d/m/Y') }}",
-                                progress: {{ activity.activityCompletion / 100 }},
-                                duration: {{ activity.activityEstimatedEffortHours / 8 }},
-                                parent: {% if activity.activityParentID is not null %}"{{ activity.activityParentID }}"{% else %}"type-{{ activity.activityTypeID }}"{% endif %},
-                                open: false
-                            }{% if not loop.last %},{% endif %}
-                        {% endif %}
-
-                    {% endfor %}
-                {% if not loop.last %},{% endif %}
-                {% endfor %}
-            ]
+            data : {{ gantt_data|raw }}
         };
 
 
-
-        gantt.templates.scale_cell_class = function(date){
-            if(date.getDay()==0||date.getDay()==6){
+        gantt.templates.scale_cell_class = function (date) {
+            if (date.getDay() == 0 || date.getDay() == 6) {
                 return "weekend";
             }
         };
-        gantt.templates.task_cell_class = function(item,date){
-            if(date.getDay()==0||date.getDay()==6){
-                return "weekend" ;
+        gantt.templates.task_cell_class = function (item, date) {
+            if (date.getDay() == 0 || date.getDay() == 6) {
+                return "weekend";
             }
         };
 
         gantt.config.columns = [
             {
-                name:   "text",
-                label:  "{{ activities.fields.activityName.label }}",
-                width:  "*",
-                tree:   true
+                name  : "text",
+                label : "{{ activities_fields.activityName.label }}",
+                width : "*",
+                tree  : true
             },
             {
-                name:   "start_time",
-                label:  "{{ activities.fields.activityStartDate.label }}",
-                template:   function(obj){
-                        return gantt.templates.date_grid(obj.start_date);
-                    },
-                align:  "center",
-                width:  "*"
+                name     : "start_time",
+                label    : "{{ activities_fields.activityStartDate.label }}",
+                template : function (obj) {
+                    return gantt.templates.date_grid(obj.start_date);
+                },
+                align    : "center",
+                width    : "*"
             },
             {
-                name:   "duration",
-                label:  "{{ activities.fields.activityEstimatedEffortHours.label }}",
-                align:  "center",
-                width:  "*"
+                name  : "duration",
+                label : "{{ activities_fields.activityEstimatedEffortHours.label }}",
+                align : "center",
+                width : "*"
             }
         ];
 
         gantt.config.subscales = [
-            {unit:"month", step:1, date:"%M" },
-            {unit:"year", step:1, date:"%Y" }
+            {unit : "month", step : 1, date : "%M"},
+            {unit : "year", step : 1, date : "%Y"}
         ];
-        gantt.config.scale_height = 3*28;
+        gantt.config.scale_height = 3 * 28;
 
         gantt.addMarker({
-                            start_date: new Date(),
-                            css: "today",
-                            text: "Today",
-                            title:"Today"
-                        });
+            start_date : new Date(),
+            css        : "today",
+            text       : "Today",
+            title      : "Today"
+        });
 
 
-
-
+        gantt.config.fit_tasks = true;
         gantt.config.readonly = true;
         gantt.config.autosize = "xy";
         gantt.config.work_time = true;
