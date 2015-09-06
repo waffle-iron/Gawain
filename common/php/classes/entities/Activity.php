@@ -9,7 +9,7 @@ class Activity extends Entity {
 	public function __construct($str_SessionID) {
 
 		// Sets entity reference code
-		$this->entityCode = 'activity';
+		$this->type = 'activity';
 
 		// Call parent constructor
 		parent::__construct($str_SessionID);
