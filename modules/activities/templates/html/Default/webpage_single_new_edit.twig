@@ -58,7 +58,7 @@
                                    name="{{ activity_field_ID }}"
                                    id="{{ activity_field_ID }}"
                                    value="{{ activity_data[activity_field_ID] }}"
-                                   {% if activity_fields[activity_field_ID].nillable == false %}required{% endif %}>
+                                   {% if activity_fields[activity_field_ID].isNillable == false %}required{% endif %}>
                         </div>
 
 
@@ -69,9 +69,9 @@
                             <select class="form-control"
                                     name="{{ activity_field_ID }}"
                                     id="{{ activity_field_ID }}"
-                                    {% if activity_fields[activity_field_ID].nillable == false %}required{% endif %}>
+                                    {% if activity_fields[activity_field_ID].isNillable == false %}required{% endif %}>
 
-                                {% if activity_fields[activity_field_ID].nillable %}
+                                {% if activity_fields[activity_field_ID].isNillable %}
                                     <option value=""></option>
                                 {% endif %}
 
@@ -105,7 +105,7 @@
                                    name="{{ activity_field_ID }}"
                                    id="{{ activity_field_ID }}"
                                    value="{{ activity_data[activity_field_ID] }}"
-                                   {% if activity_fields[activity_field_ID].nillable == false %}required{% endif %}>
+                                   {% if activity_fields[activity_field_ID].isNillable == false %}required{% endif %}>
                         </div>
 
 
@@ -118,7 +118,7 @@
                                    name="{{ activity_field_ID }}"
                                    id="{{ activity_field_ID }}"
                                    value="{{ activity_data[activity_field_ID] }}"
-                                   {% if activity_fields[activity_field_ID].nillable == false %}required{% endif %}>
+                                   {% if activity_fields[activity_field_ID].isNillable == false %}required{% endif %}>
                         </div>
 
 

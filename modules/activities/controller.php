@@ -34,7 +34,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$obj_Activity = new Activity($str_SessionID);
 		$arr_Activities = $obj_Activity->read(NULL, array('activityParentID'));
 		$arr_ActivityFields = $obj_Activity->getFieldsData();
-		$str_ModuleLabel = $obj_Activity->entityLabel;
+		$str_ModuleLabel = $obj_Activity->getLabel();
 		$arr_ActivityTypes = $obj_Activity->getActivityTypes();
 
 
@@ -104,8 +104,8 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$obj_Activity = new Activity($str_SessionID);
 		$arr_ActivityData = $obj_Activity->read($activityID);
 		$arr_ActivityFields = $obj_Activity->getFieldsData();
-		$str_ModuleLabel = $obj_Activity->entityLabel;
-		$str_ItemLabel = $obj_Activity->entityItemLabel;
+		$str_ModuleLabel = $obj_Activity->getLabel();
+		$str_ItemLabel = $obj_Activity->getItemLabel();
 
 
 		// Prepare the view
@@ -152,9 +152,9 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$arr_ActivityData = is_null($int_ClonedActivityID) ? NULL : $obj_Activity->read($int_ClonedActivityID);
 		$arr_ActivityFields = $obj_Activity->getFieldsData();
 		$str_DomainDependencyColumn = $obj_Activity->getDomainDependencyColumn();
-		$str_MainID = $obj_Activity->mainID;
-		$str_ModuleLabel = $obj_Activity->entityLabel;
-		$str_ItemLabel = $obj_Activity->entityItemLabel;
+		$str_MainID = $obj_Activity->getPrimaryKey();
+		$str_ModuleLabel = $obj_Activity->getLabel();
+		$str_ItemLabel = $obj_Activity->getItemLabel();
 
 
 		// If the type is specified in the request, the field is automatically populated, else it is empty
