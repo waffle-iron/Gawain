@@ -178,5 +178,17 @@
 		"dependencies" : [
 			"jquery-treegrid"
 		]
+	},
+
+	"jsgantt-improved"             : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.js"
+			],
+			"css" : [
+				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.css"
+			]
+		},
+		"dependencies" : []
 	}
 }
