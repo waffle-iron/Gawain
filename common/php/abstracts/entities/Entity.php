@@ -5,43 +5,46 @@ require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 
-
+/**
+ * Class from which derives all the other entities defined in Gawain.
+ * To implement a new entity, the class must inherit this abstract
+ */
 abstract class Entity {
 
 	/** Reference entity code
 	 * @var Integer
 	 */
-	protected $entityCode;
+	protected $type;
 
 
 	/** Reference entity label
 	 * @var string
 	 */
-	public $entityLabel;
+	protected $label;
 
 
 	/** Reference entity item label
 	 * @var string
 	 */
-	public $entityItemLabel;
-	
+	protected $itemLabel;
+
 
 	/** Entity main ID field
 	 * @var string
 	 */
-	public $mainID;
-	
+	protected $primaryKey;
+
 
 	/** Entity reference table
 	 * @var string
 	 */
-	protected $entityReferenceTable;
+	protected $referenceTable;
 
 
 	/** Entity domain dependency column
 	 * @var string
 	 */
-	protected $entityDomainDependencyColumn;
+	protected $domainDependencyColumn;
 
 
 	/** All available fields for selected entity
@@ -53,7 +56,7 @@ abstract class Entity {
 	/** Current customer ID
 	 * @var integer
 	 */
-	public $currentCustomerID;
+	protected $currentCustomerID;
 
 
 	/** Session code
@@ -74,9 +77,21 @@ abstract class Entity {
 	protected $options;
 
 
+	/** Entity ID
+	 * @var mixed
+	 */
+	protected $ID;
+
+
+	/** Entity data (collected after loading)
+	 * @var array
+	 */
+	protected $data;
+
+
 
 	/** Constructor
-	 * 
+	 *
 	 * @param string $str_SessionID
 	 */
 	public function __construct($str_SessionID) {
@@ -137,13 +152,26 @@ abstract class Entity {
 		$obj_Result = $this->dbHandler->executePrepared($str_InfoPrepQuery,
 			array(
 				array($this->currentCustomerID => 'i'),
-				array($this->entityCode => 's')
+				array($this->type => 's')
 			));
 
-		$this->entityLabel = isset($obj_Result[0]['entityLabel']) ? $obj_Result[0]['entityLabel'] : NULL;
-		$this->entityItemLabel = isset($obj_Result[0]['entityItemLabel']) ? $obj_Result[0]['entityItemLabel'] : NULL;
-		$this->entityReferenceTable = isset($obj_Result[0]['entityReferenceTable']) ? $obj_Result[0]['entityReferenceTable'] : NULL;
-		$this->entityDomainDependencyColumn = isset($obj_Result[0]['entityDomainDependencyColumnName']) ? $obj_Result[0]['entityDomainDependencyColumnName'] : NULL;
+		// Parsing entity general info
+		$this->label =
+			isset($obj_Result[0]['entityLabel']) ?
+				$obj_Result[0]['entityLabel'] :
+				NULL;
+		$this->itemLabel =
+			isset($obj_Result[0]['entityItemLabel']) ?
+				$obj_Result[0]['entityItemLabel'] :
+				NULL;
+		$this->referenceTable =
+			isset($obj_Result[0]['entityReferenceTable']) ?
+				$obj_Result[0]['entityReferenceTable'] :
+				NULL;
+		$this->domainDependencyColumn =
+			isset($obj_Result[0]['entityDomainDependencyColumnName']) ?
+				$obj_Result[0]['entityDomainDependencyColumnName'] :
+				NULL;
 	}
 
 
@@ -180,30 +208,74 @@ abstract class Entity {
 		$obj_Result = $this->dbHandler->executePrepared($str_AvailableFieldsPrepQuery,
 			array(
 				array($this->currentCustomerID  =>  'i'),
-				array($this->entityCode => 's')
+				array($this->type => 's')
 			));
 
+
+		// Parsing entity fields info
 		foreach ($obj_Result as $obj_ResultEntry) {
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldIsAutoIncrement'] = $obj_ResultEntry['fieldIsAutoIncrement'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldIsNillable'] = $obj_ResultEntry['fieldIsNillable'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['isAutoIncrement'] =
+				(boolean) $obj_ResultEntry['fieldIsAutoIncrement'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['isNillable'] =
+				(boolean) $obj_ResultEntry['fieldIsNillable'];
 			
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldType'] = $obj_ResultEntry['fieldType'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['type'] =
+				$obj_ResultEntry['fieldType'];
 			
-			$this->availableFields[$obj_ResultEntry['columnName']]['referentialJoinType'] = $obj_ResultEntry['referentialJoinType'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['referentialTableName'] = $obj_ResultEntry['referentialTableName'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCodeColumnName'] = $obj_ResultEntry['referentialCodeColumnName'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['referentialValueColumnName'] = $obj_ResultEntry['referentialValueColumnName'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCustomerDependencyColumnName'] = $obj_ResultEntry['referentialCustomerDependencyColumnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialJoinType'] =
+				$obj_ResultEntry['referentialJoinType'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialTableName'] =
+				$obj_ResultEntry['referentialTableName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCodeColumnName'] =
+				$obj_ResultEntry['referentialCodeColumnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialValueColumnName'] =
+				$obj_ResultEntry['referentialValueColumnName'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['referentialCustomerDependencyColumnName'] =
+				$obj_ResultEntry['referentialCustomerDependencyColumnName'];
 			
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['comment'] =
+				$obj_ResultEntry['fieldComment'];
 
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldLabel'] = $obj_ResultEntry['fieldLabel'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldOrderingIndex'] = $obj_ResultEntry['fieldOrderingIndex'];
-			$this->availableFields[$obj_ResultEntry['columnName']]['fieldComment'] = $obj_ResultEntry['fieldComment'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['label'] =
+				$obj_ResultEntry['fieldLabel'];
+			$this->availableFields[$obj_ResultEntry['columnName']]['orderingIndex'] =
+				$obj_ResultEntry['fieldOrderingIndex'];
 
-			
+
+			// Search for entity primary key
 			if ($obj_ResultEntry['fieldIsMainID'] == 1) {
-				$this->mainID = $obj_ResultEntry['columnName'];
+				$this->primaryKey = $obj_ResultEntry['columnName'];
+			}
+
+
+			// Additional info about referentials
+			if ($obj_ResultEntry['referentialJoinType'] !== NULL) {
+				$str_ReferentialFieldsQuery = 'select ' .
+				                              $obj_ResultEntry['referentialCodeColumnName'] . ' as ID, ' .
+				                              $obj_ResultEntry['referentialValueColumnName'] . ' as value ' .
+				                              ' from ' . $obj_ResultEntry['referentialTableName'];
+
+				if ($obj_ResultEntry['referentialCustomerDependencyColumnName'] !== NULL) {
+					$str_ReferentialFieldsQuery .= ' where ' . $obj_ResultEntry['referentialCustomerDependencyColumnName'] . ' = ?';
+					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
+					                                                   array(
+						                                                   array($this->currentCustomerID  =>  'i')
+					                                                   ));
+
+				} else {
+					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, NULL);
+				}
+
+
+				$arr_Referentials = array();
+
+				foreach ($arr_Resultset as $arr_Row) {
+					$arr_Referentials[$arr_Row['ID']] = $arr_Row['value'];
+				}
+
+				$this->availableFields[$obj_ResultEntry['columnName']]['referentials'] = $arr_Referentials;
+			} else {
+				$this->availableFields[$obj_ResultEntry['columnName']]['referentials'] = NULL;
 			}
 
 		}
@@ -236,7 +308,7 @@ abstract class Entity {
 		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
 		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
 			$arr_Wheres = array(
-				$this->mainID => array(
+				$this->primaryKey => array(
 					'operator' => '=',
 					'arguments' => array(
 						$arr_Wheres
@@ -255,8 +327,8 @@ abstract class Entity {
 		foreach ($this->availableFields as $str_FieldName => $arr_FieldEntry) {
 
 			// Skip printing of customer dependency column (hidden multitenancy) and main index printing (always included further in the code)
-			if ($str_FieldName != $this->entityDomainDependencyColumn
-				&& $str_FieldName != $this->mainID) {
+			if ($str_FieldName != $this->domainDependencyColumn
+				&& $str_FieldName != $this->primaryKey) {
 
 				// Checks if the field references another table
 				if ($arr_FieldEntry['referentialJoinType'] !== NULL
@@ -286,27 +358,27 @@ abstract class Entity {
 
 					$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $str_FieldName;
 				} else {
-					$arr_SelectFields[] = $this->entityReferenceTable . '.' . $str_FieldName;
+					$arr_SelectFields[] = $this->referenceTable . '.' . $str_FieldName;
 				}
 			}
 
 		}
 
 		// In any case, always add main ID as first field
-		array_unshift($arr_SelectFields, $this->entityReferenceTable . '.' . $this->mainID . ' as _entityMainID');
+		array_unshift($arr_SelectFields, $this->referenceTable . '.' . $this->primaryKey . ' as _entityMainID');
 
 
 		$str_QueryString = 'select ' . PHP_EOL;
 		$str_QueryString .= implode(', ' . PHP_EOL, $arr_SelectFields) . PHP_EOL;
 
 		// If the domain dependency is set, a subquery is printed instead of the raw table name
-		if ($this->entityDomainDependencyColumn !== NULL) {
+		if ($this->domainDependencyColumn !== NULL) {
 			$str_QueryString .= 'from (select * from ' .
-			                    $this->entityReferenceTable .
-			                    ' where ' . $this->entityDomainDependencyColumn . ' = ' .
-			                    $this->currentCustomerID . ') ' . $this->entityReferenceTable . PHP_EOL;
+			                    $this->referenceTable .
+			                    ' where ' . $this->domainDependencyColumn . ' = ' .
+			                    $this->currentCustomerID . ') ' . $this->referenceTable . PHP_EOL;
 		} else {
-			$str_QueryString .= 'from ' . $this->entityReferenceTable . PHP_EOL;
+			$str_QueryString .= 'from ' . $this->referenceTable . PHP_EOL;
 		}
 
 
@@ -321,7 +393,7 @@ abstract class Entity {
 				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  $arr_RefData['table'] . ' ' . $arr_RefData['alias'] . PHP_EOL;
 			}
 
-			$str_JoinString .= 'on ' . $this->entityReferenceTable . '.' . $arr_RefData['join']['innerColumnName'] . ' = ' .
+			$str_JoinString .= 'on ' . $this->referenceTable . '.' . $arr_RefData['join']['innerColumnName'] . ' = ' .
 			                   $arr_RefData['alias'] . '.' . $arr_RefData['join']['outerColumnName'] . PHP_EOL;
 		}
 
@@ -366,10 +438,10 @@ abstract class Entity {
 	public function insert($arr_DataRows) {
 
 		// Add multitenancy enforcement to insert statement
-		if (isset($arr_DataRows[$this->entityDomainDependencyColumn])) {
-			unset($arr_DataRows[$this->entityDomainDependencyColumn]);
+		if (isset($arr_DataRows[$this->domainDependencyColumn])) {
+			unset($arr_DataRows[$this->domainDependencyColumn]);
 		}
-		$arr_DataRows[$this->entityDomainDependencyColumn] = $this->currentCustomerID;
+		$arr_DataRows[$this->domainDependencyColumn] = $this->currentCustomerID;
 
 
 		// First, check if the proposed datarows keys are contained in entity available fields
@@ -381,7 +453,7 @@ abstract class Entity {
 			
 		} else {
 			// Compose the insert statement
-			$str_Query = 'insert into ' . $this->entityReferenceTable . PHP_EOL;
+			$str_Query = 'insert into ' . $this->referenceTable . PHP_EOL;
 			$str_Query .= '(' . implode(', ', $arr_DataRowsFields) . ') ' . PHP_EOL;
 			
 			// Loop to insert prepared statement marks
@@ -435,7 +507,7 @@ abstract class Entity {
 		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
 		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
 			$arr_Wheres = array(
-					$this->mainID => array(
+					$this->primaryKey => array(
 							'operator' => '=',
 							'arguments' => array(
 									$arr_Wheres
@@ -454,7 +526,7 @@ abstract class Entity {
 		} else {
 			
 			// Compose the update statement
-			$str_Query = 'update ' . $this->entityReferenceTable . PHP_EOL;
+			$str_Query = 'update ' . $this->referenceTable . PHP_EOL;
 			
 			// Create the 'set' part
 			$str_Set = 'set ';
@@ -516,7 +588,7 @@ abstract class Entity {
 		// If $arr_Wheres is not an array, the main ID is assumed to be passed instead
 		if (!is_array($arr_Wheres) && $arr_Wheres !== NULL) {
 			$arr_Wheres = array(
-					$this->mainID => array(
+					$this->primaryKey => array(
 							'operator' => '=',
 							'arguments' => array(
 									$arr_Wheres
@@ -526,7 +598,7 @@ abstract class Entity {
 		}
 		
 		// Start writing the query
-		$str_Query = 'delete from ' . $this->entityReferenceTable . PHP_EOL;
+		$str_Query = 'delete from ' . $this->referenceTable . PHP_EOL;
 		
 		// Create the 'where' part
 		$arr_WhereOutput = $this->parseWhereArray($arr_Wheres);
@@ -597,7 +669,7 @@ abstract class Entity {
 			$arr_Parameters = array();
 
 			foreach ($arr_Wheres as $str_WhereColumn => $arr_WhereCondition) {
-				$str_WhereCondition = $this->entityReferenceTable . '.' .
+				$str_WhereCondition = $this->referenceTable . '.' .
 				                      $str_WhereColumn . ' ' . $arr_WhereCondition['operator'] . ' ';
 
 				// Currently the array arguments feature is used only in 'IN' conditions.
@@ -613,8 +685,8 @@ abstract class Entity {
 				}
 
 				foreach ($arr_WhereCondition['arguments'] as $str_Argument) {
-					$arr_Parameters[] = array($str_Argument => $this->availableFields[$str_WhereColumn]['fieldType'] == 'NUM' ||
-					                                           $this->availableFields[$str_WhereColumn]['fieldType'] == 'BOOL' ? 'i' : 's');
+					$arr_Parameters[] = array($str_Argument => $this->availableFields[$str_WhereColumn]['type'] == 'NUM' ||
+					                                           $this->availableFields[$str_WhereColumn]['type'] == 'BOOL' ? 'i' : 's');
 				}
 
 				$arr_WhereFields[] = $str_WhereCondition;
@@ -622,12 +694,12 @@ abstract class Entity {
 
 			$str_QueryString = ' where ' . implode(' and ', $arr_WhereFields);
 
-			$str_QueryString .= ' and ' . $this->entityReferenceTable . '.' . $this->entityDomainDependencyColumn . ' = ' . $this->currentCustomerID;
+			$str_QueryString .= ' and ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->currentCustomerID;
 
 
 		} else {
 			$arr_Parameters = NULL;
-			$str_QueryString = ' where ' . $this->entityReferenceTable . '.' . $this->entityDomainDependencyColumn . ' = ' . $this->currentCustomerID;
+			$str_QueryString = ' where ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->currentCustomerID;
 		}
 
 		$arr_Output = array(
@@ -644,50 +716,7 @@ abstract class Entity {
 	 * @return array
 	 */
 	public function getFieldsData() {
-
-		$arr_Fields = array();
-
-		foreach ($this->availableFields as $str_ColumnName => $arr_ColumnSpec) {
-			$arr_Fields[$str_ColumnName]['label'] = $arr_ColumnSpec['fieldLabel'];
-			$arr_Fields[$str_ColumnName]['orderingIndex'] = $arr_ColumnSpec['fieldOrderingIndex'];
-			$arr_Fields[$str_ColumnName]['comment'] = $arr_ColumnSpec['fieldComment'];
-			$arr_Fields[$str_ColumnName]['type'] = $arr_ColumnSpec['fieldType'];
-			$arr_Fields[$str_ColumnName]['autoIncrement'] = (boolean) $arr_ColumnSpec['fieldIsAutoIncrement'];
-			$arr_Fields[$str_ColumnName]['nillable'] = (boolean) $arr_ColumnSpec['fieldIsNillable'];
-
-
-			if ($arr_ColumnSpec['referentialJoinType'] !== NULL) {
-				$str_ReferentialFieldsQuery = 'select ' .
-				                              $arr_ColumnSpec['referentialCodeColumnName'] . ' as ID, ' .
-				                              $arr_ColumnSpec['referentialValueColumnName'] . ' as value ' .
-				                              ' from ' . $arr_ColumnSpec['referentialTableName'];
-
-				if ($arr_ColumnSpec['referentialCustomerDependencyColumnName'] !== NULL) {
-					$str_ReferentialFieldsQuery .= ' where ' . $arr_ColumnSpec['referentialCustomerDependencyColumnName'] . ' = ?';
-					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
-					                                                   array(
-						                                                   array($this->currentCustomerID  =>  'i')
-					                                                   ));
-
-				} else {
-					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, NULL);
-				}
-
-
-				$arr_Referentials = array();
-
-				foreach ($arr_Resultset as $arr_Row) {
-					$arr_Referentials[$arr_Row['ID']] = $arr_Row['value'];
-				}
-
-				$arr_Fields[$str_ColumnName]['referentials'] = $arr_Referentials;
-			} else {
-				$arr_Fields[$str_ColumnName]['referentials'] = NULL;
-			}
-		}
-
-		return $arr_Fields;
-
+		return $this->availableFields;
 	}
 
 
@@ -696,10 +725,34 @@ abstract class Entity {
 	 * @return string
 	 */
 	public function getDomainDependencyColumn() {
-		return $this->entityDomainDependencyColumn;
+		return $this->domainDependencyColumn;
 	}
 	
 	
-	
+	/** Gets the label of the current entity
+	 *
+	 * @return string
+	 */
+	public function getLabel() {
+		return $this->label;
+	}
+
+
+	/** Get the item label (i.e. the label given to each record of the current entity)
+	 *
+	 * @return string
+	 */
+	public function getItemLabel() {
+		return $this->itemLabel;
+	}
+
+
+	/** Gets the primary key field of the current entity
+	 *
+	 * @return string
+	 */
+	public function getPrimaryKey() {
+		return $this->primaryKey;
+	}
 
 }
