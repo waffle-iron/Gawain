@@ -44,7 +44,7 @@ function array2xml($arr_Array) {
 	return $obj_XML->asXML();
 
 
-	// Function defination to convert array to xml
+	// Function definition to convert array to xml
 	function array_to_xml($data, &$xml_data) {
 
 		foreach( $data as $key => $value ) {
