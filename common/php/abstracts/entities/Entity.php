@@ -53,10 +53,10 @@ abstract class Entity {
 	protected $availableFields;
 
 
-	/** Current customer ID
+	/** Current domain ID
 	 * @var integer
 	 */
-	protected $currentCustomerID;
+	protected $domainID;
 
 
 	/** Session code
@@ -126,7 +126,7 @@ abstract class Entity {
 				array($this->sessionID => 's')
 			));
 
-		$this->currentCustomerID = $arr_Result[0]['customerID'];
+		$this->domainID = $arr_Result[0]['customerID'];
 
 	}
 
@@ -151,7 +151,7 @@ abstract class Entity {
 
 		$obj_Result = $this->dbHandler->executePrepared($str_InfoPrepQuery,
 			array(
-				array($this->currentCustomerID => 'i'),
+				array($this->domainID => 'i'),
 				array($this->type => 's')
 			));
 
@@ -207,7 +207,7 @@ abstract class Entity {
 	
 		$obj_Result = $this->dbHandler->executePrepared($str_AvailableFieldsPrepQuery,
 			array(
-				array($this->currentCustomerID  =>  'i'),
+				array($this->domainID  =>  'i'),
 				array($this->type => 's')
 			));
 
@@ -259,7 +259,7 @@ abstract class Entity {
 					$str_ReferentialFieldsQuery .= ' where ' . $obj_ResultEntry['referentialCustomerDependencyColumnName'] . ' = ?';
 					$arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
 					                                                   array(
-						                                                   array($this->currentCustomerID  =>  'i')
+						                                                   array($this->domainID  =>  'i')
 					                                                   ));
 
 				} else {
@@ -353,7 +353,7 @@ abstract class Entity {
 
 					// Checks if the referenced table has a customer dependency
 					if ($arr_FieldEntry['referentialCustomerDependencyColumnName'] !== NULL) {
-						$arr_CustomerDependency[] = $str_Random . '.' . $arr_FieldEntry['referentialCustomerDependencyColumnName'] . ' = ' . $this->currentCustomerID;
+						$arr_CustomerDependency[] = $str_Random . '.' . $arr_FieldEntry['referentialCustomerDependencyColumnName'] . ' = ' . $this->domainID;
 					}
 
 					$arr_SelectFields[] = $str_Random . '.' . $arr_FieldEntry['referentialValueColumnName'] . ' as ' . $str_FieldName;
@@ -376,7 +376,7 @@ abstract class Entity {
 			$str_QueryString .= 'from (select * from ' .
 			                    $this->referenceTable .
 			                    ' where ' . $this->domainDependencyColumn . ' = ' .
-			                    $this->currentCustomerID . ') ' . $this->referenceTable . PHP_EOL;
+			                    $this->domainID . ') ' . $this->referenceTable . PHP_EOL;
 		} else {
 			$str_QueryString .= 'from ' . $this->referenceTable . PHP_EOL;
 		}
@@ -388,7 +388,7 @@ abstract class Entity {
 		foreach ($arr_Joins as $arr_RefData) {
 			if ($arr_RefData['customerColumnName'] !== NULL) {
 				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  PHP_EOL;
-				$str_JoinString .= '(select * from ' . $arr_RefData['table'] . ' where ' . $arr_RefData['customerColumnName'] . ' = ' . $this->currentCustomerID . ') '. $arr_RefData['alias'] . PHP_EOL;
+				$str_JoinString .= '(select * from ' . $arr_RefData['table'] . ' where ' . $arr_RefData['customerColumnName'] . ' = ' . $this->domainID . ') '. $arr_RefData['alias'] . PHP_EOL;
 			} else {
 				$str_JoinString .= $arr_RefData['join']['type'] . ' join ' .  $arr_RefData['table'] . ' ' . $arr_RefData['alias'] . PHP_EOL;
 			}
@@ -441,7 +441,7 @@ abstract class Entity {
 		if (isset($arr_DataRows[$this->domainDependencyColumn])) {
 			unset($arr_DataRows[$this->domainDependencyColumn]);
 		}
-		$arr_DataRows[$this->domainDependencyColumn] = $this->currentCustomerID;
+		$arr_DataRows[$this->domainDependencyColumn] = $this->domainID;
 
 
 		// First, check if the proposed datarows keys are contained in entity available fields
@@ -511,6 +511,12 @@ abstract class Entity {
 							'operator' => '=',
 							'arguments' => array(
 									$arr_Wheres
+							)
+					),
+					$this->domainDependencyColumn => array(
+							'operator' => '=',
+							'arguments' => array(
+								$this->domainID
 							)
 					)
 			);
@@ -593,6 +599,12 @@ abstract class Entity {
 							'arguments' => array(
 									$arr_Wheres
 							)
+					),
+					$this->domainDependencyColumn => array(
+						'operator' => '=',
+						'arguments' => array(
+							$this->domainID
+						)
 					)
 			);
 		}
@@ -635,7 +647,7 @@ abstract class Entity {
 			if ($this->availableFields[$str_ColumnName]['referentialCustomerDependencyColumnName'] !== NULL) {
 				$str_Query .= 'where ' .
 				              $this->availableFields[$str_ColumnName]['referentialCustomerDependencyColumnName'] .
-				              ' = ' . $this->currentCustomerID;
+				              ' = ' . $this->domainID;
 			}
 
 			$arr_Result = $this->dbHandler->executePrepared($str_Query, NULL);
@@ -694,12 +706,12 @@ abstract class Entity {
 
 			$str_QueryString = ' where ' . implode(' and ', $arr_WhereFields);
 
-			$str_QueryString .= ' and ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->currentCustomerID;
+			$str_QueryString .= ' and ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->domainID;
 
 
 		} else {
 			$arr_Parameters = NULL;
-			$str_QueryString = ' where ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->currentCustomerID;
+			$str_QueryString = ' where ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->domainID;
 		}
 
 		$arr_Output = array(

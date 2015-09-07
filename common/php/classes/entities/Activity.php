@@ -34,7 +34,7 @@ class Activity extends Entity {
 
 		$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
 			array(
-				array($this->currentCustomerID  =>  'i')
+				array($this->domainID  =>  'i')
 			));
 
 		$arr_Output = array();
