@@ -31,36 +31,50 @@ function get_timestamp() {
 /** Converts a given array into XML string
  *
  * @param array $arr_Array The input array
+ * @param string $str_StartTag string The root XML element
  * @return string
  */
-function array2xml($arr_Array) {
+function array2xml($arr_Array, $str_StartTag) {
 
-	$obj_XML = new SimpleXMLElement('<?xml version="1.0"?>');
+	$obj_XML = new SimpleXMLElement('<?xml version="1.0"?><' . $str_StartTag . '></' . $str_StartTag . '>');
 
 	// Recursive internal function, see below
-	array_to_xml($arr_Array, $obj_XML);
+	_array_to_xml($arr_Array, $obj_XML);
 
 	// Outputs the XML string
 	return $obj_XML->asXML();
 
+}
 
-	// Function definition to convert array to xml
-	function array_to_xml($data, &$xml_data) {
 
-		foreach( $data as $key => $value ) {
 
-			if( is_array($value) ) {
+/** Recursive function to convert array into XML. Internal use only!!
+ *
+ * @param array $arr_Data
+ * @param SimpleXMLElement $xml_Data
+ */
+function _array_to_xml($arr_Data, &$xml_Data) {
 
-				if( is_numeric($key) ){
-					$key = 'item'.$key; //dealing with <0/>..<n/> issues
+	foreach ($arr_Data as $str_Key => $mix_Value) {
+
+		if (is_array($mix_Value)) {
+
+			$arr_ValueKeys = array_keys($mix_Value);
+			if (is_numeric($arr_ValueKeys[0])) {
+
+				foreach ($mix_Value as $mix_ValueInner) {
+					$xml_Subnode = $xml_Data->addChild($str_Key);
+					_array_to_xml($mix_ValueInner, $xml_Subnode);
 				}
 
-				$subnode = $xml_data->addChild($key);
-				array_to_xml($value, $subnode);
-
 			} else {
-				$xml_data->addChild("$key",htmlspecialchars("$value"));
+				$xml_Subnode = $xml_Data->addChild($str_Key);
+				_array_to_xml($mix_Value, $xml_Subnode);
 			}
+
+		} else {
+
+			$xml_Data->addChild($str_Key, htmlspecialchars($mix_Value));
 
 		}
 
