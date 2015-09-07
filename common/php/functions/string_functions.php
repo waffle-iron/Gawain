@@ -26,3 +26,44 @@ function get_timestamp() {
 
 	return $str_Timestamp;
 }
+
+
+/** Converts a given array into XML string
+ *
+ * @param array $arr_Array The input array
+ * @return string
+ */
+function array2xml($arr_Array) {
+
+	$obj_XML = new SimpleXMLElement('<?xml version="1.0"?>');
+
+	// Recursive internal function, see below
+	array_to_xml($arr_Array, $obj_XML);
+
+	// Outputs the XML string
+	return $obj_XML->asXML();
+
+
+	// Function defination to convert array to xml
+	function array_to_xml($data, &$xml_data) {
+
+		foreach( $data as $key => $value ) {
+
+			if( is_array($value) ) {
+
+				if( is_numeric($key) ){
+					$key = 'item'.$key; //dealing with <0/>..<n/> issues
+				}
+
+				$subnode = $xml_data->addChild($key);
+				array_to_xml($value, $subnode);
+
+			} else {
+				$xml_data->addChild("$key",htmlspecialchars("$value"));
+			}
+
+		}
+
+	}
+
+}
