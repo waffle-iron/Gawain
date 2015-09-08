@@ -464,8 +464,8 @@ abstract class Entity {
 			foreach ($arr_DataRowsFields as $str_FieldName) {
 				if (!is_null($arr_DataRows[$str_FieldName])) {
 					$arr_PreparedMarks[] = '?';
-					$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ||
-					                        $this->availableFields[$str_FieldName]['fieldType'] == 'BOOL' ? 'i' : 's';
+					$arr_ParametersType[] = $this->availableFields[$str_FieldName]['type'] == 'NUM' ||
+					                        $this->availableFields[$str_FieldName]['type'] == 'BOOL' ? 'i' : 's';
 				} else {
 					$arr_PreparedMarks[] = 'null';
 				}
@@ -559,8 +559,8 @@ abstract class Entity {
 				
 			foreach ($arr_DataRowsFields as $str_FieldName) {
 				$arr_PreparedMarks[] = '?';
-				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['fieldType'] == 'NUM' ||
-				                        $this->availableFields[$str_FieldName]['fieldType'] == 'BOOL' ? 'i' : 's';
+				$arr_ParametersType[] = $this->availableFields[$str_FieldName]['type'] == 'NUM' ||
+				                        $this->availableFields[$str_FieldName]['type'] == 'BOOL' ? 'i' : 's';
 			}
 				
 			$arr_ParametersValue = array_values($arr_DataRows);
