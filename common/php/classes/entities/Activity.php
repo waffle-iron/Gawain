@@ -64,7 +64,6 @@ class Activity extends Entity {
 		$str_Query = '
 			select
 				activities.activityID,
-				activities.activityParentID,
 				activities.activityEstimatedEffortHours as effort,
 				activities.activityIsEstimatedEffortHoursAuto as isAuto
 			from activities
@@ -79,13 +78,13 @@ class Activity extends Entity {
 		                                                   ));
 
 
-		$int_Result = NULL;
+		$dbl_Effort = NULL;
 
 
 		if (!(boolean) $obj_Resultset[0]['isAuto']) {
 
 			// If a value is present and the Aut flag si false, simply return the overridden value
-			$int_Result = is_null($obj_Resultset[0]['effort']) ? 0 : floatval($obj_Resultset[0]['effort']);
+			$dbl_Effort = is_null($obj_Resultset[0]['effort']) ? 0 : floatval($obj_Resultset[0]['effort']);
 
 		} else {
 
@@ -111,7 +110,7 @@ class Activity extends Entity {
 			if (count($obj_ResultsetChild) == 0) {
 
 				// If no child is found, return zero
-				$int_Result = 0;
+				$dbl_Effort = 0;
 
 			} else {
 
@@ -123,14 +122,54 @@ class Activity extends Entity {
 				}
 
 				// The final effort is the sum of the children's effort
-				$int_Result = array_sum($arr_ChildEffort);
+				$dbl_Effort = array_sum($arr_ChildEffort);
 
 			}
 
 		}
 
 
-		return $int_Result;
+		return $dbl_Effort;
+
+	}
+
+
+	/** Gets the child activities of the selected activity
+	 *
+	 * @param int $int_ActivityID The given activity ID
+	 * @return array
+	 */
+	public function getChildActivities($int_ActivityID) {
+
+		$str_Query = '
+			select
+				activities.activityID,
+				activities.activityName,
+				users.userName
+			from activities
+			left join users
+				on users.userNick = activities.activityManagerNick
+			where activities.activityCustomerID = ?
+				and activities.activityParentID = ?
+		';
+
+		$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+		                                                   array(
+			                                                   array($this->domainID => 'i'),
+			                                                   array($int_ActivityID => 'i')
+		                                                   ));
+
+		$arr_Result = array();
+
+		foreach ($obj_Resultset as $arr_Datarow) {
+			$arr_Result[$arr_Datarow['activityID']] = array(
+				'name' => $arr_Datarow['activityName'],
+				'manager' => $arr_Datarow['userName']
+			);
+		}
+
+
+		return $arr_Result;
 
 	}
 
