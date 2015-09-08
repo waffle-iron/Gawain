@@ -4,9 +4,15 @@ require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_ABSTRACTS_DIR . 'entities/Entity.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
 
+/**
+ * Class Activity
+ */
 class Activity extends Entity {
 
 	// Child constructor
+	/**
+	 * @param string $str_SessionID
+	 */
 	public function __construct($str_SessionID) {
 
 		// Sets entity reference code
@@ -53,7 +59,7 @@ class Activity extends Entity {
 
 	/** Calculates the estimated effort for the given activity.
 	 *  If the effort is manually set, it simply returns the value.
-	 *  If the effort is set to be automatically calculated, the value is retrieved as the recursive sum of the descendant effort
+	 *  If the effort is set to be automatically calculated, the value is retrieved as the recursive sum of the descendant effort.
 	 *
 	 * @param int $int_ActivityID The activity ID for which the effort has to be calculated
 	 * @return float
@@ -236,7 +242,13 @@ class Activity extends Entity {
 	}
 
 
-
+	/** Calculates activity completion based on activity timeslots.
+	 *  If the completion is manually set, it simply returns the value.
+	 *  If the completion is set to be automatically calculated, the value is calculated upon activity estimated effort and whole timeslots.
+	 * .
+	 * @param int $int_ActivityID The given Activity ID
+	 * @return float
+	 */
 	public function getCompletion($int_ActivityID) {
 
 		// First get activity and saved data
@@ -271,7 +283,11 @@ class Activity extends Entity {
 			$dbl_EffortHours = $this->getEstimatedEffort($int_ActivityID);
 
 			// Calculates the completion
-			$dbl_Completion = $dbl_TimeslotHours / $dbl_EffortHours * 100;
+			if ($dbl_EffortHours > 0) {
+				$dbl_Completion = $dbl_TimeslotHours / $dbl_EffortHours * 100;
+			} else {
+				$dbl_Completion = 0;
+			}
 
 		}
 
@@ -281,9 +297,130 @@ class Activity extends Entity {
 	}
 
 
+	/** Calculates the end date for the given activity, using working days
+	 *
+	 * @param int $int_ActivityID
+	 * @param bool $bool_AdvancedCalculation
+	 * @return string
+	 */
+	public function getEndDate($int_ActivityID, $bool_AdvancedCalculation = FALSE) {
+
+		// First, get the starting date in string format
+		$arr_Data = $this->read($int_ActivityID);
+		$str_StartDate = $arr_Data[$int_ActivityID]['activityStartDate'];
+
+		$str_EndDate = NULL;
+
+
+		if ($bool_AdvancedCalculation) {
+
+			// Coming soon...
+			// TODO: add advanced end date calculation method
+
+		} else {
+
+			$dbl_EffortHours = $this->getEstimatedEffort($int_ActivityID);
+			$int_DaysToAdd = round($dbl_EffortHours / 8);
+
+			$str_EndDate = date('Y-m-d', strtotime($str_StartDate . ' +' . $int_DaysToAdd . ' Weekday'));
+
+		}
+
+
+		return $str_EndDate;
+
+	}
+
+
+	/** Returns the XML string for Gantt construction
+	 *
+	 * @param int $int_ActivityID If given, outputs data for the given activity only
+	 * @return string
+	 */
+	public function getGanttData($int_ActivityID = NULL) {
+
+		$arr_ActivityTypes = $this->getActivityTypes();
+
+		$arr_GanttData = array();
+
+		foreach ($arr_ActivityTypes as $int_ActivityTypeID => $str_ActivityTypeData) {
+
+			// Add activity type Gantt group
+			$arr_ActivityTypeGanttData = array(
+				'pID'       =>  -$int_ActivityTypeID,
+				'pName'     =>  $str_ActivityTypeData['name'],
+				'pStart'    =>  '',
+				'pEnd'      =>  '',
+				'pClass'    =>  'ggroupblack',
+				'pMile'     =>  0,
+				'pComp'     =>  0,
+				'pGroup'    =>  1,
+				'pParent'   =>  0,
+				'pOpen'     =>  1
+			);
+
+			$arr_GanttData['task'][] = $arr_ActivityTypeGanttData;
+
+			// Query to get basic information for Gantt
+			$str_Query = '
+				select
+					activities.activityID,
+					activities.activityParentID,
+					activities.activityName,
+					users.userName,
+					activities.activityStartDate
+				from activities
+				inner join users
+					on activities.activityManagerNick = users.userNick
+				where activities.activityCustomerID = ?
+			';
+
+			if ($int_ActivityID !== NULL) {
+				$str_Query .= ' and activities.activityID = ?';
+			}
+
+			// Execute query
+			if ($int_ActivityID === NULL) {
+				$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+				                                                   array(
+					                                                   array($this->domainID => 'i')
+				                                                   ));
+			} else {
+				$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+				                                                   array(
+					                                                   array($this->domainID => 'i'),
+					                                                   array($int_ActivityID => 'i')
+				                                                   ));
+			}
+
+
+			// Fetch result and compose Gantt data array
+			foreach ($obj_Resultset as $arr_Datarow) {
+
+				$arr_ActivityGanttData = array(
+					'pID'       =>  $arr_Datarow['activityID'],
+					'pName'     =>  $arr_Datarow['activityName'],
+					'pStart'    =>  $arr_Datarow['activityStartDate'],
+					'pEnd'      =>  $this->getEndDate($arr_Datarow['activityID']),
+					'pRes'      =>  $arr_Datarow['userName'],
+					'pMile'     =>  0,
+					'pComp'     =>  $this->getCompletion($arr_Datarow['activityID']),
+					'pGroup'    =>  1,
+					'pParent'   =>  is_null($arr_Datarow['activityParentID']) ? -$int_ActivityTypeID : $arr_Datarow['activityParentID'],
+					'pOpen'     =>  0
+				);
 
 
 
+				$arr_GanttData['task'][] = $arr_ActivityGanttData;
+
+			}
+
+		}
+
+		return array2xml($arr_GanttData, 'project');
+
+	}
 
 	
 
