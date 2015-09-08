@@ -174,6 +174,70 @@ class Activity extends Entity {
 	}
 
 
+	/** Gets the current activity's timeslot hours, grouped by user.
+	 *  The retrieval can be performed recursively, to get also the children activities' timeslots,
+	 *  or in plain mode, to get only direct timeslots.
+	 *
+	 * @param int $int_ActivityID The given activity ID
+	 * @param bool $bool_RecursiveMode Flag that activates or deactivates the recursive mode
+	 * @return array
+	 */
+	public function getTimeslotHours($int_ActivityID, $bool_RecursiveMode = TRUE) {
+
+		// First get direct timeslot hours
+		$arr_TimeslotHours = array();
+
+		$str_Query = '
+			select
+				users.userName,
+				sum(timeslots.timeslotDuration) as timeslotHours
+			from timeslots
+			inner join users
+				on timeslots.timeslotUserNick = users.userNick
+			where timeslots.timeslotActivityID = ?
+			group by users.userName
+		';
+
+		$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+		                                                   array(
+			                                                   array($int_ActivityID => 'i')
+		                                                   ));
+
+		// Start populating the array
+		foreach ($obj_Resultset as $arr_Datarow) {
+			$arr_TimeslotHours[$arr_Datarow['userName']] = isset($arr_TimeslotHours[$arr_Datarow['userName']]) ?
+				($arr_TimeslotHours[$arr_Datarow['userName']] + floatval($arr_Datarow['timeslotHours'])) :
+				floatval($arr_Datarow['timeslotHours']);
+		}
+
+
+		// If the Recursive Mode flag is True, retrieve timeslot hours of the descendants
+		if ($bool_RecursiveMode) {
+
+			$arr_ChildrenActivities = $this->getChildActivities($int_ActivityID);
+
+			foreach (array_keys($arr_ChildrenActivities) as $int_ChildID) {
+				$arr_ChildHours = $this->getTimeslotHours($int_ChildID);
+
+				//var_dump($arr_ChildHours);
+
+				foreach ($arr_ChildHours as $str_User => $dbl_Hours) {
+					$arr_TimeslotHours[$str_User] = isset($arr_TimeslotHours[$str_User]) ?
+						($arr_TimeslotHours[$str_User] + floatval($dbl_Hours)) :
+						floatval($dbl_Hours);
+				}
+			}
+
+		}
+
+
+		return $arr_TimeslotHours;
+
+	}
+
+
+
+
 
 	
 
