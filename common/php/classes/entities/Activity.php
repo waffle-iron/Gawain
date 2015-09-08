@@ -237,6 +237,52 @@ class Activity extends Entity {
 
 
 
+	public function getCompletion($int_ActivityID) {
+
+		// First get activity and saved data
+		$str_Query = '
+			select
+				activities.activityID,
+				activities.activityCompletion as completion,
+				activities.activityIsCompletionAuto as isAuto
+			from activities
+			where activities.activityCustomerID = ?
+				and activities.activityID = ?
+		';
+
+		$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+		                                                   array(
+			                                                   array($this->domainID => 'i'),
+			                                                   array($int_ActivityID => 'i')
+		                                                   ));
+
+
+		$dbl_Completion = NULL;
+
+		if (!(boolean) $obj_Resultset[0]['isAuto']) {
+
+			// If Auto flag is set to False, the saved value is returned
+			$dbl_Completion = is_null($obj_Resultset[0]['completion']) ? 0 : floatval($obj_Resultset[0]['completion']);
+
+		} else {
+
+			// Get activity's whole timeslots and estimated effort
+			$dbl_TimeslotHours = array_sum($this->getTimeslotHours($int_ActivityID, TRUE));
+			$dbl_EffortHours = $this->getEstimatedEffort($int_ActivityID);
+
+			// Calculates the completion
+			$dbl_Completion = $dbl_TimeslotHours / $dbl_EffortHours * 100;
+
+		}
+
+
+		return $dbl_Completion;
+
+	}
+
+
+
+
 
 
 	
