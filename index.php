@@ -37,7 +37,7 @@ $loader = $twig->getLoader();
 
 
 // Jierarchy declaration
-$obj_Jierarchy = new Jierarchy(JS_DIR . 'dependencies/dependencies.json');
+$obj_Jierarchy = new Jierarchy(CONFIG_DIR . 'dependencies.json');
 
 
 // Middleware declaration

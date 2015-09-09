@@ -1,0 +1,194 @@
+{
+	"jQuery"                   : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/jQuery/jquery.min.js"
+			],
+			"css" : []
+		},
+		"dependencies" : []
+	},
+
+	"bootstrap"                : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/Bootstrap/js/bootstrap.min.js"
+			],
+			"css" : []
+		},
+		"dependencies" : [
+			"jQuery"
+		]
+	},
+
+	"highcharts"               : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/Highcharts/highcharts.js",
+				"/gawain/common/js/vendor/Highcharts/themes/grid.js"
+			],
+			"css" : [
+				""
+			]
+		},
+		"dependencies" : [
+			"jQuery"
+		]
+	},
+
+	"bootstrap-colorpicker"    : {
+		"path"         : {
+			"js"  : [
+				""
+			],
+			"css" : [
+				""
+			]
+		},
+		"dependencies" : [
+			"bootstrap"
+		]
+	},
+
+	"CryptoJS"                 : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/CryptoJS/sha3.js"
+			],
+			"css" : [
+				""
+			]
+		},
+		"dependencies" : []
+	},
+
+	"jquery-treegrid"                 : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.min.js",
+				"/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
+			],
+			"css" : [
+				"/gawain/common/js/vendor/jquery-treegrid/css/jquery.treegrid.css"
+			]
+		},
+		"dependencies" : [
+			"jQuery",
+			"bootstrap"
+		]
+	},
+
+	"jquery-confirm"           : {
+		"path"         : {
+			"js"  : [
+				""
+			],
+			"css" : [
+				""
+			]
+		},
+		"dependencies" : [
+			"jQuery",
+			"bootstrap"
+		]
+	},
+
+	"dhtmlx-Gantt"             : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/dhtmlx-Gantt/dhtmlxgantt.js",
+				"/gawain/common/js/vendor/dhtmlx-Gantt/ext/dhtmlxgantt_marker.js",
+				"/gawain/common/js/vendor/dhtmlx-Gantt/locale/locale_it.js"
+			],
+			"css" : [
+				"/gawain/common/js/vendor/dhtmlx-Gantt/dhtmlxgantt.css"
+			]
+		},
+		"dependencies" : []
+	},
+
+	"dhtmlx-Scheduler"         : {
+		"path"         : {
+			"js"  : [
+				""
+			],
+			"css" : [
+				""
+			]
+		},
+		"dependencies" : []
+	},
+
+	"bootstrap-cerulean-theme" : {
+		"path"         : {
+			"js"  : [],
+			"css" : [
+				"/gawain/common/css/Themes/Cerulean/bootstrap.min.css"
+			]
+		},
+		"dependencies" : [
+			"bootstrap"
+		]
+	},
+
+	"font-awesome"   : {
+		"path"         : {
+			"js" : [],
+			"css": [
+				"/gawain/common/css/FontAwesome/font-awesome.min.css"
+			]
+		},
+		"dependencies" : []
+	},
+
+	"gawain-style-settings"    : {
+		"path"         : {
+			"js"  : [],
+			"css" : [
+				"/gawain/common/css/gawain/page.css",
+				"/gawain/common/css/gawain/viewports.css",
+				"/gawain/common/css/gawain/progressbars.css",
+				"/gawain/common/css/gawain/navs.css"
+			]
+		},
+		"dependencies" : [
+			"bootstrap"
+		]
+	},
+
+	"gawain-button-bindings"   : {
+		"path"         : {
+			"js" : [
+				"/gawain/common/js/onloads/button_bindings.js"
+			],
+			"css"   :   []
+		},
+		"dependencies" : [
+			"jQuery"
+		]
+	},
+
+	"gawain-treegrid-onload"   : {
+		"path"         : {
+			"js" : [
+				"/gawain/common/js/onloads/treegrid.js"
+			],
+			"css"   :   []
+		},
+		"dependencies" : [
+			"jquery-treegrid"
+		]
+	},
+
+	"jsgantt-improved"             : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.js"
+			],
+			"css" : [
+				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.css"
+			]
+		},
+		"dependencies" : []
+	}
+}
