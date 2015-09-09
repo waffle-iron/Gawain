@@ -372,9 +372,10 @@ class Activity extends Entity {
 					users.userName,
 					activities.activityStartDate
 				from activities
-				inner join users
+				left join users
 					on activities.activityManagerNick = users.userNick
 				where activities.activityCustomerID = ?
+					and activities.activityTypeID = ?
 			';
 
 			if ($int_ActivityID !== NULL) {
@@ -385,12 +386,14 @@ class Activity extends Entity {
 			if ($int_ActivityID === NULL) {
 				$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
 				                                                   array(
-					                                                   array($this->domainID => 'i')
+					                                                   array($this->domainID => 'i'),
+					                                                   array($int_ActivityTypeID => 'i')
 				                                                   ));
 			} else {
 				$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
 				                                                   array(
 					                                                   array($this->domainID => 'i'),
+					                                                   array($int_ActivityTypeID => 'i'),
 					                                                   array($int_ActivityID => 'i')
 				                                                   ));
 			}
@@ -399,15 +402,18 @@ class Activity extends Entity {
 			// Fetch result and compose Gantt data array
 			foreach ($obj_Resultset as $arr_Datarow) {
 
+				$int_ChildNumber = count($this->getChildActivities($arr_Datarow['activityID']));
+
 				$arr_ActivityGanttData = array(
 					'pID'       =>  $arr_Datarow['activityID'],
 					'pName'     =>  $arr_Datarow['activityName'],
 					'pStart'    =>  $arr_Datarow['activityStartDate'],
 					'pEnd'      =>  $this->getEndDate($arr_Datarow['activityID']),
+					'pClass'    =>  $int_ChildNumber > 0 ? 'ggroupblack' : 'gtaskred',
 					'pRes'      =>  $arr_Datarow['userName'],
 					'pMile'     =>  0,
-					'pComp'     =>  $this->getCompletion($arr_Datarow['activityID']),
-					'pGroup'    =>  1,
+					'pComp'     =>  round($this->getCompletion($arr_Datarow['activityID'])),
+					'pGroup'    =>  $int_ChildNumber > 0 ? 1 : 0,
 					'pParent'   =>  is_null($arr_Datarow['activityParentID']) ? -$int_ActivityTypeID : $arr_Datarow['activityParentID'],
 					'pOpen'     =>  0
 				);
