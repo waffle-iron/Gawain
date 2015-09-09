@@ -1,71 +1,16 @@
 {# Template for Gantt chart for activities #}
 
-<div class="gawain-graph-viewport" id="gawain-activities-gantt-chart-container"></div>
+<div class="gantt" id="gawain-activities-gantt-chart-container"></div>
 
     <script type="text/javascript">
-        var obj_GanttData = {
-            data : {{ gantt_data|raw }}
-        };
 
+        var g = new JSGantt.GanttChart(document.getElementById('gawain-activities-gantt-chart-container'), 'day');
 
-        gantt.templates.scale_cell_class = function (date) {
-            if (date.getDay() == 0 || date.getDay() == 6) {
-                return "weekend";
-            }
-        };
-        gantt.templates.task_cell_class = function (item, date) {
-            if (date.getDay() == 0 || date.getDay() == 6) {
-                return "weekend";
-            }
-        };
+        g.setScrollTo('2015-09-09');
+        g.setFormatArr('Day', 'Week', 'Month', 'Quarter');
 
-        gantt.config.columns = [
-            {
-                name  : "text",
-                label : "{{ activities_fields.activityName.label }}",
-                width : "*",
-                tree  : true
-            },
-            {
-                name     : "start_time",
-                label    : "{{ activities_fields.activityStartDate.label }}",
-                template : function (obj) {
-                    return gantt.templates.date_grid(obj.start_date);
-                },
-                align    : "center",
-                width    : "*"
-            },
-            {
-                name  : "duration",
-                label : "{{ activities_fields.activityEstimatedEffortHours.label }}",
-                align : "center",
-                width : "*"
-            }
-        ];
+        JSGantt.parseXMLString('{{ gantt_data|raw }}', g);
 
-        gantt.config.subscales = [
-            {unit : "month", step : 1, date : "%M"},
-            {unit : "year", step : 1, date : "%Y"}
-        ];
-        gantt.config.scale_height = 3 * 28;
-
-        gantt.addMarker({
-            start_date : new Date(),
-            css        : "today",
-            text       : "Today",
-            title      : "Today"
-        });
-
-
-        gantt.config.fit_tasks = true;
-        gantt.config.readonly = true;
-        gantt.config.autosize = "xy";
-        gantt.config.work_time = true;
-        gantt.config.correct_work_time = true;
-        gantt.config.date_grid = "%d/%m/%Y";
-        gantt.config.date_scale = "%D %d";
-
-        gantt.init("gawain-activities-gantt-chart-container");
-        gantt.parse(obj_GanttData);
+        g.Draw();
 
     </script>
