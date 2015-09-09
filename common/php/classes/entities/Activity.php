@@ -343,6 +343,8 @@ class Activity extends Entity {
 
 		$arr_GanttData = array();
 
+
+		// Get all activities, starting from main categories
 		foreach ($arr_ActivityTypes as $int_ActivityTypeID => $str_ActivityTypeData) {
 
 			// Add activity type Gantt group
@@ -415,6 +417,8 @@ class Activity extends Entity {
 				$arr_GanttData['task'][] = $arr_ActivityGanttData;
 
 			}
+
+			// TODO: add retrieval of milestone events
 
 		}
 
