@@ -185,7 +185,6 @@ span.gfoldercollapse {
 	font-size   : 9px;
 	text-align  : left;
 	white-space : nowrap;
-	top         : 1px;
 	position    : absolute;
 	top         : 2px;
 }
@@ -472,7 +471,7 @@ div.gtaskbarcontainer {
 }
 
 .JSGanttToolTipcont {
-	font-family : tahoma, arial, verdana;
+	font-family : 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size   : 10px;
 	display     : block;
 	background  : #ffffff;
