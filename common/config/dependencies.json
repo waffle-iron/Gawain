@@ -186,6 +186,8 @@
 			],
 			"css" : []
 		},
-		"dependencies" : []
+		"dependencies" : [
+			"jQuery"
+		]
 	}
 }

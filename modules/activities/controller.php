@@ -16,14 +16,14 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$arr_PageDependencies = $obj_Jierarchy->load(array(
 			                     'jQuery',
 			                     'bootstrap',
+			                     'jsgantt-improved',
 			                     'bootstrap-cerulean-theme',
 			                     'gawain-style-settings',
 			                     'gawain-button-bindings',
 			                     'font-awesome',
 			                     'jquery-treegrid',
 			                     'gawain-treegrid-onload',
-			                     'dhtmlx-Gantt',
-		                         'jsgantt-improved'
+			                     'TinyColor'
 		                     ));
 
 
