@@ -9,3 +9,8 @@
 			url('fonts/Megrim.ttf')  format('truetype'),                /* Safari, Android, iOS */
 			url('fonts/Megrim.svg#svgFontName') format('svg');          /* Legacy iOS */
 }
+
+
+.gawain-megrim {
+	font-family: Megrim, Helvetica, Arial, sans-serif;
+}
