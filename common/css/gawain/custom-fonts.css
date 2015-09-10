@@ -1,0 +1,11 @@
+/* This file contains the definitions of all custom fonts used in Gawain */
+
+@font-face {
+	font-family: Megrim;
+	src: url('fonts/Megrim.eot');                                       /* IE9 Compat Modes */
+	src: url('fonts/Megrim.eot?#iefix') format('embedded-opentype'),    /* IE6-IE8 */
+			url('fonts/Megrim.woff2') format('woff2'),                  /* Super Modern Browsers */
+			url('fonts/Megrim.woff') format('woff'),                    /* Pretty Modern Browsers */
+			url('fonts/Megrim.ttf')  format('truetype'),                /* Safari, Android, iOS */
+			url('fonts/Megrim.svg#svgFontName') format('svg');          /* Legacy iOS */
+}
