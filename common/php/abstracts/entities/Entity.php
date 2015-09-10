@@ -2,6 +2,7 @@
 
 require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
+require_once(PHP_VENDOR_DIR . 'PHPColors/Color.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
 
@@ -77,16 +78,7 @@ abstract class Entity {
 	protected $options;
 
 
-	/** Entity ID
-	 * @var mixed
-	 */
-	protected $ID;
 
-
-	/** Entity data (collected after loading)
-	 * @var array
-	 */
-	protected $data;
 
 
 
