@@ -146,7 +146,7 @@
 	"gawain-button-bindings"   : {
 		"path"         : {
 			"js" : [
-				"/gawain/common/js/onloads/button_bindings.js"
+				"/gawain/common/js/onloads/button-bindings.js"
 			],
 			"css"   :   []
 		},
@@ -175,6 +175,16 @@
 			"css" : [
 				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.css"
 			]
+		},
+		"dependencies" : []
+	},
+
+	"TinyColor"             : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/TinyColor/tinycolor-min.js"
+			],
+			"css" : []
 		},
 		"dependencies" : []
 	}
