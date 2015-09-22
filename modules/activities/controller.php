@@ -248,8 +248,6 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 
 		// Get all the POST variables
 		$arr_PostVariables = $app->request->post();
-
-		// Get all activity fields info
 		$obj_Activity = new Activity($str_SessionID);
 
 		// Iterate over array to unset empty strings
@@ -264,5 +262,16 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->redirect($app->urlFor('activity_show', array('activityID' => $activityID)));
 
 	})->conditions(array('activityID' => '\d+'))->name('activity_edit_save');
+
+
+
+	$app->post('/delete', function () use ($app, $str_SessionID) {
+
+		$int_ActivityID = $app->request->post('activityID');
+		$obj_Activity = new Activity($str_SessionID);
+		$obj_Activity->delete($int_ActivityID);
+		$app->redirect($app->urlFor('activities'));
+
+	})->conditions(array('activityID' => '\d+'))->name('activity_delete');
 
 });

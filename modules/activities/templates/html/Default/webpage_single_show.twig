@@ -26,8 +26,18 @@
             <div class="btn-group pull-right" role="group">
                 <a type="button" class="btn btn-default" href="{{ urlFor('activity_edit', {activityID: activity_ID}) }}"><i class="fa fa-pencil fa-fw"></i> Edit</a>
                 <a role="button" class="btn btn-default" href="{{ urlFor('activity_new') }}?cloneFrom={{ activity_ID }}"><i class="fa fa-clone fa-fw"></i> Clone</a>
-                <button type="button" class="btn btn-danger"><i class="fa fa-trash-o fa-fw"></i> Delete</button>
+                <button
+                        type="submit"
+                        class="btn btn-danger"
+                        form="gawain-activity-delete"
+                        onclick="return confirm('Are you sure to delete Activity #{{ activity_ID }}? This operation cannot be reverted')">
+                    <i class="fa fa-trash-o fa-fw"></i> Delete
+                </button>
             </div>
+
+            <form class="hidden" id="gawain-activity-delete" method="post" action="{{ urlFor('activity_delete') }}">
+                <input type="hidden" name="activityID" value="{{ activity_ID }}">
+            </form>
 
         </h1>
 {% endblock %}
