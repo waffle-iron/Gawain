@@ -30,7 +30,7 @@
     <form class="form-horizontal"
           id="gawain-activity-edit-form"
           method="post"
-          action="{% if page_action == 'new' %}{{ urlFor('activity_new_save') }}{% elseif page_action == 'edit' %}{% endif %}">
+          action="{% if page_action == 'new' %}{{ urlFor('activity_new_save') }}{% elseif page_action == 'edit' %}{{ urlFor('activity_edit_save', {activityID: activity_ID}) }}{% endif %}">
 
         {% for activity_field_ID in activity_fields|keys %}
 
