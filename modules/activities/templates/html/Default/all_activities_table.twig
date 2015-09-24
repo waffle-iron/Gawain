@@ -37,7 +37,7 @@
 
                             {%  if activity.activityTypeID == activity_type.name %}
 
-                                <tr id="{{ ID }}" class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
+                                <tr id="gawain-activity-{{ ID }}" class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
                                     <td><a href="{{ urlFor('activity_show', {activityID: ID}) }}">{{ ID }}</a></td>
                                     <td>{{ activity.activityName }}</td>
                                     <td>{{ activity.activityCode }}</td>

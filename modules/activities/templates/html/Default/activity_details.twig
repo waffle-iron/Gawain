@@ -28,54 +28,34 @@
             </div>
 
             <div class="panel-body">
-                <form class="form-horizontal">
 
+                <dl class="dl-horizontal">
                     {% if activity_data.activityCode is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityCode.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityCode }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityCode.label }}</dt>
+                        <dd>{{ activity_data.activityCode }}</dd>
                     {% endif %}
 
                     {% if activity_data.activityAreaID is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityAreaID.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityAreaID }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityAreaID.label }}</dt>
+                        <dd>{{ activity_data.activityAreaID }}</dd>
                     {% endif %}
 
                     {% if activity_data.activityEnvironmentID is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityEnvironmentID.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityEnvironmentID }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityEnvironmentID.label }}</dt>
+                        <dd>{{ activity_data.activityEnvironmentID }}</dd>
                     {% endif %}
 
                     {% if activity_data.activityManagerNick is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityManagerNick.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityManagerNick }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityManagerNick.label }}</dt>
+                        <dd>{{ activity_data.activityManagerNick }}</dd>
                     {% endif %}
 
                     {% if activity_data.activityCustomerReference is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityCustomerReference.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityCustomerReference }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityCustomerReference.label }}</dt>
+                        <dd>{{ activity_data.activityCustomerReference }}</dd>
                     {% endif %}
+                </dl>
 
-                </form>
             </div>
         </div>
     </div>
@@ -91,57 +71,39 @@
             </div>
 
             <div class="panel-body">
-                <form class="form-horizontal">
 
+                <dl class="dl-horizontal">
                     {% if activity_data.activityStartDate is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityStartDate.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityStartDate|date('d/m/Y') }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityStartDate.label }}</dt>
+                        <dd>{{ activity_data.activityStartDate|date('d/m/Y') }}</dd>
                     {% endif %}
 
                     {% if activity_data.activityStatusID is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityStatusID.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">{{ activity_data.activityStatusID }}</p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityStatusID.label }}</dt>
+                        <dd>{{ activity_data.activityStatusID }}</dd>
                     {% endif %}
 
 
                     {% if activity_data.activityEstimatedEffortHours is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityEstimatedEffortHours.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">
-                                    {{ activity_data.activityEstimatedEffortHours }} h
-                                    {% if activity_data.activityIsEstimatedEffortHoursAuto == 1 %}
-                                        <span class="label label-default" title="The value is calculated automatically based on given data">Auto</span>
-                                    {% endif %}
-                                </p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityEstimatedEffortHours.label }}</dt>
+                        <dd>{{ activity_data.activityEstimatedEffortHours }} h
+                            {% if activity_data.activityIsEstimatedEffortHoursAuto == 1 %}
+                                <span class="label label-default" title="The value is calculated automatically based on given data">Auto</span>
+                            {% endif %}
+                        </dd>
                     {% endif %}
 
 
                     {% if activity_data.activityCompletion is not null %}
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">{{ activity_fields.activityCompletion.label }}</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static">
-                                    {{ activity_data.activityCompletion }}%
-                                    {% if activity_data.activityIsCompletionAuto == 1 %}
-                                        <span class="label label-default" title="The value is calculated automatically based on given data">Auto</span>
-                                    {% endif %}
-                                </p>
-                            </div>
-                        </div>
+                        <dt>{{ activity_fields.activityCompletion.label }}</dt>
+                        <dd>{{ activity_data.activityCompletion }}%
+                            {% if activity_data.activityIsCompletionAuto == 1 %}
+                                <span class="label label-default" title="The value is calculated automatically based on given data">Auto</span>
+                            {% endif %}
+                        </dd>
                     {% endif %}
+                </dl>
 
-                </form>
             </div>
         </div>
     </div>
