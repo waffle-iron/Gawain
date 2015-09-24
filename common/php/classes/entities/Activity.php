@@ -379,96 +379,122 @@ class Activity extends Entity {
 	 */
 	public function getGanttData($int_ActivityID = NULL) {
 
-		$arr_ActivityTypes = $this->getActivityTypes();
-
 		$arr_GanttData = array();
 
+		if ($int_ActivityID === NULL) {
+			$arr_ActivityTypes = $this->getActivityTypes();
 
-		// Get all activities, starting from main categories
-		foreach ($arr_ActivityTypes as $int_ActivityTypeID => $str_ActivityTypeData) {
+			// Get all activities, starting from main categories
+			foreach ($arr_ActivityTypes as $int_ActivityTypeID => $str_ActivityTypeData) {
 
-			// Add activity type Gantt group
-			$arr_ActivityTypeGanttData = array(
-				'pID'       =>  -$int_ActivityTypeID,
-				'pName'     =>  $str_ActivityTypeData['name'],
-				'pStart'    =>  '',
-				'pEnd'      =>  '',
-				'pClass'    =>  'ggroupblack',
-				'pMile'     =>  0,
-				'pComp'     =>  0,
-				'pGroup'    =>  1,
-				'pParent'   =>  0,
-				'pOpen'     =>  1
-			);
-
-			$arr_GanttData['task'][] = $arr_ActivityTypeGanttData;
-
-			// Query to get basic information for Gantt
-			$str_Query = '
-				select
-					activities.activityID,
-					activities.activityParentID,
-					activities.activityName,
-					users.userName,
-					activities.activityStartDate
-				from activities
-				left join users
-					on activities.activityManagerNick = users.userNick
-				where activities.activityCustomerID = ?
-					and activities.activityTypeID = ?
-			';
-
-			if ($int_ActivityID !== NULL) {
-				$str_Query .= ' and activities.activityID = ?';
-			}
-
-			// Execute query
-			if ($int_ActivityID === NULL) {
-				$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-				                                                   array(
-					                                                   array($this->domainID => 'i'),
-					                                                   array($int_ActivityTypeID => 'i')
-				                                                   ));
-			} else {
-				$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-				                                                   array(
-					                                                   array($this->domainID => 'i'),
-					                                                   array($int_ActivityTypeID => 'i'),
-					                                                   array($int_ActivityID => 'i')
-				                                                   ));
-			}
-
-
-			// Fetch result and compose Gantt data array
-			foreach ($obj_Resultset as $arr_Datarow) {
-
-				$int_ChildNumber = count($this->getChildActivities($arr_Datarow['activityID']));
-
-				$arr_ActivityGanttData = array(
-					'pID'       =>  $arr_Datarow['activityID'],
-					'pName'     =>  $arr_Datarow['activityName'],
-					'pStart'    =>  $arr_Datarow['activityStartDate'],
-					'pEnd'      =>  $this->getEndDate($arr_Datarow['activityID']),
-					'pClass'    =>  $int_ChildNumber > 0 ? 'ggroupblack' : 'gtaskred',
-					'pRes'      =>  $arr_Datarow['userName'],
-					'pMile'     =>  0,
-					'pComp'     =>  round($this->getCompletion($arr_Datarow['activityID'])),
-					'pGroup'    =>  $int_ChildNumber > 0 ? 1 : 0,
-					'pParent'   =>  is_null($arr_Datarow['activityParentID']) ? -$int_ActivityTypeID : $arr_Datarow['activityParentID'],
-					'pOpen'     =>  0
+				// Add activity type Gantt group
+				$arr_ActivityTypeGanttData = array(
+					'pID' => -$int_ActivityTypeID,
+					'pName' => $str_ActivityTypeData['name'],
+					'pStart' => '',
+					'pEnd' => '',
+					'pClass' => 'ggroupblack',
+					'pMile' => 0,
+					'pComp' => 0,
+					'pGroup' => 1,
+					'pParent' => 0,
+					'pOpen' => 1
 				);
 
-
-
-				$arr_GanttData['task'][] = $arr_ActivityGanttData;
-
+				$arr_GanttData['task'][] = $arr_ActivityTypeGanttData;
 			}
-
-			// TODO: add retrieval of milestone events
-
 		}
 
+		$bool_IsChild = is_null($int_ActivityID);
+		$this->getGanttDataRecursive($arr_GanttData['task'], $int_ActivityID, $bool_IsChild);
+
+		// TODO: add retrieval of milestone events
+
 		return array2xml($arr_GanttData, 'project');
+
+	}
+
+
+	/** Private function to compile Gantt data recursively
+	 *
+	 * @param array     $arr_Output
+	 * @param int       $int_ActivityID
+	 * @param bool      $bool_IsChild
+	 */
+	private function getGanttDataRecursive(&$arr_Output, $int_ActivityID = NULL, $bool_IsChild = FALSE) {
+
+		// Query to get basic information for Gantt
+		$str_Query = '
+			select
+				activities.activityID,
+				activities.activityParentID,
+				activities.activityTypeID,
+				activities.activityName,
+				users.userName,
+				activities.activityStartDate
+			from activities
+			left join users
+				on activities.activityManagerNick = users.userNick
+			where activities.activityCustomerID = ?
+		';
+
+		if ($int_ActivityID !== NULL) {
+			$str_Query .= ' and activities.activityID = ?';
+		}
+
+		// Execute query
+		if ($int_ActivityID === NULL) {
+			$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+			                                                   array(
+				                                                   array($this->domainID => 'i')
+			                                                   ));
+		} else {
+			$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+			                                                   array(
+				                                                   array($this->domainID => 'i'),
+				                                                   array($int_ActivityID => 'i')
+			                                                   ));
+		}
+
+
+		// Fetch result and compose Gantt data array
+		foreach ($obj_Resultset as $arr_Datarow) {
+
+			$arr_ChildActivities = $this->getChildActivities($arr_Datarow['activityID']);
+
+			$arr_ActivityGanttData = array(
+				'pID'       =>  $arr_Datarow['activityID'],
+				'pName'     =>  $arr_Datarow['activityName'],
+				'pStart'    =>  $arr_Datarow['activityStartDate'],
+				'pEnd'      =>  $this->getEndDate($arr_Datarow['activityID']),
+				'pClass'    =>  count($arr_ChildActivities) > 0 ? 'ggroupblack' : 'gtaskred',
+				'pRes'      =>  $arr_Datarow['userName'],
+				'pMile'     =>  0,
+				'pComp'     =>  round($this->getCompletion($arr_Datarow['activityID'])),
+				'pGroup'    =>  count($arr_ChildActivities) > 0 ? 1 : 0,
+				'pOpen'     =>  is_null($int_ActivityID) ? 0 : 1
+			);
+
+
+			if ($int_ActivityID === NULL) {
+				$arr_ActivityGanttData['pParent'] = is_null($arr_Datarow['activityParentID']) ? - $arr_Datarow['activityTypeID'] : $arr_Datarow['activityParentID'];
+			} else {
+				if (!is_null($arr_Datarow['activityParentID']) && $bool_IsChild) {
+					$arr_ActivityGanttData['pParent'] = $arr_Datarow['activityParentID'];
+				}
+			}
+
+			$arr_Output[] = $arr_ActivityGanttData;
+
+
+			// Repeat calculation for child activities if activity ID is given
+			$arr_ChildActivityIDs = array_keys($arr_ChildActivities);
+
+			foreach ($arr_ChildActivityIDs as $int_ChildActivityID) {
+				$this->getGanttDataRecursive($arr_Output, $int_ChildActivityID, TRUE);
+			}
+
+		}
 
 	}
 
