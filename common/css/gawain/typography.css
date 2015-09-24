@@ -1,0 +1,6 @@
+/* This file contains all the styles linked to fine typography settings (such as half spacings, paragraph spacing and so on) */
+
+/* Add some space between same elements in description lists */
+dd + dt, dt + dd {
+	margin-top: 0.5em;
+}
