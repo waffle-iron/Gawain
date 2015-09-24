@@ -86,6 +86,9 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$str_ModuleLabel = $obj_Activity->getLabel();
 		$str_ItemLabel = $obj_Activity->getItemLabel();
 
+		// Prepare Gantt chart data outside the template
+		$str_GanttXML = $obj_Activity->getGanttData($activityID);
+
 
 		// Prepare the view
 		$app->view()->set('page_dependencies', $arr_PageDependencies);
@@ -95,7 +98,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('activity_fields', $arr_ActivityFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('module_item_label', $str_ItemLabel);
-
+		$app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
 
 

@@ -1,0 +1,16 @@
+{# Single activity Gantt chart #}
+
+<div class="gantt" id="gawain-activity-gantt-chart-container"></div>
+
+<script type="text/javascript">
+
+    var g = new JSGantt.GanttChart(document.getElementById('gawain-activity-gantt-chart-container'), 'day');
+
+    g.setScrollTo('today');
+    g.setFormatArr('Day', 'Week', 'Month', 'Quarter');
+
+    JSGantt.parseXMLString('{{ gantt_data|raw }}', g);
+
+    g.Draw();
+
+</script>
