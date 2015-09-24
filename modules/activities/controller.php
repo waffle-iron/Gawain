@@ -31,7 +31,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$arr_NavbarData = common\page_navbar\data_source($str_SessionID, 'activities');
 
 
-		//Activity object declaration and usage
+		// Activity object declaration and usage
 		$obj_Activity = new Activity($str_SessionID);
 		$arr_Activities = $obj_Activity->read(NULL, array('activityParentID'));
 		$arr_ActivityFields = $obj_Activity->getFieldsData();

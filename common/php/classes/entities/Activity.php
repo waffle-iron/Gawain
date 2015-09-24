@@ -9,8 +9,8 @@ require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
  */
 class Activity extends Entity {
 
-	// Child constructor
-	/**
+	/** Child constructor
+	 *
 	 * @param string $str_SessionID
 	 */
 	public function __construct($str_SessionID) {
@@ -20,6 +20,32 @@ class Activity extends Entity {
 
 		// Call parent constructor
 		parent::__construct($str_SessionID);
+	}
+
+
+	/** Reads the given activity
+	 *  This method overrides the default abstract Entity method
+	 *  by adding automatic calculation of parameters without the need to manually substitute data
+	 *
+	 * @param mixed $arr_Wheres
+	 * @param array $arr_SkipReferentialsFor
+	 * @return array
+	 */
+	public function read($arr_Wheres, $arr_SkipReferentialsFor = array()) {
+
+		// Apply parent method to get raw data
+		$arr_Dataset = parent::read($arr_Wheres, $arr_SkipReferentialsFor);
+
+
+		// Override raw values with calculated ones
+		$arr_ActivityIDs = array_keys($arr_Dataset);
+		foreach ($arr_ActivityIDs as $int_ActivityID) {
+			$arr_Dataset[$int_ActivityID]['activityEstimatedEffortHours'] = $this->getEstimatedEffort($int_ActivityID);
+			$arr_Dataset[$int_ActivityID]['activityCompletion'] = $this->getCompletion($int_ActivityID);
+			$arr_Dataset[$int_ActivityID]['activityEstimatedEndDate'] = $this->getEndDate($int_ActivityID);
+		}
+
+		return $arr_Dataset;
 	}
 
 
@@ -306,8 +332,22 @@ class Activity extends Entity {
 	public function getEndDate($int_ActivityID, $bool_AdvancedCalculation = FALSE) {
 
 		// First, get the starting date in string format
-		$arr_Data = $this->read($int_ActivityID);
-		$str_StartDate = $arr_Data[$int_ActivityID]['activityStartDate'];
+		$str_Query = '
+			select
+				activities.activityID,
+				activities.activityStartDate
+			from activities
+			where activities.activityCustomerID = ?
+				and activities.activityID = ?
+		';
+
+		$obj_Resultset = $this->dbHandler->executePrepared($str_Query,
+		                                                   array(
+			                                                   array($this->domainID => 'i'),
+			                                                   array($int_ActivityID => 'i')
+		                                                   ));
+
+		$str_StartDate = $obj_Resultset[0]['activityStartDate'];
 
 		$str_EndDate = NULL;
 
