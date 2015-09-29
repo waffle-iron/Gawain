@@ -4,7 +4,7 @@ USE `gawain`;
 --
 -- Host: 10.0.0.12    Database: gawain
 -- ------------------------------------------------------
--- Server version	5.5.43-0+deb7u1
+-- Server version	5.5.44-0+deb8u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,6 @@ DROP TABLE IF EXISTS `activities`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `activities` (
   `activityID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `activityRootID` int(10) unsigned DEFAULT NULL,
   `activityParentID` int(10) unsigned DEFAULT NULL,
   `activityCustomerID` int(10) unsigned NOT NULL,
   `activityName` varchar(64) NOT NULL,
@@ -37,14 +36,14 @@ CREATE TABLE `activities` (
   `activityEnvironmentID` int(10) unsigned DEFAULT NULL,
   `activityCustomerReference` varchar(256) DEFAULT NULL,
   `activityManagerNick` varchar(64) DEFAULT NULL,
-  `activityEstimatedEffortHours` decimal(7,2) unsigned NOT NULL DEFAULT '0.00',
-  `activityIsEstimatedEffortHoursAuto` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `activityEstimatedEffortHours` decimal(7,2) unsigned DEFAULT '0.00',
+  `activityIsEstimatedEffortHoursAuto` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `activityStartDate` date DEFAULT NULL,
   `activityStatusID` int(10) unsigned DEFAULT NULL,
-  `activityCompletion` decimal(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `activityIsCompletionAuto` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `activityCompletion` decimal(5,2) unsigned DEFAULT '0.00',
+  `activityIsCompletionAuto` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `activityIsCompleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `activityIsOfficial` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `activityIsOfficial` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `activityQcConnectionID` int(10) unsigned DEFAULT NULL,
   `activityQcIdentificationQuery` varchar(256) DEFAULT NULL,
   `activityUserField01` varchar(256) DEFAULT NULL,
@@ -76,10 +75,8 @@ CREATE TABLE `activities` (
   KEY `projectStatusID_idx` (`activityStatusID`),
   KEY `projectTestManagerID_idx` (`activityManagerNick`),
   KEY `projectTypeID_idx` (`activityTypeID`),
-  KEY `FK_activities_activities_activityID` (`activityRootID`),
   KEY `FK_activities_qc_connections_connID` (`activityQcConnectionID`),
   KEY `projectParentProjectID` (`activityParentID`),
-  CONSTRAINT `FK_activities_activities_activityID` FOREIGN KEY (`activityRootID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_activities_qc_connections_connID` FOREIGN KEY (`activityQcConnectionID`) REFERENCES `qc_connections` (`connID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_activities_users_userNick` FOREIGN KEY (`activityManagerNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `projectAreaID` FOREIGN KEY (`activityAreaID`) REFERENCES `areas` (`areaID`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -88,7 +85,7 @@ CREATE TABLE `activities` (
   CONSTRAINT `projectReleaseStateID` FOREIGN KEY (`activityEnvironmentID`) REFERENCES `environment` (`environmentID`) ON UPDATE CASCADE,
   CONSTRAINT `projectStatusID` FOREIGN KEY (`activityStatusID`) REFERENCES `activity_status` (`statusID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `projectTypeID` FOREIGN KEY (`activityTypeID`) REFERENCES `activity_type` (`activityTypeID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=4096;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=4096;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,7 +212,7 @@ CREATE TABLE `activity_status` (
   UNIQUE KEY `statusID_UNIQUE` (`statusID`),
   KEY `projectStatusCustomerID_idx` (`statusCustomerID`),
   CONSTRAINT `projectStatusCustomerID` FOREIGN KEY (`statusCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,12 +228,11 @@ CREATE TABLE `activity_type` (
   `activityTypeName` varchar(64) NOT NULL,
   `activityTypeIsOfficial` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `activityTypeComment` varchar(128) DEFAULT NULL,
-  `activityTypeOrderIndex` int(10) unsigned NOT NULL DEFAULT '100',
   PRIMARY KEY (`activityTypeID`),
   UNIQUE KEY `projectTypeID_UNIQUE` (`activityTypeID`),
   KEY `ProjectTypeCustomerID_idx` (`activityTypeCustomerID`),
   CONSTRAINT `ProjectTypeCustomerID` FOREIGN KEY (`activityTypeCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,6 +243,7 @@ DROP TABLE IF EXISTS `application_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `application_log` (
+  `logID` int(30) unsigned NOT NULL AUTO_INCREMENT,
   `logTimestamp` varchar(32) NOT NULL,
   `logLevel` enum('FATAL ERROR','ERROR','WARNING','INFO','DEBUG') NOT NULL DEFAULT 'INFO',
   `hostname` varchar(255) DEFAULT NULL,
@@ -254,12 +251,12 @@ CREATE TABLE `application_log` (
   `entity` varchar(64) DEFAULT NULL,
   `module` varchar(64) DEFAULT NULL,
   `message` mediumtext NOT NULL,
-  PRIMARY KEY (`logTimestamp`),
-  UNIQUE KEY `UK_log_timestamp` (`logTimestamp`),
+  PRIMARY KEY (`logID`),
   KEY `FK_log_users_userNick` (`userNick`),
   KEY `IDX_log_logLevel` (`logLevel`),
   KEY `IDX_log` (`entity`,`module`),
   KEY `UK_log_hostname` (`hostname`),
+  KEY `UK_log_timestamp` (`logTimestamp`),
   CONSTRAINT `FK_log_users_userNick` FOREIGN KEY (`userNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table containing all the application logs';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -282,25 +279,6 @@ CREATE TABLE `areas` (
   KEY `areaCustomerID_idx` (`areaCustomerID`),
   CONSTRAINT `areaCustomerID` FOREIGN KEY (`areaCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `components_linked_rendering_report_elements`
---
-
-DROP TABLE IF EXISTS `components_linked_rendering_report_elements`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `components_linked_rendering_report_elements` (
-  `componentCode` varchar(64) NOT NULL,
-  `customerID` int(10) unsigned NOT NULL,
-  `reportElementCode` varchar(64) NOT NULL,
-  PRIMARY KEY (`componentCode`,`customerID`,`reportElementCode`),
-  KEY `FK_components_linked_rendering_report` (`reportElementCode`,`customerID`),
-  KEY `FK_components_linked_rendering_report_elements_customerID` (`customerID`),
-  CONSTRAINT `FK_components_linked_rendering_report` FOREIGN KEY (`reportElementCode`, `customerID`) REFERENCES `rendering_report_elements` (`elementCode`, `elementCustomerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_components_linked_rendering_report_elements_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,6 +330,7 @@ CREATE TABLE `entities` (
   `entityCode` varchar(64) NOT NULL,
   `entityName` varchar(64) NOT NULL,
   `entityReferenceTable` varchar(128) NOT NULL,
+  `entityDomainDependencyColumnName` varchar(128) DEFAULT NULL,
   `entityComment` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`entityCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=8192;
@@ -369,8 +348,9 @@ CREATE TABLE `entities_columns_label` (
   `entityCode` varchar(64) NOT NULL,
   `columnName` varchar(64) NOT NULL,
   `fieldLabel` varchar(128) NOT NULL,
-  `fieldTooltip` varchar(256) DEFAULT NULL,
-  `fieldOrderingIndex` int(10) unsigned NOT NULL DEFAULT '100',
+  `fieldOrderingIndex` int(11) NOT NULL DEFAULT '1000',
+  `fieldOrderingGroupIndex` int(11) NOT NULL DEFAULT '1000',
+  `fieldComment` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`customerID`,`entityCode`,`columnName`),
   KEY `FK_entities_linked_rendering_e` (`entityCode`,`columnName`),
   CONSTRAINT `FK_entities_linked_rendering_e` FOREIGN KEY (`entityCode`, `columnName`) REFERENCES `entities_reference_fields` (`entityCode`, `columnName`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -389,6 +369,7 @@ CREATE TABLE `entities_label` (
   `entityCode` varchar(64) NOT NULL,
   `customerID` int(10) unsigned NOT NULL,
   `entityLabel` varchar(64) NOT NULL,
+  `entityItemLabel` varchar(64) DEFAULT NULL,
   `entityComment` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`entityCode`,`customerID`),
   KEY `FK_entities_label_customers_customerID` (`customerID`),
@@ -410,7 +391,7 @@ CREATE TABLE `entities_reference_fields` (
   `fieldIsMainID` tinyint(1) NOT NULL DEFAULT '0',
   `fieldIsAutoIncrement` tinyint(1) NOT NULL DEFAULT '0',
   `fieldIsNillable` tinyint(1) NOT NULL DEFAULT '1',
-  `fieldType` enum('NUM','CHAR','DATE') NOT NULL DEFAULT 'CHAR',
+  `fieldType` enum('NUM','CHAR','DATE','BOOL','LONGTEXT') NOT NULL DEFAULT 'CHAR',
   `referentialJoinType` enum('inner','left') DEFAULT NULL,
   `referentialTableName` varchar(128) DEFAULT NULL,
   `referentialCodeColumnName` varchar(128) DEFAULT NULL,
@@ -600,111 +581,6 @@ CREATE TABLE `qc_connections` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `rendering_report_elements`
---
-
-DROP TABLE IF EXISTS `rendering_report_elements`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rendering_report_elements` (
-  `elementCode` varchar(64) NOT NULL,
-  `elementCustomerID` int(10) unsigned NOT NULL,
-  `elementReportPreTemplate` mediumtext,
-  `elementReportTemplate` mediumtext NOT NULL,
-  `elementReportPostTemplate` mediumtext,
-  `elementComment` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`elementCode`,`elementCustomerID`),
-  KEY `FK_rendering_report_elements_customers_customerID` (`elementCustomerID`),
-  CONSTRAINT `FK_rendering_report_elements_customers_customerID` FOREIGN KEY (`elementCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `report_repository`
---
-
-DROP TABLE IF EXISTS `report_repository`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `report_repository` (
-  `reportID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `reportCustomerID` int(10) unsigned NOT NULL,
-  `reportTypeCode` varchar(64) DEFAULT NULL,
-  `reportStartDate` datetime NOT NULL,
-  `reportEndDate` datetime NOT NULL,
-  `reportApprovationDate` datetime NOT NULL,
-  `reportDocumentPath` varchar(128) NOT NULL,
-  PRIMARY KEY (`reportID`),
-  UNIQUE KEY `salID_UNIQUE` (`reportID`),
-  KEY `reportTypeID_idx` (`reportTypeCode`),
-  KEY `salCustomerID_idx` (`reportCustomerID`),
-  KEY `salStartEndDate` (`reportStartDate`,`reportEndDate`),
-  CONSTRAINT `FK_report_repository_report_type_reportTypeCode` FOREIGN KEY (`reportTypeCode`) REFERENCES `report_type` (`reportTypeCode`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `reportlCustomerID` FOREIGN KEY (`reportCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `report_type`
---
-
-DROP TABLE IF EXISTS `report_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `report_type` (
-  `reportTypeCode` varchar(64) NOT NULL,
-  `reportTypeName` varchar(64) NOT NULL,
-  `reportTypeComment` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`reportTypeCode`),
-  UNIQUE KEY `reportTypeID_UNIQUE` (`reportTypeCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `report_type_linked_components`
---
-
-DROP TABLE IF EXISTS `report_type_linked_components`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `report_type_linked_components` (
-  `reportTypeCode` varchar(64) NOT NULL,
-  `customerID` int(10) unsigned NOT NULL,
-  `componentCode` varchar(64) NOT NULL,
-  `componentNestingLevel` int(10) unsigned NOT NULL,
-  `componentLabel` varchar(64) NOT NULL,
-  `componentOrderIndex` int(10) unsigned NOT NULL DEFAULT '100',
-  `componentGroupingLevel` int(10) DEFAULT NULL,
-  PRIMARY KEY (`reportTypeCode`,`customerID`,`componentCode`,`componentNestingLevel`),
-  KEY `FK_report_type_components_components_componentCode` (`componentCode`),
-  KEY `FK_report_type_components_customers_customerID` (`customerID`),
-  CONSTRAINT `FK_report_type_components_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_report_type_components_report_type_reportTypeCode` FOREIGN KEY (`reportTypeCode`) REFERENCES `report_type` (`reportTypeCode`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `report_type_specs`
---
-
-DROP TABLE IF EXISTS `report_type_specs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `report_type_specs` (
-  `reportTypeCode` varchar(64) NOT NULL,
-  `customerID` int(10) unsigned NOT NULL,
-  `reportTypeLabel` varchar(128) NOT NULL,
-  `reportTypeOutputFormat` varchar(64) NOT NULL,
-  `reportTypeFrontMatterTemplate` mediumtext,
-  `reportTypeBackMatterTemplate` mediumtext,
-  PRIMARY KEY (`reportTypeCode`,`customerID`),
-  KEY `FK_report_type_specs_customers_customerID` (`customerID`),
-  CONSTRAINT `FK_report_type_specs_customers_customerID` FOREIGN KEY (`customerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_report_type_specs_report_type_reportTypeCode` FOREIGN KEY (`reportTypeCode`) REFERENCES `report_type` (`reportTypeCode`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `sessions`
 --
 
@@ -726,21 +602,24 @@ CREATE TABLE `sessions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `tags`
+-- Table structure for table `tasks`
 --
 
-DROP TABLE IF EXISTS `tags`;
+DROP TABLE IF EXISTS `tasks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tags` (
-  `tagID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `tagCustomerID` int(10) unsigned NOT NULL,
-  `tagValue` varchar(32) NOT NULL,
-  PRIMARY KEY (`tagID`),
-  UNIQUE KEY `tagID_UNIQUE` (`tagID`),
-  KEY `tagCustomerID_idx` (`tagCustomerID`),
-  CONSTRAINT `tagCustomerID` FOREIGN KEY (`tagCustomerID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `tasks` (
+  `taskID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `taskDomainID` int(10) unsigned NOT NULL,
+  `taskRelatedActivityID` int(10) unsigned NOT NULL,
+  `taskName` varchar(128) NOT NULL,
+  `taskComment` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`taskID`),
+  KEY `FK_tasks_customers_customerID` (`taskDomainID`),
+  KEY `FK_tasks_activities_activityID` (`taskRelatedActivityID`),
+  CONSTRAINT `FK_tasks_activities_activityID` FOREIGN KEY (`taskRelatedActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_tasks_customers_customerID` FOREIGN KEY (`taskDomainID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains the tasks related to specified activity';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -752,22 +631,25 @@ DROP TABLE IF EXISTS `timeslots`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `timeslots` (
   `timeslotID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `timeslotDomainID` int(10) unsigned NOT NULL,
   `timeslotActivityID` int(10) unsigned NOT NULL,
+  `timeslotTaskID` int(11) unsigned DEFAULT NULL,
   `timeslotUserNick` varchar(64) DEFAULT NULL,
   `timeslotReferenceDate` date NOT NULL,
   `timeslotDuration` decimal(5,2) unsigned NOT NULL,
   `timeslotDescription` mediumtext,
-  `timeslotTagID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`timeslotID`),
   UNIQUE KEY `timeslotID_UNIQUE` (`timeslotID`),
   KEY `timeslot_StartTime` (`timeslotReferenceDate`),
   KEY `timeslotProjectID_idx` (`timeslotActivityID`),
-  KEY `timeslotTagID_idx` (`timeslotTagID`),
+  KEY `timeslotTagID_idx` (`timeslotTaskID`),
   KEY `timeslotUserID_idx` (`timeslotUserNick`),
+  KEY `FK_timeslots_customers_customerID` (`timeslotDomainID`),
+  CONSTRAINT `FK_timeslots_tasks_taskID` FOREIGN KEY (`timeslotTaskID`) REFERENCES `tasks` (`taskID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_timeslots_customers_customerID` FOREIGN KEY (`timeslotDomainID`) REFERENCES `customers` (`customerID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_timeslots_users_userNick` FOREIGN KEY (`timeslotUserNick`) REFERENCES `users` (`userNick`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `timeslotProjectID` FOREIGN KEY (`timeslotActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `timeslotTagID` FOREIGN KEY (`timeslotTagID`) REFERENCES `tags` (`tagID`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
+  CONSTRAINT `timeslotProjectID` FOREIGN KEY (`timeslotActivityID`) REFERENCES `activities` (`activityID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=16384;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -841,4 +723,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-19  0:23:08
+-- Dump completed on 2015-09-29 23:25:00
