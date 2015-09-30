@@ -36,6 +36,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$arr_Activities = $obj_Activity->read(NULL, array('activityParentID'));
 		$arr_ActivityFields = $obj_Activity->getFieldsData();
 		$str_ModuleLabel = $obj_Activity->getLabel();
+		$str_ItemLabel = $obj_Activity->getItemLabel();
 		$arr_ActivityTypes = $obj_Activity->getActivityTypes();
 
 
@@ -50,6 +51,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('activities_fields', $arr_ActivityFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('activity_types', $arr_ActivityTypes);
+		$app->view()->set('module_item_label', $str_ItemLabel);
 		$app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
 
