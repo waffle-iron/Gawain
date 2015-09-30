@@ -759,7 +759,7 @@ abstract class Entity {
 	 * @param string $str_MainIDKey
 	 * @return array
 	 */
-	protected function reformatResultset($arr_Resultset, $str_MainIDKey = NULL) {
+	protected function reformatResultset($arr_Resultset, $str_MainIDKey = NULL, $str_DomainDependencyColumn = NULL) {
 
 		$arr_Dataset = array();
 
@@ -769,9 +769,18 @@ abstract class Entity {
 				$str_MainIDKey = $this->primaryKey;
 			}
 
+			if (is_null($str_DomainDependencyColumn)) {
+				$str_DomainDependencyColumn = $this->domainDependencyColumn;
+			}
+
 			foreach ($arr_Resultset as $arr_GetRow) {
 				$str_MainID = $arr_GetRow[$str_MainIDKey];
 				unset($arr_GetRow[$str_MainIDKey]);
+
+				if (isset($arr_GetRow[$str_DomainDependencyColumn])) {
+					unset($arr_GetRow[$str_DomainDependencyColumn]);
+				}
+
 				$arr_Dataset[$str_MainID] = $arr_GetRow;
 			}
 
