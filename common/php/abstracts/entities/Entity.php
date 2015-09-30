@@ -401,14 +401,7 @@ abstract class Entity {
 
 		// Execute the query and get raw data
 		$arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
-
-
-		// Groups data using main ID as key
-		foreach ($arr_GetResult as $arr_GetRow) {
-			$str_MainID = $arr_GetRow['_entityMainID'];
-			unset($arr_GetRow['_entityMainID']);
-			$arr_Dataset[$str_MainID] = $arr_GetRow;
-		}
+		$arr_Dataset = $this->reformatResultset($arr_GetResult, '_entityMainID');
 
 
 		return $arr_Dataset;
@@ -757,6 +750,31 @@ abstract class Entity {
 	 */
 	public function getPrimaryKey() {
 		return $this->primaryKey;
+	}
+
+
+	/** Reformats the raw dataset to remove main ID and use it as array key
+	 *
+	 * @param array $arr_Resultset
+	 * @param string $str_MainIDKey
+	 * @return array
+	 */
+	protected function reformatResultset($arr_Resultset, $str_MainIDKey = NULL) {
+
+		$arr_Dataset = array();
+
+		if (is_null($str_MainIDKey)) {
+			$str_MainIDKey = $this->primaryKey;
+		}
+
+		foreach ($arr_Resultset as $arr_GetRow) {
+			$str_MainID = $arr_GetRow[$str_MainIDKey];
+			unset($arr_GetRow[$str_MainIDKey]);
+			$arr_Dataset[$str_MainID] = $arr_GetRow;
+		}
+
+		return $arr_Dataset;
+
 	}
 
 }
