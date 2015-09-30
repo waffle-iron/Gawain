@@ -77,18 +77,26 @@ class Timeslot extends Entity {
 
 		if (!is_array($mix_Limits)) {
 
+			$date_Today = new DateTime();
+
 			// If the limit parameter is a string, interpret the string and add condition
 			switch ($mix_Limits) {
 				case 'this_day':
-					$str_TimeslotQuery .= ' and Day(timeslotReferenceDate) = Day(Now())';
+					$str_TimeslotQuery .= ' and timeslotReferenceDate = ?';
+					$str_Today = $date_Today->format('Y-m-d');
+					$arr_Parameters[] = array($str_Today => 's');
 					break;
 
 				case 'this_week':
-					$str_TimeslotQuery .= ' and Week(timeslotReferenceDate) = Week(Now())';
+					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
+					$str_Limit = strtotime('this week', time());
+					$arr_Parameters[] = array($str_Limit => 's');
 					break;
 
 				case 'this_month':
-					$str_TimeslotQuery .= ' and Month(timeslotReferenceDate) = Month(Now())';
+					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
+					$str_Limit = strtotime('this month', time());
+					$arr_Parameters[] = array($str_Limit => 's');
 					break;
 
 				default:
@@ -129,8 +137,6 @@ class Timeslot extends Entity {
 
 		// Execute the query and get entries
 		$obj_Resultset = $this->dbHandler->executePrepared($str_TimeslotQuery, $arr_Parameters);
-
-		var_dump($arr_Parameters);
 
 		return $this->reformatResultset($obj_Resultset);
 
