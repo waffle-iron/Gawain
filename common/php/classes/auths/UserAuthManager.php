@@ -5,17 +5,27 @@ require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
+/**
+ * Class UserAuthManager
+ */
 class UserAuthManager {
-	
-	// IP address
+
+
+	/** IP address
+	 * @var null|string
+	 */
 	private $hostName;
 	
-	
-	// DB handler
+
+	/** DB handler
+	 * @var dbHandler
+	 */
 	private $dbHandler;
 	
-	
-	// Options
+
+	/** Options
+	 * @var Options
+	 */
 	private $options;
 	
 	
@@ -157,31 +167,9 @@ class UserAuthManager {
 	 * @param bool $bool_SendHeader
 	 * @return bool
 	 */
-	/*public function checkPermissions($bool_SendHeader = FALSE) {
-		// If the cookies are not set, the request is automatically aborted
-		if (isset($_COOKIE['GawainSessionID'])) {
-			$str_SessionID = $_COOKIE['GawainSessionID'];
-
-			// If the user authentication is not valid, the request is automatically aborted
-			if (!$this->isAuthenticated($str_SessionID)) {
-				if ($bool_SendHeader) {
-					header('Gawain-Response: Unauthorized', 0, 401);
-				}
-				return FALSE;
-			} else {
-				return TRUE;
-			}
-
-		} else {
-			if ($bool_SendHeader) {
-				header('Gawain-Response: Unauthorized', 0, 401);
-			}
-			return FALSE;
-		}
-	}*/
-
-
 	public function checkPermissions($str_Module, $bool_SendHeader = FALSE) {
+
+		$bool_Result = TRUE;
 
 		if (isset($_COOKIE['GawainSessionID'])) {
 			$str_SessionID = $_COOKIE['GawainSessionID'];
@@ -197,7 +185,7 @@ class UserAuthManager {
 						header('Gawain-Response: Unauthorized', 0, 401);
 						exit;
 					}
-					return FALSE;
+					$bool_Result = FALSE;
 				}
 
 			} else {
@@ -206,7 +194,7 @@ class UserAuthManager {
 					header('Gawain-Response: Unauthorized', 0, 401);
 					exit;
 				}
-				return FALSE;
+				$bool_Result = FALSE;
 			}
 		} else {
 			if ($bool_SendHeader) {
@@ -214,8 +202,10 @@ class UserAuthManager {
 				header('Gawain-Response: Unauthorized', 0, 401);
 				exit;
 			}
-			return FALSE;
+			$bool_Result = FALSE;
 		}
+
+		return $bool_Result;
 
 	}
 
@@ -265,6 +255,33 @@ class UserAuthManager {
 		$this->removeSession($str_SessionID);
 		
 		return TRUE;
+	}
+
+
+	/** Geta the current user nick logged with the given SessionID
+	 *
+	 * @param string $str_SessionID
+	 * @return string
+	 * @throws Exception
+	 */
+	public function getCurrentUserNick($str_SessionID) {
+		$str_UserQuery = '
+			select
+				sessions.userNick
+			from sessions
+			where sessions.sessionID = ?';
+
+		$obj_Resultset = $this->dbHandler->executePrepared($str_UserQuery,
+		                                                   array(
+			                                                   array($str_SessionID => 's')
+		                                                   ));
+
+		if (count($obj_Resultset) == 1) {
+			return $obj_Resultset[0]['userNick'];
+		} else {
+			throw new Exception('Non-unique session');
+		}
+
 	}
 	
 	
