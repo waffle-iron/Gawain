@@ -1,11 +1,11 @@
 <?php
 
 require_once(__DIR__ . '/../common/php/constants/global_defines.php');
-require_once(PHP_CLASSES_DIR . 'entities/Activity.php');
+require_once(PHP_CLASSES_DIR . 'entities/Timeslot.php');
 require_once(PHP_CLASSES_DIR . 'misc/Logger.php');
 require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 
-$obj_Manager = new Activity('AAA');
+$obj_Manager = new Timeslot('AAA');
 $obj_Logger = new Logger('activity');
 $obj_AuthManager = new UserAuthManager();
 
@@ -15,7 +15,7 @@ $obj_AuthManager = new UserAuthManager();
 
 //$obj_AuthManager->logout($obj_Output['sessionID']);
 
-var_dump($obj_Manager->getGanttData());
+var_dump($obj_Manager->getCurrentUserEntries());
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 

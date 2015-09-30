@@ -1,0 +1,82 @@
+{% extends 'page_base.twig' %}
+
+
+
+
+{% block page_title %}
+    {{ module_label }}
+{% endblock %}
+
+
+
+{% block page_header %}
+
+    <h1>
+        {{ module_label }}
+
+
+        <div class="pull-right" role="group">
+            <a class="btn btn-primary"
+               role="button"
+               href="{{ urlFor('timeslot_new') }}">
+                <i class="fa fa-plus-circle fa-fw"></i> New {{ module_item_label }}
+            </a>
+        </div>
+
+    </h1>
+
+{% endblock %}
+
+
+
+{% block dependencies %}
+
+    {% for css_entry in page_dependencies.css if css_entry is not null%}
+        <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
+    {% endfor %}
+
+
+    {% for js_entry in page_dependencies.js %}
+        <script src="{{ js_entry }}"></script>
+    {% endfor %}
+
+{% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <ul class="nav nav-pills gawain-nav-level-1">
+        <li role="presentation" class="active"><a href="#gawain-timeslots-table-view" role="tab" data-toggle="tab">Table View</a></li>
+        <li role="presentation"><a href="#gawain-timeslots-graph-view" role="tab" data-toggle="tab">Graph View</a></li>
+    </ul>
+
+    <hr>
+
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane active" id="gawain-timeslots-table-view">
+            <div class="row">
+                <div class="col-md-12 table-responsive table-condensed">
+
+                    {% include 'user_timeslots_table.twig' %}
+
+                </div>
+            </div>
+        </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="gawain-timeslots-graph-view">
+            <div class="row">
+                <div class="col-md-12">
+
+                    {% include 'user_timeslots_graph.twig' %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

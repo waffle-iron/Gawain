@@ -1,0 +1,31 @@
+{# Template for timeslots, tabular view #}
+
+
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>{{ timeslots_fields.timeslotReferenceDate.label }}</th>
+        <th>Activity Name</th>
+        <th>Task Name</th>
+        <th>{{ timeslots_fields.timeslotDuration.label }}</th>
+        <th>{{ timeslots_fields.timeslotDescription.label }}</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    {% for ID,timeslot in current_user_timeslots %}
+
+        <tr id="gawain-timeslot-{{ ID }}">
+            <td>{{ timeslot.timeslotReferenceDate|date('d/m/Y') }}</td>
+            <td>{{ timeslot.activityName }}</td>
+            <td>{{ timeslot.taskName }}</td>
+            <td>{{ timeslot.timeslotDuration }}</td>
+            <td>{{ timeslot.timeslotDescription }}</td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
