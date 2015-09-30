@@ -763,14 +763,18 @@ abstract class Entity {
 
 		$arr_Dataset = array();
 
-		if (is_null($str_MainIDKey)) {
-			$str_MainIDKey = $this->primaryKey;
-		}
+		if (!is_null($arr_Resultset)) {
 
-		foreach ($arr_Resultset as $arr_GetRow) {
-			$str_MainID = $arr_GetRow[$str_MainIDKey];
-			unset($arr_GetRow[$str_MainIDKey]);
-			$arr_Dataset[$str_MainID] = $arr_GetRow;
+			if (is_null($str_MainIDKey)) {
+				$str_MainIDKey = $this->primaryKey;
+			}
+
+			foreach ($arr_Resultset as $arr_GetRow) {
+				$str_MainID = $arr_GetRow[$str_MainIDKey];
+				unset($arr_GetRow[$str_MainIDKey]);
+				$arr_Dataset[$str_MainID] = $arr_GetRow;
+			}
+
 		}
 
 		return $arr_Dataset;
