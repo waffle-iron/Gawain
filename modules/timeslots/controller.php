@@ -17,6 +17,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 			                                             'jQuery',
 			                                             'bootstrap',
 			                                             'bootstrap-cerulean-theme',
+			                                             'highcharts',
 			                                             'gawain-style-settings',
 			                                             'gawain-button-bindings',
 			                                             'font-awesome',
@@ -48,10 +49,27 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
 
 		// Group timeslots by date
-		$arr_GroupedTimeslots = array();
+		$arr_DateGroupedTimeslots = array();
 		foreach ($arr_CurrentUserTimeslots as $int_TimeslotID => $arr_Timeslot) {
-			$arr_GroupedTimeslots[$arr_Timeslot['timeslotReferenceDate']][$int_TimeslotID] = $arr_Timeslot;
+			$arr_DateGroupedTimeslots[$arr_Timeslot['timeslotReferenceDate']][$int_TimeslotID] = $arr_Timeslot;
 		}
+
+
+		// Group timeslots by activity and task
+		$arr_ActivityGroupedTimeslots = array();
+		foreach ($arr_CurrentUserTimeslots as $int_TimeslotID => $arr_Timeslot) {
+			if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['total'])) {
+				$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['total'] = 0;
+			}
+
+			if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['details'][$arr_Timeslot['taskName']])) {
+				$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['details'][$arr_Timeslot['taskName']] = 0;
+			}
+
+			$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['total'] += $arr_Timeslot['timeslotDuration'];
+			$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['details'][$arr_Timeslot['taskName']] += $arr_Timeslot['timeslotDuration'];
+		}
+
 
 		$arr_TimeslotFields = $obj_Timeslot->getFieldsData();
 		$str_ModuleLabel = $obj_Timeslot->getLabel();
@@ -63,7 +81,8 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('navbar_data', $arr_NavbarData);
 		$app->view()->set('timeslots_fields', $arr_TimeslotFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
-		$app->view()->set('current_user_timeslots', $arr_GroupedTimeslots);
+		$app->view()->set('date_grouped_timeslots', $arr_DateGroupedTimeslots);
+		$app->view()->set('activity_grouped_timeslots', $arr_ActivityGroupedTimeslots);
 		$app->view()->set('module_item_label', $str_ItemLabel);
 
 
