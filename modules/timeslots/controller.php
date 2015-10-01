@@ -46,6 +46,13 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 			$arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries();
 		}
 
+
+		// Group timeslots by date
+		$arr_GroupedTimeslots = array();
+		foreach ($arr_CurrentUserTimeslots as $int_TimeslotID => $arr_Timeslot) {
+			$arr_GroupedTimeslots[$arr_Timeslot['timeslotReferenceDate']][$int_TimeslotID] = $arr_Timeslot;
+		}
+
 		$arr_TimeslotFields = $obj_Timeslot->getFieldsData();
 		$str_ModuleLabel = $obj_Timeslot->getLabel();
 		$str_ItemLabel = $obj_Timeslot->getItemLabel();
@@ -56,7 +63,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('navbar_data', $arr_NavbarData);
 		$app->view()->set('timeslots_fields', $arr_TimeslotFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
-		$app->view()->set('current_user_timeslots', $arr_CurrentUserTimeslots);
+		$app->view()->set('current_user_timeslots', $arr_GroupedTimeslots);
 		$app->view()->set('module_item_label', $str_ItemLabel);
 
 

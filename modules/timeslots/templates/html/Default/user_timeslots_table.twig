@@ -13,19 +13,23 @@
     </tr>
     </thead>
 
-    <tbody>
+    {% for timeslot_group_date,timeslot_data in current_user_timeslots %}
 
-    {% for ID,timeslot in current_user_timeslots %}
+        <tbody>
 
-        <tr id="gawain-timeslot-{{ ID }}">
-            <td>{{ timeslot.timeslotReferenceDate|date('d/m/Y') }}</td>
-            <td>{{ timeslot.activityName }}</td>
-            <td>{{ timeslot.taskName }}</td>
-            <td>{{ timeslot.timeslotDuration }}</td>
-            <td>{{ timeslot.timeslotDescription }}</td>
-        </tr>
+        {% for ID,timeslot in timeslot_data %}
+
+            <tr id="gawain-timeslot-{{ ID }}">
+                {% if loop.first %}<td rowspan="{{ timeslot_data|length }}" style="vertical-align: middle">{{ timeslot_group_date|date('d/m/Y') }}</td>{% endif %}
+                <td>{{ timeslot.activityName }}</td>
+                <td>{{ timeslot.taskName }}</td>
+                <td>{{ timeslot.timeslotDuration }}</td>
+                <td>{{ timeslot.timeslotDescription }}</td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
 
     {% endfor %}
-
-    </tbody>
 </table>
