@@ -13,4 +13,10 @@
 
     g.Draw();
 
+
+    // This snippet fixes the missing auto refresh when changing tab
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        g.Draw();
+    });
+
 </script>
