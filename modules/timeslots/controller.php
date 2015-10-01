@@ -80,4 +80,17 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
 	})->name('timeslot_new');
 
+
+
+	$app->get('/:timeslotID/edit', function ($timeslotID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
+
+	})->name('timeslot_edit');
+
+
+
+	$app->post('/delete', function () use ($app, $str_SessionID) {
+
+	})->name('timeslot_delete');
+
+
 });
