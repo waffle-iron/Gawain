@@ -279,6 +279,6 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		}
 		$app->redirect($app->urlFor('activities'));
 
-	})->conditions(array('activityID' => '\d+'))->name('activity_delete');
+	})->name('activity_delete');
 
 });
