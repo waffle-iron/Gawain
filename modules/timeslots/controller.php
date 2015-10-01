@@ -30,7 +30,22 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
 		// Timeslot object declaration and usage
 		$obj_Timeslot = new Timeslot($str_SessionID);
-		$arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries(); // Defaults to current month
+		$str_TimeslotFilter = $app->request->get('filter');
+		$str_TimeslotFrom = $app->request->get('from');
+		$str_TimeslotTo = $app->request->get('to');
+
+		if (!is_null($str_TimeslotFilter)) {
+			$arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries($str_TimeslotFilter);
+		} elseif (!is_null($str_TimeslotFrom) || !is_null($str_TimeslotTo)) {
+			$arr_Limits = array(
+				'from'  =>  $str_TimeslotFrom,
+				'to'    =>  $str_TimeslotTo
+			);
+			$arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries($arr_Limits);
+		} else {
+			$arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries();
+		}
+
 		$arr_TimeslotFields = $obj_Timeslot->getFieldsData();
 		$str_ModuleLabel = $obj_Timeslot->getLabel();
 		$str_ItemLabel = $obj_Timeslot->getItemLabel();

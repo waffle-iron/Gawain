@@ -89,17 +89,20 @@ class Timeslot extends Entity {
 
 				case 'this_week':
 					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
-					$str_Limit = strtotime('this week', time());
+					$str_Limit = strftime('%Y-%m-%d', strtotime('this week', time()));
 					$arr_Parameters[] = array($str_Limit => 's');
 					break;
 
 				case 'this_month':
 					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
-					$str_Limit = strtotime('this month', time());
+					$str_Limit = strftime('%Y-%m-%d', strtotime('this month', time()));
 					$arr_Parameters[] = array($str_Limit => 's');
 					break;
 
 				default:
+					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
+					$str_Limit = strftime('%Y-%m-%d', strtotime('this month', time()));
+					$arr_Parameters[] = array($str_Limit => 's');
 					break;
 			}
 
