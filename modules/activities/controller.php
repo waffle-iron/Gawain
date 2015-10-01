@@ -273,8 +273,10 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 	$app->post('/delete', function () use ($app, $str_SessionID) {
 
 		$int_ActivityID = $app->request->post('activityID');
-		$obj_Activity = new Activity($str_SessionID);
-		$obj_Activity->delete($int_ActivityID);
+		if (!is_null($int_ActivityID)) {
+			$obj_Activity = new Activity($str_SessionID);
+			$obj_Activity->delete($int_ActivityID);
+		}
 		$app->redirect($app->urlFor('activities'));
 
 	})->conditions(array('activityID' => '\d+'))->name('activity_delete');
