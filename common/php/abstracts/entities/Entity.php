@@ -757,6 +757,7 @@ abstract class Entity {
 	 *
 	 * @param array $arr_Resultset
 	 * @param string $str_MainIDKey
+	 * @param string $str_DomainDependencyColumn
 	 * @return array
 	 */
 	protected function reformatResultset($arr_Resultset, $str_MainIDKey = NULL, $str_DomainDependencyColumn = NULL) {
