@@ -49,26 +49,11 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
 
 		// Group timeslots by date
-		$arr_DateGroupedTimeslots = array();
-		foreach ($arr_CurrentUserTimeslots as $int_TimeslotID => $arr_Timeslot) {
-			$arr_DateGroupedTimeslots[$arr_Timeslot['timeslotReferenceDate']][$int_TimeslotID] = $arr_Timeslot;
-		}
+		$arr_DateGroupedTimeslots = $obj_Timeslot::groupTimeslotsByDate($arr_CurrentUserTimeslots);
 
 
 		// Group timeslots by activity and task
-		$arr_ActivityGroupedTimeslots = array();
-		foreach ($arr_CurrentUserTimeslots as $int_TimeslotID => $arr_Timeslot) {
-			if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['total'])) {
-				$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['total'] = 0;
-			}
-
-			if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['details'][$arr_Timeslot['taskName']])) {
-				$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['details'][$arr_Timeslot['taskName']] = 0;
-			}
-
-			$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['total'] += $arr_Timeslot['timeslotDuration'];
-			$arr_ActivityGroupedTimeslots[$arr_Timeslot['activityName']]['details'][$arr_Timeslot['taskName']] += $arr_Timeslot['timeslotDuration'];
-		}
+		$arr_ActivityGroupedTimeslots = $obj_Timeslot::groupTimeslotsByActivity($arr_CurrentUserTimeslots);
 
 
 		$arr_TimeslotFields = $obj_Timeslot->getFieldsData();

@@ -56,11 +56,6 @@ class Timeslot extends Entity {
 		);
 
 
-		$arr_Parameters = array(
-			array($this->domainID =>  'i'),
-			array($str_CurrentUser  =>  's')
-		);
-
 		if (!is_array($mix_Limits)) {
 
 			$date_Today = new DateTime();
@@ -154,6 +149,58 @@ class Timeslot extends Entity {
 
 		// Execute the query and get entries
 		return $this->read($arr_Wheres);
+
+	}
+
+
+	/** Groups extracted timeslots by date
+	 *
+	 * @param $arr_Resultset
+	 * @return array
+	 */
+	public static function groupTimeslotsByDate($arr_Resultset, $bool_InversedOrder = TRUE) {
+
+		$arr_DateGroupedTimeslots = array();
+
+		foreach ($arr_Resultset as $int_TimeslotID => $arr_Timeslot) {
+			$arr_DateGroupedTimeslots[$arr_Timeslot['timeslotReferenceDate']][$int_TimeslotID] = $arr_Timeslot;
+		}
+
+		if ($bool_InversedOrder) {
+			krsort($arr_DateGroupedTimeslots);
+		} else {
+			ksort($arr_DateGroupedTimeslots);
+		}
+
+
+		return $arr_DateGroupedTimeslots;
+
+	}
+
+
+	/** Groups extracted timeslots by Activity and Task
+	 *
+	 * @param $arr_Resultset
+	 * @return array
+	 */
+	public static function groupTimeslotsByActivity($arr_Resultset) {
+
+		$arr_ActivityGroupedTimeslots = array();
+
+		foreach ($arr_Resultset as $int_TimeslotID => $arr_Timeslot) {
+			if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['total'])) {
+				$arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['total'] = 0;
+			}
+
+			if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['details'][$arr_Timeslot['timeslotTaskID']])) {
+				$arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['details'][$arr_Timeslot['timeslotTaskID']] = 0;
+			}
+
+			$arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['total'] += $arr_Timeslot['timeslotDuration'];
+			$arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['details'][$arr_Timeslot['timeslotTaskID']] += $arr_Timeslot['timeslotDuration'];
+		}
+
+		return $arr_ActivityGroupedTimeslots;
 
 	}
 

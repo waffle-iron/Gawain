@@ -27,8 +27,8 @@
                     <a href="{{ urlFor('timeslot_new') }}?cloneFrom={{ ID }}" title="Clone"><i class="fa fa-clone fa-fw"></i></a>
                     <a onclick="if (confirm('Are you sure to delete this record? This operation cannot be reverted')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}" title="Delete"><i class="fa fa-trash-o fa-fw"></i></a>
                 </td>
-                <td>{{ timeslot.activityName }}</td>
-                <td>{{ timeslot.taskName }}</td>
+                <td>{{ timeslot.timeslotActivityID }}</td>
+                <td>{{ timeslot.timeslotTaskID }}</td>
                 <td>{{ timeslot.timeslotDuration|number_format }}</td>
                 <td>{{ timeslot.timeslotDescription }}</td>
 
