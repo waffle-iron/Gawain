@@ -48,27 +48,13 @@ class Timeslot extends Entity {
 		// First get current user nick
 		$str_CurrentUser = $this->authManager->getCurrentUserNick($this->sessionID);
 
+		$arr_Wheres = array(
+			'timeslotUserNick'  =>  array(
+				'operator'  =>  '=',
+			    'arguments' =>  array($str_CurrentUser)
+			)
+		);
 
-		// Then retrieves data according to limits
-		$str_TimeslotQuery = '
-			select
-				timeslots.timeslotID,
-				activities.activityName,
-				tasks.taskName,
-				users.userName,
-				timeslots.timeslotReferenceDate,
-				timeslots.timeslotDuration,
-				timeslots.timeslotDescription
-			from timeslots
-			inner join activities
-				on activities.activityID = timeslots.timeslotActivityID
-			left join tasks
-				on tasks.taskID = timeslots.timeslotTaskID
-			left join users
-				on users.userNick = activities.activityManagerNick
-			where timeslots.timeslotDomainID = ?
-				and timeslots.timeslotUserNick = ?
-		';
 
 		$arr_Parameters = array(
 			array($this->domainID =>  'i'),
@@ -82,27 +68,43 @@ class Timeslot extends Entity {
 			// If the limit parameter is a string, interpret the string and add condition
 			switch ($mix_Limits) {
 				case 'this_day':
-					$str_TimeslotQuery .= ' and timeslotReferenceDate = ?';
 					$str_Today = $date_Today->format('Y-m-d');
-					$arr_Parameters[] = array($str_Today => 's');
+					$arr_Wheres['timeslotReferenceDate'] = array(
+						'operator'  => '=',
+						'arguments' =>  array(
+							$str_Today
+						)
+					);
 					break;
 
 				case 'this_week':
-					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
 					$str_Limit = strftime('%Y-%m-%d', strtotime('this week', time()));
-					$arr_Parameters[] = array($str_Limit => 's');
+					$arr_Wheres['timeslotReferenceDate'] = array(
+						'operator'  => '>=',
+						'arguments' =>  array(
+							$str_Limit
+						)
+					);
 					break;
 
 				case 'this_month':
-					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
-					$str_Limit = strftime('%Y-%m-%d', strtotime('this month', time()));
-					$arr_Parameters[] = array($str_Limit => 's');
+					$str_Limit = $date_Today->format('Y-m-01');
+					$arr_Wheres['timeslotReferenceDate'] = array(
+						'operator'  => '>=',
+						'arguments' =>  array(
+							$str_Limit
+						)
+					);
 					break;
 
 				default:
-					$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
 					$str_Limit = strftime('%Y-%m-%d', strtotime('this month', time()));
-					$arr_Parameters[] = array($str_Limit => 's');
+					$arr_Wheres['timeslotReferenceDate'] = array(
+						'operator'  => '>=',
+						'arguments' =>  array(
+							$str_Limit
+						)
+					);
 					break;
 			}
 
@@ -110,13 +112,21 @@ class Timeslot extends Entity {
 
 			// If the limit parameter is an array, get the 'from' and 'to' elements
 			if (isset($mix_Limits['from'])) {
-				$str_TimeslotQuery .= ' and timeslotReferenceDate >= ?';
-				$arr_Parameters[] = array($mix_Limits['from'] => 's');
+				$arr_Wheres['timeslotReferenceDate'] = array(
+					'operator'  => '>=',
+					'arguments' =>  array(
+						$mix_Limits['from']
+					)
+				);
 			}
 
 			if (isset($mix_Limits['to'])) {
-				$str_TimeslotQuery .= ' and timeslotReferenceDate <= ?';
-				$arr_Parameters[] = array($mix_Limits['to'] => 's');
+				$arr_Wheres['timeslotReferenceDate'] = array(
+					'operator'  => '<=',
+					'arguments' =>  array(
+						$mix_Limits['to']
+					)
+				);
 			}
 
 		}
@@ -124,24 +134,26 @@ class Timeslot extends Entity {
 
 		// Add condition on activity ID and task ID, if present
 		if (!is_null($int_ActivityID)) {
-			$str_TimeslotQuery .= ' and timeslotActivityID = ?';
-			$arr_Parameters[] = array($int_ActivityID => 'i');
+			$arr_Wheres['timeslotActivityID'] = array(
+				'operator'  => '=',
+				'arguments' =>  array(
+					$int_ActivityID
+				)
+			);
 		}
 
 		if (!is_null($int_TaskID)) {
-			$str_TimeslotQuery .= ' and timeslotTaskID = ?';
-			$arr_Parameters[] = array($int_TaskID => 'i');
+			$arr_Wheres['timeslotTaskID'] = array(
+				'operator'  => '=',
+				'arguments' =>  array(
+					$int_TaskID
+				)
+			);
 		}
 
 
-		// Add reverse date sorting for better readability
-		$str_TimeslotQuery .= ' order by timeslotReferenceDate desc';
-
-
 		// Execute the query and get entries
-		$obj_Resultset = $this->dbHandler->executePrepared($str_TimeslotQuery, $arr_Parameters);
-
-		return $this->reformatResultset($obj_Resultset);
+		return $this->read($arr_Wheres);
 
 	}
 
