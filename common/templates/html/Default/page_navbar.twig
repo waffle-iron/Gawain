@@ -21,18 +21,23 @@
 
 
             <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <div class="btn-group navbar-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-user fa-fw"></i> {{ navbar_data.username }} <i class="fa fa-caret-down"></i></button>
 
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">To be filled...</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{{ urlFor('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
-                        </ul>
-                    </div>
+                <li class="dropdown">
+                    <a href="#"
+                       class="dropdown-toggle"
+                       data-toggle="dropdown"
+                       role="button"
+                       aria-haspopup="true"
+                       aria-expanded="false">
+                        <i class="fa fa-user fa-fw"></i> {{ navbar_data.username }} <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">To be filled...</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ urlFor('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                    </ul>
                 </li>
+
             </ul>
         </div>
     </div>
