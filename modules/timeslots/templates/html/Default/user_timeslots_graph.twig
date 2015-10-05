@@ -41,7 +41,7 @@
                     {
                         name: '{{ activity_name }}',
                         y: {{ timeslot_data.total }},
-                        drilldown: '{{ activity_name }}'
+                        drilldown: '{{ activity_name }}_drilldown'
                     } {% if not loop.last %},{% endif %}
                     {% endfor %}
                 ]
@@ -52,10 +52,10 @@
                     {% for activity_name,timeslot_data in activity_grouped_timeslots %}
                     {
                         name: '{{ activity_name }}',
-                        id: '{{ activity_name }}',
+                        id: '{{ activity_name }}_drilldown',
                         data: [
                             {% for task_name,task_timeslot in timeslot_data.details %}
-                                [{% if task_name != '' %}{{ task_name }}{% else %}'[No Task]'{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
+                                [{% if task_name != '' %}{{ task_name }}{% else %}'No Task'{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
                             {% endfor %}
                         ]
                     } {% if not loop.last %},{% endif %}
