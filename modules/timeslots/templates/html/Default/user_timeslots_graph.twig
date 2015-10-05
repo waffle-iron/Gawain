@@ -39,7 +39,7 @@
                 data: [
                     {% for activity_name,timeslot_data in activity_grouped_timeslots %}
                     {
-                        data: '{{ activity_name }}',
+                        name: '{{ activity_name }}',
                         y: {{ timeslot_data.total }},
                         drilldown: '{{ activity_name }}'
                     } {% if not loop.last %},{% endif %}
