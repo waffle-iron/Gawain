@@ -25,6 +25,8 @@
 		"path"         : {
 			"js"  : [
 				"/gawain/common/js/vendor/Highcharts/highcharts.js",
+				"/gawain/common/js/vendor/Highcharts/highcharts-more.js",
+				"/gawain/common/js/vendor/Highcharts/highcharts-3d.js",
 				"/gawain/common/js/vendor/Highcharts/themes/grid.js"
 			],
 			"css" : [
@@ -33,6 +35,21 @@
 		},
 		"dependencies" : [
 			"jQuery"
+		]
+	},
+
+	"highcharts-more"               : {
+		"path"         : {
+			"js"  : [
+				"/gawain/common/js/vendor/Highcharts/highcharts-more.js",
+				"/gawain/common/js/vendor/Highcharts/highcharts-3d.js"
+			],
+			"css" : [
+				""
+			]
+		},
+		"dependencies" : [
+			"highcharts"
 		]
 	},
 
