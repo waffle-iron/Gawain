@@ -9,23 +9,7 @@
 
 
 
-{% block page_header %}
 
-    <h1>
-        {{ module_label }}
-
-
-        <div class="pull-right" role="group">
-            <a class="btn btn-primary"
-               role="button"
-               href="{{ urlFor('activity_new') }}">
-                <i class="fa fa-plus-circle fa-fw"></i> New {{ module_item_label }}
-            </a>
-        </div>
-
-    </h1>
-
-{% endblock %}
 
 
 
@@ -47,35 +31,59 @@
 
 {% block page_content %}
 
+    <div class="row">
 
-    <ul class="nav nav-pills gawain-nav-level-1">
-        <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab" data-toggle="tab">Table View</a></li>
-        <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
-    </ul>
+        <div class="col-md-12">
+
+            <ul class="nav nav-pills gawain-nav-level-1">
+                <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab" data-toggle="tab">Table View</a></li>
+                <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
+            </ul>
+
+            <hr>
+
+            <div class="tab-content">
+
+                <div role="tabpanel" class="tab-pane active" id="gawain-activities-table-view">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            {% include 'all_activities_table.twig' %}
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div role="tabpanel" class="tab-pane" id="gawain-activities-gantt-chart">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            {% include 'all_activities_gantt.twig' %}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <hr>
 
-    <div class="tab-content">
 
-        <div role="tabpanel" class="tab-pane active" id="gawain-activities-table-view">
-            <div class="row">
-                <div class="col-md-12">
+    <div class="row">
 
-                    {% include 'all_activities_table.twig' %}
+        <div class="col-md-12">
 
-                </div>
-            </div>
-        </div>
+            <a class="btn btn-primary"
+               role="button"
+               href="{{ urlFor('activity_new') }}">
+                <i class="fa fa-plus-circle fa-fw"></i> New {{ module_item_label }}
+            </a>
 
-
-        <div role="tabpanel" class="tab-pane" id="gawain-activities-gantt-chart">
-            <div class="row">
-                <div class="col-md-12">
-
-                    {% include 'all_activities_gantt.twig' %}
-
-                </div>
-            </div>
         </div>
 
     </div>
