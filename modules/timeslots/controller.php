@@ -18,6 +18,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 			                                             'bootstrap',
 			                                             'bootstrap-cerulean-theme',
 			                                             'highcharts',
+			                                             'highcharts-drilldown',
 			                                             'gawain-style-settings',
 			                                             'gawain-button-bindings',
 			                                             'font-awesome',

@@ -1,12 +1,16 @@
 {# Template for displaying timeslots summary in graph #}
 
-<div id="gawain-user-timeslots-graph-container"></div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3 col-sm-12">
+        <div id="gawain-user-timeslots-graph-by-activities"></div>
+    </div>
+</div>
 
 <script>
 
     function drawChart() {
 
-        $('#gawain-user-timeslots-graph-container').highcharts({
+        $('#gawain-user-timeslots-graph-by-activities').highcharts({
             chart: {
                 type: 'pie'
             },
@@ -39,9 +43,9 @@
                 data: [
                     {% for activity_name,timeslot_data in activity_grouped_timeslots %}
                     {
-                        name: '{{ activity_name }}',
+                        name: "{{ activity_name }}",
                         y: {{ timeslot_data.total }},
-                        drilldown: '{{ activity_name }}_drilldown'
+                        drilldown: "{{ activity_name }}_drilldown"
                     } {% if not loop.last %},{% endif %}
                     {% endfor %}
                 ]
@@ -51,11 +55,11 @@
                 series: [
                     {% for activity_name,timeslot_data in activity_grouped_timeslots %}
                     {
-                        name: '{{ activity_name }}',
-                        id: '{{ activity_name }}_drilldown',
+                        name: "{{ activity_name }}",
+                        id: "{{ activity_name }}_drilldown",
                         data: [
                             {% for task_name,task_timeslot in timeslot_data.details %}
-                                [{% if task_name != '' %}{{ task_name }}{% else %}'No Task'{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
+                                [{% if task_name != '' %}"{{ task_name }}"{% else %}"No Task"{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
                             {% endfor %}
                         ]
                     } {% if not loop.last %},{% endif %}
