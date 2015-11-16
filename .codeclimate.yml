@@ -1,0 +1,24 @@
+engines:
+  csslint:
+    enabled: true
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+  phpcodesniffer:
+    enabled: true
+  phpmd:
+    enabled: true
+ratings:
+  paths:
+  - "**.css"
+  - "**.js"
+  - "**.jsx"
+  - "**.php"
+  - "**.module"
+  - "**.inc"
+exclude_paths:
+  - "common/css/FontAwesome/**"
+  - "common/css/Themes/**"
+  - "common/php/vendor/**"
+  - "common/js/vendor/**"
