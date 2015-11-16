@@ -92,6 +92,16 @@ class Timeslot extends Entity {
 					);
 					break;
 
+				case 'this_year':
+					$str_Limit = $date_Today->format('Y-01-01');
+					$arr_Wheres['timeslotReferenceDate'] = array(
+						'operator'  => '>=',
+						'arguments' =>  array(
+							$str_Limit
+						)
+					);
+					break;
+
 				default:
 					$str_Limit = strftime('%Y-%m-%d', strtotime('this month', time()));
 					$arr_Wheres['timeslotReferenceDate'] = array(
