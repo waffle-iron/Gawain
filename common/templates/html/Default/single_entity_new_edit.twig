@@ -1,0 +1,145 @@
+{% extends 'page_base.twig' %}
+
+{% block page_title %}
+    {% if page_action == 'new' %}
+        Create {{ module_item_label }}
+    {% elseif page_action == 'edit' %}
+        Edit {{ module_item_label }}
+    {% endif %}
+{% endblock %}
+
+
+{% block dependencies %}
+
+    {% for css_entry in page_dependencies.css if css_entry is not null%}
+        <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
+    {% endfor %}
+
+
+    {% for js_entry in page_dependencies.js %}
+        <script src="{{ js_entry }}"></script>
+    {% endfor %}
+
+{% endblock %}
+
+
+
+
+{% block page_content %}
+
+    <form class="form-horizontal"
+          id="gawain-new-edit-form"
+          method="post"
+          action="{% if page_action == 'new' %}{{ urlFor(entity_new_save_link_name) }}{% elseif page_action == 'edit' %}{{ urlFor(entity_edit_save_link_name, {ID: entity_ID}) }}{% endif %}">
+
+        {% for field_ID in fields|keys %}
+
+            {% if field_ID != domain_dependency_column and field_ID != main_id %}
+
+                <div class="form-group">
+
+                    <label class="col-sm-4 col-md-3 control-label" for="{{ field_ID }}">{{ fields[field_ID].label }}</label>
+
+                    {% if fields[field_ID].type == 'BOOL' %}
+
+                        <div class="col-sm-8 col-md-9 checkbox">
+                            <label>
+                                <input type="checkbox" value="1" {% if data[field_ID] == 1 %}checked{% endif %}>
+                            </label>
+                        </div>
+
+
+
+                    {% elseif fields[field_ID].type == 'NUM' and fields[field_ID].referentials is null %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <input type="number"
+                                   class="form-control"
+                                   name="{{ field_ID }}"
+                                   id="{{ field_ID }}"
+                                   value="{{ data[field_ID] }}"
+                                   {% if fields[field_ID].isNillable == false %}required{% endif %}>
+                        </div>
+
+
+
+                    {% elseif fields[field_ID].referentials is not null %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <select class="form-control"
+                                    name="{{ field_ID }}"
+                                    id="{{ field_ID }}"
+                                    {% if fields[field_ID].isNillable == false %}required{% endif %}>
+
+                                {% if fields[field_ID].isNillable %}
+                                    <option value=""></option>
+                                {% endif %}
+
+                                {% for item_referential_key,item_referential_value in fields[field_ID].referentials %}
+                                    <option value="{{ item_referential_key }}"
+                                            {% if item_referential_value == data[field_ID] %}selected{% endif %}>
+                                        {{ item_referential_value }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+
+
+
+                    {% elseif fields[field_ID].type == 'LONGTEXT' %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <textarea class="form-control"
+                                      rows="5"
+                                      name="{{ field_ID }}"
+                                      id="{{ field_ID }}">{{ data[field_ID] }}</textarea>
+                        </div>
+
+
+
+                    {% elseif fields[field_ID].type == 'DATE' %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <input type="date"
+                                   class="form-control"
+                                   name="{{ field_ID }}"
+                                   id="{{ field_ID }}"
+                                   value="{{ data[field_ID] }}"
+                                   {% if fields[field_ID].isNillable == false %}required{% endif %}>
+                        </div>
+
+
+
+                    {% elseif fields[field_ID].type == 'CHAR' %}
+
+                        <div class="col-sm-8 col-md-9">
+                            <input type="text"
+                                   class="form-control"
+                                   name="{{ field_ID }}"
+                                   id="{{ field_ID }}"
+                                   value="{{ data[field_ID] }}"
+                                   {% if fields[field_ID].isNillable == false %}required{% endif %}>
+                        </div>
+
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+
+        {% endfor %}
+
+        <hr>
+
+        <div class="pull-right">
+            <button type="reset" class="btn btn-warning" form="gawain-activity-edit-form">Clean all fields</button>
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+
+
+    </form>
+
+
+{% endblock %}

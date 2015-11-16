@@ -148,23 +148,25 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		// Prepare the view
 		$app->view()->set('page_dependencies', $arr_PageDependencies);
 		$app->view()->set('navbar_data', $arr_NavbarData);
-		$app->view()->set('activity_data', is_null($int_ClonedActivityID) ? NULL : $arr_ActivityData[$int_ClonedActivityID]);
-		$app->view()->set('activity_fields', $arr_ActivityFields);
+		$app->view()->set('data', is_null($int_ClonedActivityID) ? NULL : $arr_ActivityData[$int_ClonedActivityID]);
+		$app->view()->set('fields', $arr_ActivityFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('module_item_label', $str_ItemLabel);
-		$app->view()->set('activity_type_ID', $int_ActivityTypeID);
-		$app->view()->set('activity_domain_dependency_column', $str_DomainDependencyColumn);
-		$app->view()->set('activity_main_id', $str_MainID);
+		$app->view()->set('type_ID', $int_ActivityTypeID);
+		$app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
+		$app->view()->set('main_id', $str_MainID);
 
 
 
 		// Action switch to define the view once and use it for edit and creation
 		$app->view()->set('page_action', 'new');
+		$app->view()->set('entity_new_save_link_name', 'activity_new_save');
+		$app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
 
 		// Renders the page
-		$loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
-		$app->render('webpage_single_new_edit.twig');
+		$loader->addPath(COMMON_DIR . 'templates/html/Default');
+		$app->render('single_entity_new_edit.twig');
 
 	})->name('activity_new');
 
@@ -227,23 +229,25 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		// Prepare the view
 		$app->view()->set('page_dependencies', $arr_PageDependencies);
 		$app->view()->set('navbar_data', $arr_NavbarData);
-		$app->view()->set('activity_data', $arr_ActivityData[$activityID]);
-		$app->view()->set('activity_fields', $arr_ActivityFields);
+		$app->view()->set('data', $arr_ActivityData[$activityID]);
+		$app->view()->set('fields', $arr_ActivityFields);
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('module_item_label', $str_ItemLabel);
-		$app->view()->set('activity_domain_dependency_column', $str_DomainDependencyColumn);
-		$app->view()->set('activity_main_id', $str_MainID);
-		$app->view()->set('activity_ID', $activityID);
+		$app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
+		$app->view()->set('main_id', $str_MainID);
+		$app->view()->set('ID', $activityID);
 
 
 
 		// Action switch to define the view once and use it for edit and creation
 		$app->view()->set('page_action', 'edit');
+		$app->view()->set('entity_new_save_link_name', 'activity_new_save');
+		$app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
 
 		// Renders the page
-		$loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
-		$app->render('webpage_single_new_edit.twig');
+		$loader->addPath(COMMON_DIR . 'templates/html/Default');
+		$app->render('single_entity_new_edit.twig');
 
 	})->conditions(array('activityID' => '\d+'))->name('activity_edit');
 
