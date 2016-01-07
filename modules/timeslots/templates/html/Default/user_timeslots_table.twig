@@ -25,7 +25,7 @@
                 <td>
                     <a href="{{ urlFor('timeslot_edit', {timeslotID: ID}) }}" title="Edit"><i class="fa fa-pencil fa-fw"></i></a>
                     <a href="{{ urlFor('timeslot_new') }}?cloneFrom={{ ID }}" title="Clone"><i class="fa fa-clone fa-fw"></i></a>
-                    <a onclick="if (confirm('Are you sure to delete this record? This operation cannot be reverted')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}" title="Delete"><i class="fa fa-trash-o fa-fw"></i></a>
+                    <a class="gawain-button-like" onclick="if (confirm('Are you sure to delete this record? This operation cannot be reverted')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}" title="Delete"><i class="fa fa-trash-o fa-fw"></i></a>
                 </td>
                 <td>{{ timeslot.timeslotActivityID }}</td>
                 <td>{{ timeslot.timeslotTaskID }}</td>
