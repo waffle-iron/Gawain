@@ -154,7 +154,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('module_item_label', $str_ItemLabel);
 		$app->view()->set('type_ID', $int_ActivityTypeID);
 		$app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
-		$app->view()->set('main_id', $str_MainID);
+		$app->view()->set('main_ID', $str_MainID);
 
 
 
@@ -234,8 +234,8 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		$app->view()->set('module_label', $str_ModuleLabel);
 		$app->view()->set('module_item_label', $str_ItemLabel);
 		$app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
-		$app->view()->set('main_id', $str_MainID);
-		$app->view()->set('ID', $activityID);
+		$app->view()->set('main_ID', $str_MainID);
+		$app->view()->set('entity_ID', $activityID);
 
 
 
@@ -253,7 +253,7 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 
 
 
-	$app->post('/:activityID/save', function ($activityID) use ($app, $str_SessionID) {
+	$app->post('/:ID/save', function ($ID) use ($app, $str_SessionID) {
 
 		// Get all the POST variables
 		$arr_PostVariables = $app->request->post();
@@ -267,10 +267,10 @@ $app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_S
 		}
 
 		// Save activity data
-		$obj_Activity->update($activityID, $arr_PostVariables);
-		$app->redirect($app->urlFor('activity_show', array('activityID' => $activityID)));
+		$obj_Activity->update($ID, $arr_PostVariables);
+		$app->redirect($app->urlFor('activity_show', array('activityID' => $ID)));
 
-	})->conditions(array('activityID' => '\d+'))->name('activity_edit_save');
+	})->conditions(array('ID' => '\d+'))->name('activity_edit_save');
 
 
 
