@@ -30,7 +30,12 @@
     <form class="form-horizontal"
           id="gawain-new-edit-form"
           method="post"
-          action="{% if page_action == 'new' %}{{ urlFor(entity_new_save_link_name) }}{% elseif page_action == 'edit' %}{{ urlFor(entity_edit_save_link_name, {ID: entity_ID}) }}{% endif %}">
+          action="
+            {% if page_action == 'new' %}
+                {{ urlFor(entity_new_save_link_name) }}
+            {% elseif page_action == 'edit' %}
+                {{ urlFor(entity_edit_save_link_name, {ID: entity_ID}) }}
+            {% endif %}">
 
         {% for field_ID in fields|keys %}
 
