@@ -28,6 +28,16 @@
 
 
 
+{% block page_header_menu %}
+
+    <a class="btn btn-primary"
+       role="button"
+       href="{{ urlFor('activity_new') }}">
+        <i class="fa fa-plus-circle fa-fw"></i> Create
+    </a>
+
+{% endblock %}
+
 
 {% block page_content %}
 
@@ -70,24 +80,5 @@
         </div>
 
     </div>
-
-    <hr>
-
-
-    <div class="row">
-
-        <div class="col-md-12">
-
-            <a class="btn btn-primary"
-               role="button"
-               href="{{ urlFor('activity_new') }}">
-                <i class="fa fa-plus-circle fa-fw"></i> New {{ module_item_label }}
-            </a>
-
-        </div>
-
-    </div>
-
-
 
 {% endblock %}
