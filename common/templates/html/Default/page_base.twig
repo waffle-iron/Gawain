@@ -37,7 +37,19 @@
             <div class="page-header">
                 {% block page_header %}
                     <h1>
-                        {{ block('page_title') }}
+                        {% block page_header_title %}
+                            {{ block('page_title') }}
+                        {% endblock %}
+
+                        <small class="page-header-tags">
+                            {% block page_header_tags %}
+                            {% endblock %}
+                        </small>
+
+                        <div class="pull-right">
+                            {% block page_header_menu %}
+                            {% endblock %}
+                        </div>
                     </h1>
                 {% endblock %}
             </div>
