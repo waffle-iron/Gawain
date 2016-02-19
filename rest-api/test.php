@@ -20,7 +20,6 @@ var_dump($obj_Manager->getCurrentUserEntries());
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 
 
-
 /*echo $obj_Manager->read(array(
 		'activityID' => array(
 				'operator' => '=',
@@ -60,7 +59,6 @@ var_dump($obj_Manager->getCurrentUserEntries());
 					)
 			)
 	))*/
-
 
 
 ?>

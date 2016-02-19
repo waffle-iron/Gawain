@@ -10,11 +10,11 @@
 </ul>
 
 
-
 <div class="tab-content">
     {% for typeID,activity_type in activity_types %}
 
-        <div role="tabpanel" class="tab-pane {% if loop.first %} active{% endif %}" id="gawain-activities-tab-{{ typeID }}">
+        <div role="tabpanel" class="tab-pane {% if loop.first %} active{% endif %}"
+             id="gawain-activities-tab-{{ typeID }}">
             <div class="row">
                 <div class="col-md-12 table-responsive">
 
@@ -35,9 +35,10 @@
 
                         {% for ID,activity in activities_data %}
 
-                            {%  if activity.activityTypeID == activity_type.name %}
+                            {% if activity.activityTypeID == activity_type.name %}
 
-                                <tr id="gawain-activity-{{ ID }}" class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
+                                <tr id="gawain-activity-{{ ID }}"
+                                    class="treegrid-{{ ID }} {% if activity.activityParentID is not null %} treegrid-parent-{{ activity.activityParentID }} {% endif %}">
                                     <td><a href="{{ urlFor('activity_show', {activityID: ID}) }}">{{ ID }}</a></td>
                                     <td>{{ activity.activityName }}</td>
                                     <td>{{ activity.activityCode }}</td>
@@ -46,15 +47,17 @@
                                     <td>{{ activity.activityStatusID }}</td>
                                     <td>
                                         <div class="progress">
-                                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ activity.activityCompletion|round }}"
-                                                 aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;  width: {{ activity.activityCompletion|round }}%;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 aria-valuenow="{{ activity.activityCompletion|round }}"
+                                                 aria-valuemin="0" aria-valuemax="100"
+                                                 style="min-width: 2em;  width: {{ activity.activityCompletion|round }}%;">
                                                 {{ activity.activityCompletion|round }}%
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
 
-                            {%  endif %}
+                            {% endif %}
 
                         {% endfor %}
 

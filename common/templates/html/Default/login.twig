@@ -11,7 +11,7 @@
 
 {% block dependencies %}
 
-    {% for css_entry in page_dependencies.css if css_entry is not null%}
+    {% for css_entry in page_dependencies.css if css_entry is not null %}
         <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
     {% endfor %}
 
@@ -33,25 +33,29 @@
                 <div class="form-group">
                     <label for="gawain-login-username" class="col-md-2 control-label">Username</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" id="gawain-login-username" placeholder="Username" name="username">
+                        <input type="text" class="form-control" id="gawain-login-username" placeholder="Username"
+                               name="username">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="gawain-login-password" class="col-md-2 control-label">Password</label>
                     <div class="col-md-10">
-                        <input type="password" class="form-control" id="gawain-login-password" placeholder="Password" name="password" data-gawain-hash="hash">
+                        <input type="password" class="form-control" id="gawain-login-password" placeholder="Password"
+                               name="password" data-gawain-hash="hash">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="button" class="btn btn-primary gawain-controller-button" id="gawain-authentication-button"
+                        <button type="button" class="btn btn-primary gawain-controller-button"
+                                id="gawain-authentication-button"
                                 data-gawain-controller="authentication"
                                 data-gawain-controller-method="authenticate"
                                 data-gawain-request-method="POST"
                                 data-gawain-request-target="gawain-authentication-form"
-                                data-gawain-response-target="gawain-domain-viewport">Authenticate</button>
+                                data-gawain-response-target="gawain-domain-viewport">Authenticate
+                        </button>
                     </div>
                 </div>
             </form>

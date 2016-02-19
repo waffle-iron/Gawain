@@ -1,7 +1,6 @@
 {# Template for timeslots, tabular view #}
 
 
-
 <table class="table table-condensed">
     <thead>
     <tr>
@@ -21,18 +20,25 @@
         {% for ID,timeslot in timeslot_data %}
 
             <tr id="gawain-timeslot-{{ ID }}">
-                {% if loop.first %}<td rowspan="{{ timeslot_data|length }}" style="vertical-align: middle">{{ timeslot_group_date|date('d/m/Y') }}</td>{% endif %}
+                {% if loop.first %}
+                    <td rowspan="{{ timeslot_data|length }}"
+                        style="vertical-align: middle">{{ timeslot_group_date|date('d/m/Y') }}</td>{% endif %}
                 <td>
-                    <a href="{{ urlFor('timeslot_edit', {timeslotID: ID}) }}" title="Edit"><i class="fa fa-pencil fa-fw"></i></a>
-                    <a href="{{ urlFor('timeslot_new') }}?cloneFrom={{ ID }}" title="Clone"><i class="fa fa-clone fa-fw"></i></a>
-                    <a class="gawain-button-like" onclick="if (confirm('Are you sure to delete this record? This operation cannot be reverted')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}" title="Delete"><i class="fa fa-trash-o fa-fw"></i></a>
+                    <a href="{{ urlFor('timeslot_edit', {timeslotID: ID}) }}" title="Edit"><i
+                                class="fa fa-pencil fa-fw"></i></a>
+                    <a href="{{ urlFor('timeslot_new') }}?cloneFrom={{ ID }}" title="Clone"><i
+                                class="fa fa-clone fa-fw"></i></a>
+                    <a class="gawain-button-like"
+                       onclick="if (confirm('Are you sure to delete this record? This operation cannot be reverted')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}"
+                       title="Delete"><i class="fa fa-trash-o fa-fw"></i></a>
                 </td>
                 <td>{{ timeslot.timeslotActivityID }}</td>
                 <td>{{ timeslot.timeslotTaskID }}</td>
                 <td>{{ timeslot.timeslotDuration|number_format }}</td>
                 <td>{{ timeslot.timeslotDescription }}</td>
 
-                <form class="hidden" id="gawain-timeslot-delete-{{ ID }}" method="post" action="{{ urlFor('timeslot_delete') }}">
+                <form class="hidden" id="gawain-timeslot-delete-{{ ID }}" method="post"
+                      action="{{ urlFor('timeslot_delete') }}">
                     <input type="hidden" name="timeslotID" value="{{ ID }}">
                 </form>
             </tr>

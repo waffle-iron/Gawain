@@ -61,7 +61,6 @@
     </div>
 
 
-
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -88,7 +87,8 @@
                         <dt>{{ activity_fields.activityEstimatedEffortHours.label }}</dt>
                         <dd>{{ activity_data.activityEstimatedEffortHours }} h
                             {% if activity_data.activityIsEstimatedEffortHoursAuto == 1 %}
-                                <span class="label label-default" title="The value is calculated automatically based on given data">Auto</span>
+                                <span class="label label-default"
+                                      title="The value is calculated automatically based on given data">Auto</span>
                             {% endif %}
                         </dd>
                     {% endif %}
@@ -98,7 +98,8 @@
                         <dt>{{ activity_fields.activityCompletion.label }}</dt>
                         <dd>{{ activity_data.activityCompletion }}%
                             {% if activity_data.activityIsCompletionAuto == 1 %}
-                                <span class="label label-default" title="The value is calculated automatically based on given data">Auto</span>
+                                <span class="label label-default"
+                                      title="The value is calculated automatically based on given data">Auto</span>
                             {% endif %}
                         </dd>
                     {% endif %}

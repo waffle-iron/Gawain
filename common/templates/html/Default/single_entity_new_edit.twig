@@ -11,7 +11,7 @@
 
 {% block dependencies %}
 
-    {% for css_entry in page_dependencies.css if css_entry is not null%}
+    {% for css_entry in page_dependencies.css if css_entry is not null %}
         <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
     {% endfor %}
 
@@ -43,7 +43,8 @@
 
                 <div class="form-group">
 
-                    <label class="col-sm-4 col-md-3 control-label" for="{{ field_ID }}">{{ fields[field_ID].label }}</label>
+                    <label class="col-sm-4 col-md-3 control-label"
+                           for="{{ field_ID }}">{{ fields[field_ID].label }}</label>
 
                     {% if fields[field_ID].type == 'BOOL' %}
 

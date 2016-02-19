@@ -6,15 +6,16 @@ require_once(__DIR__ . '/../../../php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
-function data_source($str_SessionID, $str_CurrentModuleID = null) {
+function data_source($str_SessionID, $str_CurrentModuleID = null)
+{
 
-	$obj_Options = new \Options();
-	$obj_DbHandler = db_autodefine($obj_Options);
+    $obj_Options = new \Options();
+    $obj_DbHandler = db_autodefine($obj_Options);
 
-	$arr_Output = array();
+    $arr_Output = array();
 
-	// Retrieves the enabled modules
-	$str_Query = '
+    // Retrieves the enabled modules
+    $str_Query = '
 			select
 				modules.moduleCode,
 				labels.moduleLabel
@@ -35,19 +36,18 @@ function data_source($str_SessionID, $str_CurrentModuleID = null) {
 			where sessions.sessionID = ?
 				order by labels.moduleDisplayOrder, labels.moduleLabel';
 
-	$obj_Resultset = $obj_DbHandler->executePrepared($str_Query, array(
-		array($str_SessionID  =>  's')
-	));
+    $obj_Resultset = $obj_DbHandler->executePrepared($str_Query, array(
+        array($str_SessionID => 's')
+    ));
 
 
-	$arr_Output['navbar_modules'] = $obj_Resultset;
+    $arr_Output['navbar_modules'] = $obj_Resultset;
 
-	$arr_Output['current_module'] = $str_CurrentModuleID;
+    $arr_Output['current_module'] = $str_CurrentModuleID;
 
 
-
-	// Retrieve Username
-	$str_Query = '
+    // Retrieve Username
+    $str_Query = '
 			select
 				users.userName
 			from sessions
@@ -55,13 +55,13 @@ function data_source($str_SessionID, $str_CurrentModuleID = null) {
 				on sessions.userNick = users.userNick
 			where sessions.sessionID = ?';
 
-	$obj_Resultset = $obj_DbHandler->executePrepared($str_Query, array(
-		array($str_SessionID  =>  's')
-	));
+    $obj_Resultset = $obj_DbHandler->executePrepared($str_Query, array(
+        array($str_SessionID => 's')
+    ));
 
-	$arr_Output['username'] = $obj_Resultset[0]['userName'];
+    $arr_Output['username'] = $obj_Resultset[0]['userName'];
 
 
-	return $arr_Output;
+    return $arr_Output;
 
 }

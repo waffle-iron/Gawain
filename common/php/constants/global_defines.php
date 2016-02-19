@@ -101,7 +101,6 @@ define('PHP_VENDOR_DIR', PHP_DIR . 'vendor/');
 define('LOGIN_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/activities/');
 
 
-
 /**
  * Default logout landing page
  */

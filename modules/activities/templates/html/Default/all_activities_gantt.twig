@@ -2,21 +2,21 @@
 
 <div class="gantt" id="gawain-activities-gantt-chart-container"></div>
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        var g = new JSGantt.GanttChart(document.getElementById('gawain-activities-gantt-chart-container'), 'day');
+    var g = new JSGantt.GanttChart(document.getElementById('gawain-activities-gantt-chart-container'), 'day');
 
-        g.setScrollTo('today');
-        g.setFormatArr('Day', 'Week', 'Month', 'Quarter');
+    g.setScrollTo('today');
+    g.setFormatArr('Day', 'Week', 'Month', 'Quarter');
 
-        JSGantt.parseXMLString('{{ gantt_data|raw }}', g);
+    JSGantt.parseXMLString('{{ gantt_data|raw }}', g);
 
+    g.Draw();
+
+
+    // This snippet fixes the missing auto refresh when changing tab
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         g.Draw();
+    });
 
-
-        // This snippet fixes the missing auto refresh when changing tab
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            g.Draw();
-        });
-
-    </script>
+</script>

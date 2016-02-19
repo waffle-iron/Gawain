@@ -7,7 +7,8 @@
 
 
 {% block page_header_title %}
-        {{ module_item_label }} #{{ activity_ID }} <small>{{ activity_data.activityName }}</small>
+    {{ module_item_label }} #{{ activity_ID }}
+    <small>{{ activity_data.activityName }}</small>
 {% endblock %}
 
 
@@ -38,8 +39,10 @@
 {% block page_header_menu %}
 
     <div class="btn-group" role="group">
-        <a role="button" class="btn btn-default" href="{{ urlFor('activity_edit', {activityID: activity_ID}) }}"><i class="fa fa-pencil fa-fw"></i> Edit</a>
-        <a role="button" class="btn btn-default" href="{{ urlFor('activity_new') }}?cloneFrom={{ activity_ID }}"><i class="fa fa-clone fa-fw"></i> Clone</a>
+        <a role="button" class="btn btn-default" href="{{ urlFor('activity_edit', {activityID: activity_ID}) }}"><i
+                    class="fa fa-pencil fa-fw"></i> Edit</a>
+        <a role="button" class="btn btn-default" href="{{ urlFor('activity_new') }}?cloneFrom={{ activity_ID }}"><i
+                    class="fa fa-clone fa-fw"></i> Clone</a>
         <button
                 type="submit"
                 class="btn btn-danger"
@@ -59,7 +62,7 @@
 
 {% block dependencies %}
 
-    {% for css_entry in page_dependencies.css if css_entry is not null%}
+    {% for css_entry in page_dependencies.css if css_entry is not null %}
         <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
     {% endfor %}
 
@@ -74,10 +77,12 @@
 {% block page_content %}
 
     <ul class="nav nav-pills gawain-nav-level-1">
-        <li role="presentation" class="active"><a href="#gawain-activity-details" role="tab" data-toggle="tab">Dashboard</a></li>
+        <li role="presentation" class="active"><a href="#gawain-activity-details" role="tab"
+                                                  data-toggle="tab">Dashboard</a></li>
         <li role="presentation"><a href="#gawain-activity-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
         <li role="presentation"><a href="#gawain-activity-posts" role="tab" data-toggle="tab">Posts</a></li>
-        <li role="presentation"><a href="#gawain-resources-timeslots" role="tab" data-toggle="tab">Resources and Timeslots</a></li>
+        <li role="presentation"><a href="#gawain-resources-timeslots" role="tab" data-toggle="tab">Resources and
+                Timeslots</a></li>
     </ul>
 
     <hr>
@@ -111,7 +116,6 @@
                 <div class="col-md-12">
 
 
-
                 </div>
             </div>
         </div>
@@ -120,7 +124,6 @@
         <div role="tabpanel" class="tab-pane" id="gawain-resources-timeslots">
             <div class="row">
                 <div class="col-md-12">
-
 
 
                 </div>

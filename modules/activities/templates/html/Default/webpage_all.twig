@@ -15,7 +15,7 @@
 
 {% block dependencies %}
 
-    {% for css_entry in page_dependencies.css if css_entry is not null%}
+    {% for css_entry in page_dependencies.css if css_entry is not null %}
         <link href="{{ css_entry }}" rel="stylesheet" type="text/css">
     {% endfor %}
 
@@ -46,8 +46,10 @@
         <div class="col-md-12">
 
             <ul class="nav nav-pills gawain-nav-level-1">
-                <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab" data-toggle="tab">Table View</a></li>
-                <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt Chart</a></li>
+                <li role="presentation" class="active"><a href="#gawain-activities-table-view" role="tab"
+                                                          data-toggle="tab">Table View</a></li>
+                <li role="presentation"><a href="#gawain-activities-gantt-chart" role="tab" data-toggle="tab">Gantt
+                        Chart</a></li>
             </ul>
 
             <hr>

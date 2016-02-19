@@ -8,281 +8,270 @@ require_once(PHP_CLASSES_DIR . 'entities/Activity.php');
 $str_SessionID = $app->getCookie('GawainSessionID');
 
 
-$app->group('/activities', function () use($app, $loader, $obj_Jierarchy, $str_SessionID) {
+$app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
-	$app->get('/', function () use($app, $loader, $obj_Jierarchy, $str_SessionID) {
+    $app->get('/', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
-		// Page dependencies
-		$arr_PageDependencies = $obj_Jierarchy->load(array(
-			                     'jQuery',
-			                     'bootstrap',
-			                     'jsgantt-improved',
-			                     'bootstrap-cerulean-theme',
-			                     'gawain-style-settings',
-			                     'gawain-button-bindings',
-			                     'font-awesome',
-			                     'jquery-treegrid',
-			                     'gawain-treegrid-onload',
-			                     'TinyColor'
-		                     ));
+        // Page dependencies
+        $arr_PageDependencies = $obj_Jierarchy->load(array(
+            'jQuery',
+            'bootstrap',
+            'jsgantt-improved',
+            'bootstrap-cerulean-theme',
+            'gawain-style-settings',
+            'gawain-button-bindings',
+            'font-awesome',
+            'jquery-treegrid',
+            'gawain-treegrid-onload',
+            'TinyColor'
+        ));
 
 
-		// Navbar data declaration
-		$arr_NavbarData = common\page_navbar\data_source($str_SessionID, 'activities');
+        // Navbar data declaration
+        $arr_NavbarData = common\page_navbar\data_source($str_SessionID, 'activities');
 
 
-		// Activity object declaration and usage
-		$obj_Activity = new Activity($str_SessionID);
-		$arr_Activities = $obj_Activity->read(NULL, array('activityParentID'));
-		$arr_ActivityFields = $obj_Activity->getFieldsData();
-		$str_ModuleLabel = $obj_Activity->getLabel();
-		$str_ItemLabel = $obj_Activity->getItemLabel();
-		$arr_ActivityTypes = $obj_Activity->getActivityTypes();
+        // Activity object declaration and usage
+        $obj_Activity = new Activity($str_SessionID);
+        $arr_Activities = $obj_Activity->read(null, array('activityParentID'));
+        $arr_ActivityFields = $obj_Activity->getFieldsData();
+        $str_ModuleLabel = $obj_Activity->getLabel();
+        $str_ItemLabel = $obj_Activity->getItemLabel();
+        $arr_ActivityTypes = $obj_Activity->getActivityTypes();
 
 
-		// Prepare Gantt chart data outside the template
-		$str_GanttXML = $obj_Activity->getGanttData();
+        // Prepare Gantt chart data outside the template
+        $str_GanttXML = $obj_Activity->getGanttData();
 
 
-		// Prepare the view
-		$app->view()->set('page_dependencies', $arr_PageDependencies);
-		$app->view()->set('navbar_data', $arr_NavbarData);
-		$app->view()->set('activities_data', $arr_Activities);
-		$app->view()->set('activities_fields', $arr_ActivityFields);
-		$app->view()->set('module_label', $str_ModuleLabel);
-		$app->view()->set('activity_types', $arr_ActivityTypes);
-		$app->view()->set('module_item_label', $str_ItemLabel);
-		$app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
+        // Prepare the view
+        $app->view()->set('page_dependencies', $arr_PageDependencies);
+        $app->view()->set('navbar_data', $arr_NavbarData);
+        $app->view()->set('activities_data', $arr_Activities);
+        $app->view()->set('activities_fields', $arr_ActivityFields);
+        $app->view()->set('module_label', $str_ModuleLabel);
+        $app->view()->set('activity_types', $arr_ActivityTypes);
+        $app->view()->set('module_item_label', $str_ItemLabel);
+        $app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
 
-		// Renders the page
-		$loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
-		$app->render('webpage_all.twig');
+        // Renders the page
+        $loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
+        $app->render('webpage_all.twig');
 
-	})->name('activities');
+    })->name('activities');
 
 
+    $app->get('/:activityID', function ($activityID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
-	$app->get('/:activityID', function ($activityID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
+        // Page dependencies
+        $arr_PageDependencies = $obj_Jierarchy->load(array(
+            'jQuery',
+            'bootstrap',
+            'jsgantt-improved',
+            'bootstrap-cerulean-theme',
+            'gawain-style-settings',
+            'gawain-button-bindings',
+            'font-awesome'
+        ));
 
-		// Page dependencies
-		$arr_PageDependencies = $obj_Jierarchy->load(array(
-			                                             'jQuery',
-			                                             'bootstrap',
-			                                             'jsgantt-improved',
-			                                             'bootstrap-cerulean-theme',
-			                                             'gawain-style-settings',
-			                                             'gawain-button-bindings',
-			                                             'font-awesome'
-		                                             ));
 
+        // Navbar data declaration
+        $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
 
-		// Navbar data declaration
-		$arr_NavbarData = common\page_navbar\data_source($str_SessionID, NULL);
 
+        //Activity object declaration and usage
+        $obj_Activity = new Activity($str_SessionID);
+        $arr_ActivityData = $obj_Activity->read($activityID);
+        $arr_ActivityFields = $obj_Activity->getFieldsData();
+        $str_ModuleLabel = $obj_Activity->getLabel();
+        $str_ItemLabel = $obj_Activity->getItemLabel();
 
-		//Activity object declaration and usage
-		$obj_Activity = new Activity($str_SessionID);
-		$arr_ActivityData = $obj_Activity->read($activityID);
-		$arr_ActivityFields = $obj_Activity->getFieldsData();
-		$str_ModuleLabel = $obj_Activity->getLabel();
-		$str_ItemLabel = $obj_Activity->getItemLabel();
+        // Prepare Gantt chart data outside the template
+        $str_GanttXML = $obj_Activity->getGanttData($activityID);
 
-		// Prepare Gantt chart data outside the template
-		$str_GanttXML = $obj_Activity->getGanttData($activityID);
 
+        // Prepare the view
+        $app->view()->set('page_dependencies', $arr_PageDependencies);
+        $app->view()->set('navbar_data', $arr_NavbarData);
+        $app->view()->set('activity_ID', $activityID);
+        $app->view()->set('activity_data', $arr_ActivityData[$activityID]);
+        $app->view()->set('activity_fields', $arr_ActivityFields);
+        $app->view()->set('module_label', $str_ModuleLabel);
+        $app->view()->set('module_item_label', $str_ItemLabel);
+        $app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
-		// Prepare the view
-		$app->view()->set('page_dependencies', $arr_PageDependencies);
-		$app->view()->set('navbar_data', $arr_NavbarData);
-		$app->view()->set('activity_ID', $activityID);
-		$app->view()->set('activity_data', $arr_ActivityData[$activityID]);
-		$app->view()->set('activity_fields', $arr_ActivityFields);
-		$app->view()->set('module_label', $str_ModuleLabel);
-		$app->view()->set('module_item_label', $str_ItemLabel);
-		$app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
+        // Renders the page
+        $loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
+        $app->render('webpage_single_show.twig');
 
+    })->conditions(array('activityID' => '\d+'))->name('activity_show');
 
-		// Renders the page
-		$loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
-		$app->render('webpage_single_show.twig');
 
-	})->conditions(array('activityID' => '\d+'))->name('activity_show');
+    $app->get('/new', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
+        // Page dependencies
+        $arr_PageDependencies = $obj_Jierarchy->load(array(
+            'jQuery',
+            'bootstrap',
+            'bootstrap-cerulean-theme',
+            'gawain-style-settings',
+            'gawain-button-bindings',
+            'font-awesome'
+        ));
 
+        // Navbar data declaration
+        $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
 
+        // If the request comes from a "Clone", then copy data from selected activity
+        // If the request is a simple "New", no data is set as default value
+        $int_ClonedActivityID = $app->request->get('cloneFrom');
+
+        $obj_Activity = new Activity($str_SessionID);
+        $arr_ActivityData = is_null($int_ClonedActivityID) ? null : $obj_Activity->read($int_ClonedActivityID);
+        $arr_ActivityFields = $obj_Activity->getFieldsData();
+        $str_DomainDependencyColumn = $obj_Activity->getDomainDependencyColumn();
+        $str_MainID = $obj_Activity->getPrimaryKey();
+        $str_ModuleLabel = $obj_Activity->getLabel();
+        $str_ItemLabel = $obj_Activity->getItemLabel();
 
-	$app->get('/new', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
-		// Page dependencies
-		$arr_PageDependencies = $obj_Jierarchy->load(array(
-			                                             'jQuery',
-			                                             'bootstrap',
-			                                             'bootstrap-cerulean-theme',
-			                                             'gawain-style-settings',
-			                                             'gawain-button-bindings',
-			                                             'font-awesome'
-		                                             ));
+        // If the type is specified in the request, the field is automatically populated, else it is empty
+        $int_ActivityTypeID = $app->request->get('activityType');
 
-		// Navbar data declaration
-		$arr_NavbarData = common\page_navbar\data_source($str_SessionID, NULL);
 
-		// If the request comes from a "Clone", then copy data from selected activity
-		// If the request is a simple "New", no data is set as default value
-		$int_ClonedActivityID = $app->request->get('cloneFrom');
+        // Prepare the view
+        $app->view()->set('page_dependencies', $arr_PageDependencies);
+        $app->view()->set('navbar_data', $arr_NavbarData);
+        $app->view()->set('data', is_null($int_ClonedActivityID) ? null : $arr_ActivityData[$int_ClonedActivityID]);
+        $app->view()->set('fields', $arr_ActivityFields);
+        $app->view()->set('module_label', $str_ModuleLabel);
+        $app->view()->set('module_item_label', $str_ItemLabel);
+        $app->view()->set('type_ID', $int_ActivityTypeID);
+        $app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
+        $app->view()->set('main_ID', $str_MainID);
 
-		$obj_Activity = new Activity($str_SessionID);
-		$arr_ActivityData = is_null($int_ClonedActivityID) ? NULL : $obj_Activity->read($int_ClonedActivityID);
-		$arr_ActivityFields = $obj_Activity->getFieldsData();
-		$str_DomainDependencyColumn = $obj_Activity->getDomainDependencyColumn();
-		$str_MainID = $obj_Activity->getPrimaryKey();
-		$str_ModuleLabel = $obj_Activity->getLabel();
-		$str_ItemLabel = $obj_Activity->getItemLabel();
 
+        // Action switch to define the view once and use it for edit and creation
+        $app->view()->set('page_action', 'new');
+        $app->view()->set('entity_new_save_link_name', 'activity_new_save');
+        $app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
-		// If the type is specified in the request, the field is automatically populated, else it is empty
-		$int_ActivityTypeID = $app->request->get('activityType');
 
+        // Renders the page
+        $loader->addPath(COMMON_DIR . 'templates/html/Default');
+        $app->render('single_entity_new_edit.twig');
 
-		// Prepare the view
-		$app->view()->set('page_dependencies', $arr_PageDependencies);
-		$app->view()->set('navbar_data', $arr_NavbarData);
-		$app->view()->set('data', is_null($int_ClonedActivityID) ? NULL : $arr_ActivityData[$int_ClonedActivityID]);
-		$app->view()->set('fields', $arr_ActivityFields);
-		$app->view()->set('module_label', $str_ModuleLabel);
-		$app->view()->set('module_item_label', $str_ItemLabel);
-		$app->view()->set('type_ID', $int_ActivityTypeID);
-		$app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
-		$app->view()->set('main_ID', $str_MainID);
+    })->name('activity_new');
 
 
+    $app->post('/new/save', function () use ($app, $str_SessionID) {
 
-		// Action switch to define the view once and use it for edit and creation
-		$app->view()->set('page_action', 'new');
-		$app->view()->set('entity_new_save_link_name', 'activity_new_save');
-		$app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
+        // Get all the POST variables
+        $arr_PostVariables = $app->request->post();
 
+        // Get all activity fields info
+        $obj_Activity = new Activity($str_SessionID);
+        $arr_ActivityFields = $obj_Activity->getFieldsData();
 
-		// Renders the page
-		$loader->addPath(COMMON_DIR . 'templates/html/Default');
-		$app->render('single_entity_new_edit.twig');
+        // Iterate over array to nullify empty strings
+        foreach (array_keys($arr_PostVariables) as $str_PostKey) {
+            if ($arr_PostVariables[$str_PostKey] == '') {
+                if ($arr_ActivityFields[$str_PostKey]['type'] == 'BOOL') {
+                    $arr_PostVariables[$str_PostKey] = 0;
+                } else {
+                    $arr_PostVariables[$str_PostKey] = null;
+                }
+            }
+        }
 
-	})->name('activity_new');
+        // Save activity data
+        $obj_Activity->insert($arr_PostVariables);
+        $app->redirect($app->urlFor('activities'));
 
+    })->name('activity_new_save');
 
 
-	$app->post('/new/save', function () use ($app, $str_SessionID) {
+    $app->get('/:activityID/edit', function ($activityID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
-		// Get all the POST variables
-		$arr_PostVariables = $app->request->post();
+        // Page dependencies
+        $arr_PageDependencies = $obj_Jierarchy->load(array(
+            'jQuery',
+            'bootstrap',
+            'bootstrap-cerulean-theme',
+            'gawain-style-settings',
+            'gawain-button-bindings',
+            'font-awesome'
+        ));
 
-		// Get all activity fields info
-		$obj_Activity = new Activity($str_SessionID);
-		$arr_ActivityFields = $obj_Activity->getFieldsData();
+        // Navbar data declaration
+        $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
 
-		// Iterate over array to nullify empty strings
-		foreach (array_keys($arr_PostVariables) as $str_PostKey) {
-			if ($arr_PostVariables[$str_PostKey] == '') {
-				if ($arr_ActivityFields[$str_PostKey]['type'] == 'BOOL') {
-					$arr_PostVariables[$str_PostKey] = 0;
-				} else {
-					$arr_PostVariables[$str_PostKey] = NULL;
-				}
-			}
-		}
 
-		// Save activity data
-		$obj_Activity->insert($arr_PostVariables);
-		$app->redirect($app->urlFor('activities'));
+        $obj_Activity = new Activity($str_SessionID);
+        $arr_ActivityData = $obj_Activity->read($activityID);
+        $arr_ActivityFields = $obj_Activity->getFieldsData();
+        $str_DomainDependencyColumn = $obj_Activity->getDomainDependencyColumn();
+        $str_MainID = $obj_Activity->getPrimaryKey();
+        $str_ModuleLabel = $obj_Activity->getLabel();
+        $str_ItemLabel = $obj_Activity->getItemLabel();
 
-	})->name('activity_new_save');
 
+        // Prepare the view
+        $app->view()->set('page_dependencies', $arr_PageDependencies);
+        $app->view()->set('navbar_data', $arr_NavbarData);
+        $app->view()->set('data', $arr_ActivityData[$activityID]);
+        $app->view()->set('fields', $arr_ActivityFields);
+        $app->view()->set('module_label', $str_ModuleLabel);
+        $app->view()->set('module_item_label', $str_ItemLabel);
+        $app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
+        $app->view()->set('main_ID', $str_MainID);
+        $app->view()->set('entity_ID', $activityID);
 
 
+        // Action switch to define the view once and use it for edit and creation
+        $app->view()->set('page_action', 'edit');
+        $app->view()->set('entity_new_save_link_name', 'activity_new_save');
+        $app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
-	$app->get('/:activityID/edit', function ($activityID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
-		// Page dependencies
-		$arr_PageDependencies = $obj_Jierarchy->load(array(
-			                                             'jQuery',
-			                                             'bootstrap',
-			                                             'bootstrap-cerulean-theme',
-			                                             'gawain-style-settings',
-			                                             'gawain-button-bindings',
-			                                             'font-awesome'
-		                                             ));
+        // Renders the page
+        $loader->addPath(COMMON_DIR . 'templates/html/Default');
+        $app->render('single_entity_new_edit.twig');
 
-		// Navbar data declaration
-		$arr_NavbarData = common\page_navbar\data_source($str_SessionID, NULL);
+    })->conditions(array('activityID' => '\d+'))->name('activity_edit');
 
 
-		$obj_Activity = new Activity($str_SessionID);
-		$arr_ActivityData = $obj_Activity->read($activityID);
-		$arr_ActivityFields = $obj_Activity->getFieldsData();
-		$str_DomainDependencyColumn = $obj_Activity->getDomainDependencyColumn();
-		$str_MainID = $obj_Activity->getPrimaryKey();
-		$str_ModuleLabel = $obj_Activity->getLabel();
-		$str_ItemLabel = $obj_Activity->getItemLabel();
+    $app->post('/:ID/save', function ($ID) use ($app, $str_SessionID) {
 
+        // Get all the POST variables
+        $arr_PostVariables = $app->request->post();
+        $obj_Activity = new Activity($str_SessionID);
 
-		// Prepare the view
-		$app->view()->set('page_dependencies', $arr_PageDependencies);
-		$app->view()->set('navbar_data', $arr_NavbarData);
-		$app->view()->set('data', $arr_ActivityData[$activityID]);
-		$app->view()->set('fields', $arr_ActivityFields);
-		$app->view()->set('module_label', $str_ModuleLabel);
-		$app->view()->set('module_item_label', $str_ItemLabel);
-		$app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
-		$app->view()->set('main_ID', $str_MainID);
-		$app->view()->set('entity_ID', $activityID);
+        // Iterate over array to unset empty strings
+        foreach (array_keys($arr_PostVariables) as $str_PostKey) {
+            if ($arr_PostVariables[$str_PostKey] == '') {
+                unset($arr_PostVariables[$str_PostKey]);
+            }
+        }
 
+        // Save activity data
+        $obj_Activity->update($ID, $arr_PostVariables);
+        $app->redirect($app->urlFor('activity_show', array('activityID' => $ID)));
 
+    })->conditions(array('ID' => '\d+'))->name('activity_edit_save');
 
-		// Action switch to define the view once and use it for edit and creation
-		$app->view()->set('page_action', 'edit');
-		$app->view()->set('entity_new_save_link_name', 'activity_new_save');
-		$app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
+    $app->post('/delete', function () use ($app, $str_SessionID) {
 
-		// Renders the page
-		$loader->addPath(COMMON_DIR . 'templates/html/Default');
-		$app->render('single_entity_new_edit.twig');
+        $int_ActivityID = $app->request->post('activityID');
+        if (!is_null($int_ActivityID)) {
+            $obj_Activity = new Activity($str_SessionID);
+            $obj_Activity->delete($int_ActivityID);
+        }
+        $app->redirect($app->urlFor('activities'));
 
-	})->conditions(array('activityID' => '\d+'))->name('activity_edit');
-
-
-
-	$app->post('/:ID/save', function ($ID) use ($app, $str_SessionID) {
-
-		// Get all the POST variables
-		$arr_PostVariables = $app->request->post();
-		$obj_Activity = new Activity($str_SessionID);
-
-		// Iterate over array to unset empty strings
-		foreach (array_keys($arr_PostVariables) as $str_PostKey) {
-			if ($arr_PostVariables[$str_PostKey] == '') {
-				unset($arr_PostVariables[$str_PostKey]);
-			}
-		}
-
-		// Save activity data
-		$obj_Activity->update($ID, $arr_PostVariables);
-		$app->redirect($app->urlFor('activity_show', array('activityID' => $ID)));
-
-	})->conditions(array('ID' => '\d+'))->name('activity_edit_save');
-
-
-
-	$app->post('/delete', function () use ($app, $str_SessionID) {
-
-		$int_ActivityID = $app->request->post('activityID');
-		if (!is_null($int_ActivityID)) {
-			$obj_Activity = new Activity($str_SessionID);
-			$obj_Activity->delete($int_ActivityID);
-		}
-		$app->redirect($app->urlFor('activities'));
-
-	})->name('activity_delete');
+    })->name('activity_delete');
 
 });

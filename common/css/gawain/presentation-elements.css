@@ -2,16 +2,15 @@
 
 /* Add some space between same elements in description lists */
 dd + dt, dt + dd {
-	margin-top: 0.5em;
+    margin-top: 0.5em;
 }
-
 
 /* Reduces the size of the labels in page header to match the subtitle height */
 .page-header-tags {
-	font-size: 55%;
-	margin-left: 1em;
+    font-size: 55%;
+    margin-left: 1em;
 }
 
 .page-header-tags > .label {
-	vertical-align : middle;
+    vertical-align: middle;
 }

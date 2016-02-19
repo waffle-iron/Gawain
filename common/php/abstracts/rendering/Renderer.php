@@ -7,126 +7,125 @@ require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
 /**
  * Class Renderer
  */
-abstract class Renderer {
+abstract class Renderer
+{
 
-	// Rendering style
-	protected $style;
-
-
-	// Internal Twig Loader
-	protected $twigLoader;
+    // Rendering style
+    public $data;
 
 
-	// Internal Twig environment
-	protected $twig;
+    // Internal Twig Loader
+    protected $style;
 
 
-	// Internal Twig Template
-	protected $twigTemplate;
+    // Internal Twig environment
+    protected $twigLoader;
 
 
-	// Renderer data
-	public $data;
+    // Internal Twig Template
+    protected $twig;
 
 
-	// Template file path
-	protected $templatePath;
+    // Renderer data
+    protected $twigTemplate;
 
 
-	// Rendering format
-	protected $renderingFormat;
+    // Template file path
+    protected $templatePath;
 
 
+    // Rendering format
+    protected $renderingFormat;
 
 
-	/** Constructor
-	 *
-	 */
-	public function __construct() {
+    /** Constructor
+     *
+     */
+    public function __construct()
+    {
 
-		Twig_Autoloader::register();
-		$this->twigLoader = new Twig_Loader_Filesystem(TEMPLATES_DIR);
-		$this->twig = new Twig_Environment($this->twigLoader);
+        Twig_Autoloader::register();
+        $this->twigLoader = new Twig_Loader_Filesystem(TEMPLATES_DIR);
+        $this->twig = new Twig_Environment($this->twigLoader);
 
-	}
-
-
-
-	/** Add a path (typically an entity custom path) to the loader
-	 *
-	 * @param string $str_TemplatePath
-	 * @throws Twig_Error_Loader
-	 */
-	public function addTemplatePath($str_TemplatePath) {
-
-		$this->twigLoader->addPath($str_TemplatePath);
-
-	}
+    }
 
 
+    /** Add a path (typically an entity custom path) to the loader
+     *
+     * @param string $str_TemplatePath
+     * @throws Twig_Error_Loader
+     */
+    public function addTemplatePath($str_TemplatePath)
+    {
 
-	/** Imports the data to be rendered
-	 *
-	 * @param array $arr_Dataset
-	 */
-	public function importData($arr_Dataset) {
+        $this->twigLoader->addPath($str_TemplatePath);
 
-		$this->data = $arr_Dataset;
-
-	}
-
-
-
-	/** Sets the template to be used for document generation
-	 *
-	 * @param string $str_TemplatePath
-	 */
-	public function setTemplate($str_TemplatePath) {
-
-		$this->templatePath = $str_TemplatePath;
-
-	}
+    }
 
 
+    /** Imports the data to be rendered
+     *
+     * @param array $arr_Dataset
+     */
+    public function importData($arr_Dataset)
+    {
 
-	/** Sets the style for the rendering
-	 *
-	 * @param string $str_Style
-	 */
-	public function setStyle($str_Style) {
+        $this->data = $arr_Dataset;
 
-		$this->style = $str_Style;
-
-	}
-
-
-
-	/** Renders the given data
-	 *
-	 * @return mixed
-	 */
-	abstract function render();
+    }
 
 
+    /** Sets the template to be used for document generation
+     *
+     * @param string $str_TemplatePath
+     */
+    public function setTemplate($str_TemplatePath)
+    {
 
-	/** Provides a basic rendering method to be used in more complex render implementations
-	 *
-	 * @throws Exception
-	 */
-	protected function basicRender() {
+        $this->templatePath = $str_TemplatePath;
 
-		if (!isset($this->renderingFormat)) {
-			throw new Exception('Rendering format not defined');
-		}
+    }
 
-		if (!isset($this->style)) {
-			throw new Exception('Rendering style not defined');
-		}
 
-		$this->twigLoader->addPath(TEMPLATES_DIR . $this->renderingFormat . '/' . $this->style);
+    /** Sets the style for the rendering
+     *
+     * @param string $str_Style
+     */
+    public function setStyle($str_Style)
+    {
 
-		return $this->twig->render($this->templatePath, $this->data);
+        $this->style = $str_Style;
 
-	}
+    }
+
+
+    /** Renders the given data
+     *
+     * @return mixed
+     */
+    abstract function render();
+
+
+    /** Provides a basic rendering method to be used in more complex render implementations
+     *
+     * @throws Exception
+     */
+    protected function basicRender()
+    {
+
+        if (!isset($this->renderingFormat)) {
+            throw new Exception('Rendering format not defined');
+        }
+
+        if (!isset($this->style)) {
+            throw new Exception('Rendering style not defined');
+        }
+
+        $this->twigLoader->addPath(TEMPLATES_DIR . $this->renderingFormat . '/' . $this->style);
+
+        return $this->twig->render($this->templatePath, $this->data);
+
+    }
 
 }

@@ -1,223 +1,207 @@
 {
-	"jQuery"                   : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/jQuery/jquery.min.js"
-			],
-			"css" : []
-		},
-		"dependencies" : []
-	},
-
-	"bootstrap"                : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/Bootstrap/js/bootstrap.min.js"
-			],
-			"css" : []
-		},
-		"dependencies" : [
-			"jQuery"
-		]
-	},
-
-	"highcharts"               : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/Highcharts/highcharts.js",
-				"/gawain/common/js/vendor/Highcharts/themes/grid.js"
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : [
-			"jQuery"
-		]
-	},
-
-	"highcharts-more"               : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/Highcharts/highcharts-more.js",
-				"/gawain/common/js/vendor/Highcharts/highcharts-3d.js"
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : [
-			"highcharts"
-		]
-	},
-
-	"highcharts-drilldown"               : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/Highcharts/modules/drilldown.js"
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : [
-			"highcharts"
-		]
-	},
-
-	"bootstrap-colorpicker"    : {
-		"path"         : {
-			"js"  : [
-				""
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : [
-			"bootstrap"
-		]
-	},
-
-	"CryptoJS"                 : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/CryptoJS/sha3.js"
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : []
-	},
-
-	"jquery-treegrid"                 : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.min.js",
-				"/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
-			],
-			"css" : [
-				"/gawain/common/js/vendor/jquery-treegrid/css/jquery.treegrid.css"
-			]
-		},
-		"dependencies" : [
-			"jQuery",
-			"bootstrap"
-		]
-	},
-
-	"jquery-confirm"           : {
-		"path"         : {
-			"js"  : [
-				""
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : [
-			"jQuery",
-			"bootstrap"
-		]
-	},
-
-	"dhtmlx-Scheduler"         : {
-		"path"         : {
-			"js"  : [
-				""
-			],
-			"css" : [
-				""
-			]
-		},
-		"dependencies" : []
-	},
-
-	"bootstrap-cerulean-theme" : {
-		"path"         : {
-			"js"  : [],
-			"css" : [
-				"/gawain/common/css/Themes/Cerulean/bootstrap.min.css"
-			]
-		},
-		"dependencies" : [
-			"bootstrap"
-		]
-	},
-
-	"font-awesome"   : {
-		"path"         : {
-			"js" : [],
-			"css": [
-				"/gawain/common/css/FontAwesome/font-awesome.min.css"
-			]
-		},
-		"dependencies" : []
-	},
-
-	"gawain-style-settings"    : {
-		"path"         : {
-			"js"  : [],
-			"css" : [
-				"/gawain/common/css/gawain/page.css",
-				"/gawain/common/css/gawain/presentation-elements.css",
-				"/gawain/common/css/gawain/progressbars.css",
-				"/gawain/common/css/gawain/navs.css",
-				"/gawain/common/css/gawain/buttons.css",
-				"/gawain/common/css/gawain/custom-fonts.css"
-			]
-		},
-		"dependencies" : [
-			"bootstrap"
-		]
-	},
-
-	"gawain-button-bindings"   : {
-		"path"         : {
-			"js" : [
-				"/gawain/common/js/onloads/button-bindings.js"
-			],
-			"css"   :   []
-		},
-		"dependencies" : [
-			"jQuery"
-		]
-	},
-
-	"gawain-treegrid-onload"   : {
-		"path"         : {
-			"js" : [
-				"/gawain/common/js/onloads/treegrid.js"
-			],
-			"css"   :   []
-		},
-		"dependencies" : [
-			"jquery-treegrid"
-		]
-	},
-
-	"jsgantt-improved"             : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.js"
-			],
-			"css" : [
-				"/gawain/common/js/vendor/jsgantt-improved/jsgantt.css"
-			]
-		},
-		"dependencies" : []
-	},
-
-	"TinyColor"             : {
-		"path"         : {
-			"js"  : [
-				"/gawain/common/js/vendor/TinyColor/tinycolor-min.js"
-			],
-			"css" : []
-		},
-		"dependencies" : [
-			"jQuery"
-		]
-	}
+  "jQuery": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/jQuery/jquery.min.js"
+      ],
+      "css": []
+    },
+    "dependencies": []
+  },
+  "bootstrap": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/Bootstrap/js/bootstrap.min.js"
+      ],
+      "css": []
+    },
+    "dependencies": [
+      "jQuery"
+    ]
+  },
+  "highcharts": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/Highcharts/highcharts.js",
+        "/gawain/common/js/vendor/Highcharts/themes/grid.js"
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": [
+      "jQuery"
+    ]
+  },
+  "highcharts-more": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/Highcharts/highcharts-more.js",
+        "/gawain/common/js/vendor/Highcharts/highcharts-3d.js"
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": [
+      "highcharts"
+    ]
+  },
+  "highcharts-drilldown": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/Highcharts/modules/drilldown.js"
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": [
+      "highcharts"
+    ]
+  },
+  "bootstrap-colorpicker": {
+    "path": {
+      "js": [
+        ""
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": [
+      "bootstrap"
+    ]
+  },
+  "CryptoJS": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/CryptoJS/sha3.js"
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": []
+  },
+  "jquery-treegrid": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.min.js",
+        "/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
+      ],
+      "css": [
+        "/gawain/common/js/vendor/jquery-treegrid/css/jquery.treegrid.css"
+      ]
+    },
+    "dependencies": [
+      "jQuery",
+      "bootstrap"
+    ]
+  },
+  "jquery-confirm": {
+    "path": {
+      "js": [
+        ""
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": [
+      "jQuery",
+      "bootstrap"
+    ]
+  },
+  "dhtmlx-Scheduler": {
+    "path": {
+      "js": [
+        ""
+      ],
+      "css": [
+        ""
+      ]
+    },
+    "dependencies": []
+  },
+  "bootstrap-cerulean-theme": {
+    "path": {
+      "js": [],
+      "css": [
+        "/gawain/common/css/Themes/Cerulean/bootstrap.min.css"
+      ]
+    },
+    "dependencies": [
+      "bootstrap"
+    ]
+  },
+  "font-awesome": {
+    "path": {
+      "js": [],
+      "css": [
+        "/gawain/common/css/FontAwesome/font-awesome.min.css"
+      ]
+    },
+    "dependencies": []
+  },
+  "gawain-style-settings": {
+    "path": {
+      "js": [],
+      "css": [
+        "/gawain/common/css/gawain/page.css",
+        "/gawain/common/css/gawain/presentation-elements.css",
+        "/gawain/common/css/gawain/progressbars.css",
+        "/gawain/common/css/gawain/navs.css",
+        "/gawain/common/css/gawain/buttons.css",
+        "/gawain/common/css/gawain/custom-fonts.css"
+      ]
+    },
+    "dependencies": [
+      "bootstrap"
+    ]
+  },
+  "gawain-button-bindings": {
+    "path": {
+      "js": [
+        "/gawain/common/js/onloads/button-bindings.js"
+      ],
+      "css": []
+    },
+    "dependencies": [
+      "jQuery"
+    ]
+  },
+  "gawain-treegrid-onload": {
+    "path": {
+      "js": [
+        "/gawain/common/js/onloads/treegrid.js"
+      ],
+      "css": []
+    },
+    "dependencies": [
+      "jquery-treegrid"
+    ]
+  },
+  "jsgantt-improved": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/jsgantt-improved/jsgantt.js"
+      ],
+      "css": [
+        "/gawain/common/js/vendor/jsgantt-improved/jsgantt.css"
+      ]
+    },
+    "dependencies": []
+  },
+  "TinyColor": {
+    "path": {
+      "js": [
+        "/gawain/common/js/vendor/TinyColor/tinycolor-min.js"
+      ],
+      "css": []
+    },
+    "dependencies": [
+      "jQuery"
+    ]
+  }
 }
