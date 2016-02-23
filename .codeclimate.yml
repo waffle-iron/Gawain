@@ -7,8 +7,12 @@ engines:
     enabled: true
   phpcodesniffer:
     enabled: true
+    config:
+      standard: "PSR1,PSR2"
   phpmd:
     enabled: true
+    config:
+      rulesets: "codesize,controversial,design,unusedcode"
 ratings:
   paths:
   - "**.css"
