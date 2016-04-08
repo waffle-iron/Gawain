@@ -23,7 +23,7 @@ function get_timestamp()
     $dbl_Milliseconds = round(($dbl_UnixTimestamp - $dbl_Timestamp) * 1000000);
 
     $str_Timestamp = date(preg_replace('`(?<!\\\\)u`', str_pad($dbl_Milliseconds, 6, '0'), 'Y-m-d H:i:s.u'),
-        $dbl_Timestamp);
+                          $dbl_Timestamp);
 
     return $str_Timestamp;
 }
@@ -31,8 +31,9 @@ function get_timestamp()
 
 /** Converts a given array into XML string
  *
- * @param array $arr_Array The input array
+ * @param array  $arr_Array    The input array
  * @param string $str_StartTag string The root XML element
+ *
  * @return string
  */
 function array2xml($arr_Array, $str_StartTag)
@@ -51,7 +52,7 @@ function array2xml($arr_Array, $str_StartTag)
 
 /** Recursive function to convert array into XML. Internal use only!!
  *
- * @param array $arr_Data
+ * @param array            $arr_Data
  * @param SimpleXMLElement $xml_Data
  */
 function _array_to_xml($arr_Data, &$xml_Data)

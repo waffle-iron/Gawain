@@ -56,6 +56,7 @@ class Logger
     /** Manually sets and override default log level
      *
      * @param string $str_LogLevel
+     *
      * @throws Exception
      * @return boolean
      */
@@ -66,6 +67,7 @@ class Logger
             throw new Exception('Invalid log level');
         } else {
             $this->logLevel = $str_LogLevel;
+
             return true;
         }
     }
@@ -77,6 +79,7 @@ class Logger
      * @param string $str_Message
      * @param string $str_UserNick
      * @param string $str_Hostname
+     *
      * @return boolean
      */
     public function log($str_LogLevel, $str_Message, $str_UserNick = null, $str_Hostname = 'localhost')

@@ -113,9 +113,9 @@ abstract class Entity
 			where sessionID = ?';
 
         $arr_Result = $this->dbHandler->executePrepared($str_CustomerPrepQuery,
-            array(
-                array($this->sessionID => 's')
-            ));
+                                                        array(
+                                                            array($this->sessionID => 's')
+                                                        ));
 
         $this->domainID = $arr_Result[0]['customerID'];
 
@@ -141,10 +141,10 @@ abstract class Entity
 				and entities_label.entityCode = ?';
 
         $obj_Result = $this->dbHandler->executePrepared($str_InfoPrepQuery,
-            array(
-                array($this->domainID => 'i'),
-                array($this->type => 's')
-            ));
+                                                        array(
+                                                            array($this->domainID => 'i'),
+                                                            array($this->type => 's')
+                                                        ));
 
         // Parsing entity general info
         $this->label =
@@ -197,10 +197,10 @@ abstract class Entity
 			order by label.fieldOrderingIndex';
 
         $obj_Result = $this->dbHandler->executePrepared($str_AvailableFieldsPrepQuery,
-            array(
-                array($this->domainID => 'i'),
-                array($this->type => 's')
-            ));
+                                                        array(
+                                                            array($this->domainID => 'i'),
+                                                            array($this->type => 's')
+                                                        ));
 
 
         // Parsing entity fields info
@@ -249,9 +249,9 @@ abstract class Entity
                 if ($obj_ResultEntry['referentialCustomerDependencyColumnName'] !== null) {
                     $str_ReferentialFieldsQuery .= ' where ' . $obj_ResultEntry['referentialCustomerDependencyColumnName'] . ' = ?';
                     $arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery,
-                        array(
-                            array($this->domainID => 'i')
-                        ));
+                                                                       array(
+                                                                           array($this->domainID => 'i')
+                                                                       ));
 
                 } else {
                     $arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, null);
@@ -290,6 +290,7 @@ abstract class Entity
      *
      * @param mixed $arr_Wheres
      * @param array $arr_SkipReferentialsFor
+     *
      * @return array
      */
     public function read($arr_Wheres, $arr_SkipReferentialsFor = array())
@@ -429,11 +430,12 @@ abstract class Entity
                 switch (strtolower($arr_WhereCondition['operator'])) {
                     case 'in':
                         $str_WhereCondition .= '(' . implode(', ',
-                                array_fill(1, count($arr_WhereCondition['arguments']), '?')) . ')';
+                                                             array_fill(1, count($arr_WhereCondition['arguments']),
+                                                                        '?')) . ')';
                         break;
                     default:
                         $str_WhereCondition .= implode(', ',
-                            array_fill(1, count($arr_WhereCondition['arguments']), '?'));
+                                                       array_fill(1, count($arr_WhereCondition['arguments']), '?'));
                         break;
                 }
 
@@ -467,9 +469,10 @@ abstract class Entity
 
     /** Reformats the raw dataset to remove main ID and use it as array key
      *
-     * @param array $arr_Resultset
+     * @param array  $arr_Resultset
      * @param string $str_MainIDKey
      * @param string $str_DomainDependencyColumn
+     *
      * @return array
      */
     protected function reformatResultset($arr_Resultset, $str_MainIDKey = null, $str_DomainDependencyColumn = null)
@@ -509,6 +512,7 @@ abstract class Entity
      * Data rows derive from JSON format (converted in connector)
      *
      * @param array $arr_DataRows
+     *
      * @throws Exception
      * @return boolean
      */
@@ -573,6 +577,7 @@ abstract class Entity
      *
      * @param array $arr_Wheres
      * @param array $arr_DataRows
+     *
      * @throws Exception
      * @return boolean
      */
@@ -659,6 +664,7 @@ abstract class Entity
     /** Deletes existing data
      *
      * @param array $arr_Wheres
+     *
      * @return boolean
      */
     public function delete($arr_Wheres)
@@ -701,6 +707,7 @@ abstract class Entity
     /** Gets the referential values for the given column
      *
      * @param string $str_ColumnName
+     *
      * @return mixed
      */
     public function getReferentialValuesFor($str_ColumnName)

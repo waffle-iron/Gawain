@@ -47,6 +47,7 @@ class UserAuthManager
      *
      * @param string $str_UserNick
      * @param string $str_PasswordHash
+     *
      * @throws Exception
      * @return array
      */
@@ -60,9 +61,9 @@ class UserAuthManager
 			where userNick = ?';
 
         $obj_Resultset = $this->dbHandler->executePrepared($str_CheckQuery,
-            array(
-                array($str_UserNick => 's')
-            ));
+                                                           array(
+                                                               array($str_UserNick => 's')
+                                                           ));
 
         if (count($obj_Resultset) == 0) {
             throw new Exception('User does not exist');
@@ -98,15 +99,17 @@ class UserAuthManager
     private function generateSessionID()
     {
         $str_SessionID = sha1(sha1(microtime() . date('z') . uniqid(null, true)));
+
         return $str_SessionID;
     }
 
     /** Writes the current session data into DB
      *
-     * @param string $str_SessionID
-     * @param string $str_UserNick
+     * @param string  $str_SessionID
+     * @param string  $str_UserNick
      * @param integer $int_CustomerID
-     * @param string $str_Host
+     * @param string  $str_Host
+     *
      * @return boolean
      */
     private function writeSession($str_SessionID, $str_UserNick, $int_CustomerID = null, $str_Host = 'localhost')
@@ -170,9 +173,9 @@ class UserAuthManager
 			where enabled.userNick = ?';
 
         $obj_Resultset = $this->dbHandler->executePrepared($str_EnabledCustomersQuery,
-            array(
-                array($str_UserNick => 's')
-            ));
+                                                           array(
+                                                               array($str_UserNick => 's')
+                                                           ));
 
         $mix_Return = null;
 
@@ -221,7 +224,8 @@ class UserAuthManager
     /** Checks if the current user has permission for the current module
      *
      * @param string $str_Module
-     * @param bool $bool_SendHeader
+     * @param bool   $bool_SendHeader
+     *
      * @return bool
      */
     public function checkPermissions($str_Module, $bool_SendHeader = false)
@@ -270,6 +274,7 @@ class UserAuthManager
     /** Checks if the given user is authenticated
      *
      * @param string $str_SessionID
+     *
      * @return boolean
      */
     public function isAuthenticated($str_SessionID)
@@ -293,9 +298,10 @@ class UserAuthManager
 
     /** Checks if the user related to the current Session ID has grants to perform an action
      *
-     * @param string $str_SessionID
-     * @param string $str_ModuleCode
+     * @param string  $str_SessionID
+     * @param string  $str_ModuleCode
      * @param integer $int_RequiredPermission
+     *
      * @throws Exception
      * @return boolean
      */
@@ -339,8 +345,9 @@ class UserAuthManager
 
     /** Log the current user in and selects the current customer
      *
-     * @param string $str_SessionID
+     * @param string  $str_SessionID
      * @param integer $int_SelectedCustomer
+     *
      * @return boolean
      */
     public function login($str_SessionID, $int_SelectedCustomer)
@@ -356,13 +363,14 @@ class UserAuthManager
 				and enabled.authorizedCustomerID = ?';
 
         $obj_Resultset = $this->dbHandler->executePrepared($str_CustomerCheckQuery,
-            array(
-                array($str_SessionID => 's'),
-                array($int_SelectedCustomer => 'i')
-            ));
+                                                           array(
+                                                               array($str_SessionID => 's'),
+                                                               array($int_SelectedCustomer => 'i')
+                                                           ));
 
         if (count($obj_Resultset) == 1) {
             $this->setSessionCustomer($str_SessionID, $int_SelectedCustomer);
+
             return true;
 
         } else {
@@ -372,8 +380,9 @@ class UserAuthManager
 
     /** Sets the customerID for the given session
      *
-     * @param string $str_SessionID
+     * @param string  $str_SessionID
      * @param integer $int_CustomerID
+     *
      * @return boolean
      */
     private function setSessionCustomer($str_SessionID, $int_CustomerID)
@@ -385,10 +394,10 @@ class UserAuthManager
 
         $this->dbHandler->beginTransaction();
         $this->dbHandler->executePrepared($str_SetCustomerQuery,
-            array(
-                array($int_CustomerID => 'i'),
-                array($str_SessionID => 's')
-            ));
+                                          array(
+                                              array($int_CustomerID => 'i'),
+                                              array($str_SessionID => 's')
+                                          ));
         $this->dbHandler->commit();
 
         return true;
@@ -397,6 +406,7 @@ class UserAuthManager
     /** Logs out from the current session
      *
      * @param string $str_SessionID
+     *
      * @return boolean
      */
     public function logout($str_SessionID)
@@ -409,6 +419,7 @@ class UserAuthManager
     /** Removes the given session from DB
      *
      * @param string $str_SessionID
+     *
      * @return boolean
      */
     private function removeSession($str_SessionID)
@@ -419,9 +430,9 @@ class UserAuthManager
 
         $this->dbHandler->beginTransaction();
         $this->dbHandler->executePrepared($str_RemoveQuery,
-            array(
-                array($str_SessionID => 's')
-            ));
+                                          array(
+                                              array($str_SessionID => 's')
+                                          ));
         $this->dbHandler->commit();
 
         return true;
@@ -430,6 +441,7 @@ class UserAuthManager
     /** Geta the current user nick logged with the given SessionID
      *
      * @param string $str_SessionID
+     *
      * @return string
      * @throws Exception
      */
@@ -442,9 +454,9 @@ class UserAuthManager
 			where sessions.sessionID = ?';
 
         $obj_Resultset = $this->dbHandler->executePrepared($str_UserQuery,
-            array(
-                array($str_SessionID => 's')
-            ));
+                                                           array(
+                                                               array($str_SessionID => 's')
+                                                           ));
 
         if (count($obj_Resultset) == 1) {
             return $obj_Resultset[0]['userNick'];

@@ -86,6 +86,7 @@ class CurlRequest
         }
 
         $this->options[$option] = $value;
+
         return curl_setopt($this->curl, $option, $value);
     }
 
@@ -96,6 +97,7 @@ class CurlRequest
             if (!($json_obj === null)) {
                 $response = $json_obj;
             }
+
             return $response;
         };
     }
@@ -147,6 +149,7 @@ class CurlRequest
         $this->setURL($url, $data);
         $this->unsetHeader('Content-Length');
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'DELETE');
+
         return $this->exec();
     }
 
@@ -228,6 +231,7 @@ class CurlRequest
         foreach ($headers as $key => $value) {
             $request_headers[$key] = $value;
         }
+
         return $request_headers;
     }
 
@@ -268,6 +272,7 @@ class CurlRequest
         foreach ($headers as $key => $value) {
             $response_headers[$key] = $value;
         }
+
         return $response_headers;
     }
 
@@ -315,6 +320,7 @@ class CurlRequest
         $this->setURL($url, $data);
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'GET');
         $this->setOpt(CURLOPT_HTTPGET, true);
+
         return $this->exec();
     }
 
@@ -366,12 +372,14 @@ class CurlRequest
         $this->setURL($url, $data);
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'HEAD');
         $this->setOpt(CURLOPT_NOBODY, true);
+
         return $this->exec();
     }
 
     public function headerCallback($ch, $header)
     {
         $this->raw_response_headers .= $header;
+
         return strlen($header);
     }
 
@@ -384,6 +392,7 @@ class CurlRequest
         $this->setURL($url, $data);
         $this->unsetHeader('Content-Length');
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'OPTIONS');
+
         return $this->exec();
     }
 
@@ -397,6 +406,7 @@ class CurlRequest
         $this->unsetHeader('Content-Length');
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'PATCH');
         $this->setOpt(CURLOPT_POSTFIELDS, $data);
+
         return $this->exec();
     }
 
@@ -415,6 +425,7 @@ class CurlRequest
         $this->setOpt(CURLOPT_CUSTOMREQUEST, 'POST');
         $this->setOpt(CURLOPT_POST, true);
         $this->setOpt(CURLOPT_POSTFIELDS, $this->buildPostData($data));
+
         return $this->exec();
     }
 
@@ -521,6 +532,7 @@ class CurlRequest
             $this->setHeader('Content-Length', strlen($put_data));
         }
         $this->setOpt(CURLOPT_POSTFIELDS, $put_data);
+
         return $this->exec();
     }
 
@@ -628,6 +640,7 @@ class CaseInsensitiveArray implements \ArrayAccess, \Countable, \Iterator
         }
 
         $values = array_values($this->container);
+
         return $values[$index];
     }
 

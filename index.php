@@ -16,14 +16,14 @@ require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
 
 // Creation of Slim app with Twig rendering engine (Uber coool)
 $app = new \Slim\Slim(array(
-    'view' => new \Slim\Views\Twig()
-));
+                          'view' => new \Slim\Views\Twig()
+                      ));
 
 
 // Settings
 $app->config(array(
-    'debug' => true
-));
+                 'debug' => true
+             ));
 
 
 // Adding Twig extensions
@@ -55,13 +55,13 @@ $app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
 
     // Calculates and prepares the page library dependencies
     $arr_PageDependencies = $obj_Jierarchy->load(array(
-        'jQuery',
-        'bootstrap',
-        'bootstrap-cerulean-theme',
-        'gawain-style-settings',
-        'CryptoJS',
-        'gawain-button-bindings'
-    ));
+                                                     'jQuery',
+                                                     'bootstrap',
+                                                     'bootstrap-cerulean-theme',
+                                                     'gawain-style-settings',
+                                                     'CryptoJS',
+                                                     'gawain-button-bindings'
+                                                 ));
 
     $app->view()->set('page_dependencies', $arr_PageDependencies);
 

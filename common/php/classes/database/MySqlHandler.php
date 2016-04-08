@@ -41,7 +41,8 @@ class MySqlHandler extends DbHandler
      * array([0] => array(variable1 => type1), [1] => array(variable2 => type2))
      *
      * @param string $str_Query
-     * @param array $arr_InputParameters
+     * @param array  $arr_InputParameters
+     *
      * @return object
      */
     public function executePrepared($str_Query, $arr_InputParameters)

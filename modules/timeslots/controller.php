@@ -14,16 +14,16 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'bootstrap-cerulean-theme',
-            'highcharts',
-            'highcharts-drilldown',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome',
-            'TinyColor'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'bootstrap-cerulean-theme',
+                                                         'highcharts',
+                                                         'highcharts-drilldown',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome',
+                                                         'TinyColor'
+                                                     ));
 
 
         // Navbar data declaration
@@ -83,13 +83,13 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'bootstrap-cerulean-theme',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'bootstrap-cerulean-theme',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome'
+                                                     ));
 
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
@@ -162,13 +162,13 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'bootstrap-cerulean-theme',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'bootstrap-cerulean-theme',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome'
+                                                     ));
 
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);

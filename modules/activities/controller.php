@@ -14,17 +14,17 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'jsgantt-improved',
-            'bootstrap-cerulean-theme',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome',
-            'jquery-treegrid',
-            'gawain-treegrid-onload',
-            'TinyColor'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'jsgantt-improved',
+                                                         'bootstrap-cerulean-theme',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome',
+                                                         'jquery-treegrid',
+                                                         'gawain-treegrid-onload',
+                                                         'TinyColor'
+                                                     ));
 
 
         // Navbar data declaration
@@ -66,14 +66,14 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'jsgantt-improved',
-            'bootstrap-cerulean-theme',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'jsgantt-improved',
+                                                         'bootstrap-cerulean-theme',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome'
+                                                     ));
 
 
         // Navbar data declaration
@@ -113,13 +113,13 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'bootstrap-cerulean-theme',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'bootstrap-cerulean-theme',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome'
+                                                     ));
 
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
@@ -197,13 +197,13 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
-            'jQuery',
-            'bootstrap',
-            'bootstrap-cerulean-theme',
-            'gawain-style-settings',
-            'gawain-button-bindings',
-            'font-awesome'
-        ));
+                                                         'jQuery',
+                                                         'bootstrap',
+                                                         'bootstrap-cerulean-theme',
+                                                         'gawain-style-settings',
+                                                         'gawain-button-bindings',
+                                                         'font-awesome'
+                                                     ));
 
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
