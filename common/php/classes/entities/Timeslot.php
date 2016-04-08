@@ -37,7 +37,8 @@ class Timeslot extends Entity
 
     /** Groups extracted timeslots by date
      *
-     * @param $arr_Resultset
+     * @param array $arr_Resultset
+     * @param bool $bool_InversedOrder
      * @return array
      */
     public static function groupTimeslotsByDate($arr_Resultset, $bool_InversedOrder = true)

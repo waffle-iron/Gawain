@@ -171,7 +171,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         ));
 
         // Navbar data declaration
-        $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);;
+        $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
 
 
         $obj_Timeslot = new Timeslot($str_SessionID);
