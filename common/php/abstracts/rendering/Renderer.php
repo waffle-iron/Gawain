@@ -54,6 +54,7 @@ abstract class Renderer
     /** Add a path (typically an entity custom path) to the loader
      *
      * @param string $str_TemplatePath
+     *
      * @throws Twig_Error_Loader
      */
     public function addTemplatePath($str_TemplatePath)

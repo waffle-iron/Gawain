@@ -56,6 +56,7 @@ class Logger
     /** Manually sets and override default log level
      *
      * @param string $str_LogLevel
+     *
      * @throws Exception
      * @return boolean
      */
@@ -66,6 +67,7 @@ class Logger
             throw new Exception('Invalid log level');
         } else {
             $this->logLevel = $str_LogLevel;
+
             return true;
         }
     }
@@ -77,14 +79,16 @@ class Logger
      * @param string $str_Message
      * @param string $str_UserNick
      * @param string $str_Hostname
+     *
      * @return boolean
      */
     public function log($str_LogLevel, $str_Message, $str_UserNick = null, $str_Hostname = 'localhost')
     {
 
         // Check if proposed log level is acceptable, otherwise log entry is refused
-        if (in_array($str_LogLevel, $this->logLevelsList)
-            && array_search($str_LogLevel, $this->logLevelsList) <= array_search($this->logLevel, $this->logLevelsList)
+        if (in_array($str_LogLevel, $this->logLevelsList) && array_search($str_LogLevel,
+                                                                          $this->logLevelsList) <= array_search($this->logLevel,
+                                                                                                                $this->logLevelsList)
         ) {
             $str_Timestamp = get_timestamp();
             $arr_InsertValues = array(
@@ -97,9 +101,7 @@ class Logger
                 array($str_Message => 's')
             );
 
-            $str_LogPrepared =
-                'insert into ' . $this->logTableName .
-                ' (
+            $str_LogPrepared = 'insert into ' . $this->logTableName . ' (
 					logTimestamp,
 					logLevel,
 					hostname,
@@ -125,7 +127,6 @@ class Logger
         } else {
             return false;
         }
-
 
     }
 

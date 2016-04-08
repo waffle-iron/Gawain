@@ -70,5 +70,4 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 
     })->name('logout');
 
-
 });

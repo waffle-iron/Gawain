@@ -29,6 +29,7 @@ class CheckAuthenticationMiddleware extends \Slim\Middleware
         foreach ($arr_RoutesExceptions as $str_RouteException) {
             if (strpos($this->app->request()->getPathInfo(), $str_RouteException) !== false) {
                 $this->next->call();
+
                 return;
             }
         }

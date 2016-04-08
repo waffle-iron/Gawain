@@ -38,7 +38,8 @@ class Timeslot extends Entity
     /** Groups extracted timeslots by date
      *
      * @param array $arr_Resultset
-     * @param bool $bool_InversedOrder
+     * @param bool  $bool_InversedOrder
+     *
      * @return array
      */
     public static function groupTimeslotsByDate($arr_Resultset, $bool_InversedOrder = true)
@@ -64,6 +65,7 @@ class Timeslot extends Entity
     /** Groups extracted timeslots by Activity and Task
      *
      * @param $arr_Resultset
+     *
      * @return array
      */
     public static function groupTimeslotsByActivity($arr_Resultset)
@@ -91,8 +93,9 @@ class Timeslot extends Entity
     /** Helper method that retrieves all the entries linked to current user
      *
      * @param string $mix_Limits
-     * @param null $int_ActivityID
-     * @param null $int_TaskID
+     * @param null   $int_ActivityID
+     * @param null   $int_TaskID
+     *
      * @return array
      * @throws Exception
      */

@@ -31,6 +31,7 @@ class Activity extends Entity
      *
      * @param mixed $arr_Wheres
      * @param array $arr_SkipReferentialsFor
+     *
      * @return array
      */
     public function read($arr_Wheres, $arr_SkipReferentialsFor = array())
@@ -53,9 +54,11 @@ class Activity extends Entity
 
     /** Calculates the estimated effort for the given activity.
      *  If the effort is manually set, it simply returns the value.
-     *  If the effort is set to be automatically calculated, the value is retrieved as the recursive sum of the descendant effort.
+     *  If the effort is set to be automatically calculated, the value is retrieved as the recursive sum of the
+     *  descendant effort.
      *
      * @param int $int_ActivityID The activity ID for which the effort has to be calculated
+     *
      * @return float
      */
     public function getEstimatedEffort($int_ActivityID)
@@ -72,11 +75,10 @@ class Activity extends Entity
 				and activities.activityID = ?
 		';
 
-        $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-            array(
-                array($this->domainID => 'i'),
-                array($int_ActivityID => 'i')
-            ));
+        $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+            array($this->domainID => 'i'),
+            array($int_ActivityID => 'i')
+        ));
 
 
         $dbl_Effort = null;
@@ -101,11 +103,10 @@ class Activity extends Entity
 					and activities.activityParentID = ?
 			';
 
-            $obj_ResultsetChild = $this->dbHandler->executePrepared($str_Query,
-                array(
-                    array($this->domainID => 'i'),
-                    array($int_ActivityID => 'i')
-                ));
+            $obj_ResultsetChild = $this->dbHandler->executePrepared($str_Query, array(
+                array($this->domainID => 'i'),
+                array($int_ActivityID => 'i')
+            ));
 
 
             if (count($obj_ResultsetChild) == 0) {
@@ -136,9 +137,12 @@ class Activity extends Entity
 
     /** Calculates activity completion based on activity timeslots.
      *  If the completion is manually set, it simply returns the value.
-     *  If the completion is set to be automatically calculated, the value is calculated upon activity estimated effort and whole timeslots.
+     *  If the completion is set to be automatically calculated, the value is calculated upon activity estimated effort
+     *  and whole timeslots.
      * .
+     *
      * @param int $int_ActivityID The given Activity ID
+     *
      * @return float
      */
     public function getCompletion($int_ActivityID)
@@ -155,11 +159,10 @@ class Activity extends Entity
 				and activities.activityID = ?
 		';
 
-        $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-            array(
-                array($this->domainID => 'i'),
-                array($int_ActivityID => 'i')
-            ));
+        $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+            array($this->domainID => 'i'),
+            array($int_ActivityID => 'i')
+        ));
 
 
         $dbl_Completion = null;
@@ -193,8 +196,9 @@ class Activity extends Entity
      *  The retrieval can be performed recursively, to get also the children activities' timeslots,
      *  or in plain mode, to get only direct timeslots.
      *
-     * @param int $int_ActivityID The given activity ID
+     * @param int  $int_ActivityID     The given activity ID
      * @param bool $bool_RecursiveMode Flag that activates or deactivates the recursive mode
+     *
      * @return array
      */
     public function getTimeslotHours($int_ActivityID, $bool_RecursiveMode = true)
@@ -214,16 +218,13 @@ class Activity extends Entity
 			group by users.userName
 		';
 
-        $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-            array(
-                array($int_ActivityID => 'i')
-            ));
+        $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+            array($int_ActivityID => 'i')
+        ));
 
         // Start populating the array
         foreach ($obj_Resultset as $arr_Datarow) {
-            $arr_TimeslotHours[$arr_Datarow['userName']] = isset($arr_TimeslotHours[$arr_Datarow['userName']]) ?
-                ($arr_TimeslotHours[$arr_Datarow['userName']] + floatval($arr_Datarow['timeslotHours'])) :
-                floatval($arr_Datarow['timeslotHours']);
+            $arr_TimeslotHours[$arr_Datarow['userName']] = isset($arr_TimeslotHours[$arr_Datarow['userName']]) ? ($arr_TimeslotHours[$arr_Datarow['userName']] + floatval($arr_Datarow['timeslotHours'])) : floatval($arr_Datarow['timeslotHours']);
         }
 
 
@@ -238,9 +239,7 @@ class Activity extends Entity
                 //var_dump($arr_ChildHours);
 
                 foreach ($arr_ChildHours as $str_User => $dbl_Hours) {
-                    $arr_TimeslotHours[$str_User] = isset($arr_TimeslotHours[$str_User]) ?
-                        ($arr_TimeslotHours[$str_User] + floatval($dbl_Hours)) :
-                        floatval($dbl_Hours);
+                    $arr_TimeslotHours[$str_User] = isset($arr_TimeslotHours[$str_User]) ? ($arr_TimeslotHours[$str_User] + floatval($dbl_Hours)) : floatval($dbl_Hours);
                 }
             }
 
@@ -254,6 +253,7 @@ class Activity extends Entity
     /** Gets the child activities of the selected activity
      *
      * @param int $int_ActivityID The given activity ID
+     *
      * @return array
      */
     public function getChildActivities($int_ActivityID)
@@ -271,11 +271,10 @@ class Activity extends Entity
 				and activities.activityParentID = ?
 		';
 
-        $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-            array(
-                array($this->domainID => 'i'),
-                array($int_ActivityID => 'i')
-            ));
+        $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+            array($this->domainID => 'i'),
+            array($int_ActivityID => 'i')
+        ));
 
         $arr_Result = array();
 
@@ -293,8 +292,9 @@ class Activity extends Entity
 
     /** Calculates the end date for the given activity, using working days
      *
-     * @param int $int_ActivityID
+     * @param int  $int_ActivityID
      * @param bool $bool_AdvancedCalculation
+     *
      * @return string
      */
     public function getEndDate($int_ActivityID, $bool_AdvancedCalculation = false)
@@ -310,11 +310,10 @@ class Activity extends Entity
 				and activities.activityID = ?
 		';
 
-        $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-            array(
-                array($this->domainID => 'i'),
-                array($int_ActivityID => 'i')
-            ));
+        $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+            array($this->domainID => 'i'),
+            array($int_ActivityID => 'i')
+        ));
 
         $str_StartDate = $obj_Resultset[0]['activityStartDate'];
 
@@ -343,6 +342,7 @@ class Activity extends Entity
     /** Returns the XML string for Gantt construction
      *
      * @param int $int_ActivityID If given, outputs data for the given activity only
+     *
      * @return string
      */
     public function getGanttData($int_ActivityID = null)
@@ -400,10 +400,9 @@ class Activity extends Entity
 			where activityTypeCustomerID = ?';
 
 
-        $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-            array(
-                array($this->domainID => 'i')
-            ));
+        $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+            array($this->domainID => 'i')
+        ));
 
         $arr_Output = array();
 
@@ -420,8 +419,8 @@ class Activity extends Entity
     /** Private function to compile Gantt data recursively
      *
      * @param array $arr_Output
-     * @param int $int_ActivityID
-     * @param bool $bool_IsChild
+     * @param int   $int_ActivityID
+     * @param bool  $bool_IsChild
      */
     private function getGanttDataRecursive(&$arr_Output, $int_ActivityID = null, $bool_IsChild = false)
     {
@@ -447,16 +446,14 @@ class Activity extends Entity
 
         // Execute query
         if ($int_ActivityID === null) {
-            $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-                array(
-                    array($this->domainID => 'i')
-                ));
+            $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+                array($this->domainID => 'i')
+            ));
         } else {
-            $obj_Resultset = $this->dbHandler->executePrepared($str_Query,
-                array(
-                    array($this->domainID => 'i'),
-                    array($int_ActivityID => 'i')
-                ));
+            $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
+                array($this->domainID => 'i'),
+                array($int_ActivityID => 'i')
+            ));
         }
 
 
