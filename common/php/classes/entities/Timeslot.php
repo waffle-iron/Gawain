@@ -96,6 +96,36 @@ class Timeslot extends Entity
     }
 
 
+    /** Groups extracted timeslots by Activity and Task
+     *
+     * @param $arr_Resultset
+     *
+     * @return array
+     */
+    public static function groupTimeslotsByUser($arr_Resultset)
+    {
+
+        $arr_UserGroupedTimeslots = array();
+
+        foreach ($arr_Resultset as $int_TimeslotID => $arr_Timeslot) {
+            if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['total'])) {
+                $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['total'] = 0;
+            }
+
+            if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['details'][$arr_Timeslot['timeslotTaskID']])) {
+                $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['details'][$arr_Timeslot['timeslotTaskID']] =
+                    0;
+            }
+
+            $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['total'] += $arr_Timeslot['timeslotDuration'];
+            $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['details'][$arr_Timeslot['timeslotTaskID']] += $arr_Timeslot['timeslotDuration'];
+        }
+
+        return $arr_UserGroupedTimeslots;
+
+    }
+
+
     /** Helper method that retrieves all the entries linked to current user
      *
      * @param string $mix_Limits
