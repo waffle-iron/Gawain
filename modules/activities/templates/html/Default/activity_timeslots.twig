@@ -1,0 +1,117 @@
+{# Single activity timeslots page #}
+
+<div class="row">
+
+    <div class="col-md-6 col-sm-12 table-responsive">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Hours</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% set totalHours = 0 %}
+                {% for userNick, userDataArray in activity_timeslots %}
+                    <tr>
+                        <td>{{ userNick }}</td>
+                        <td>{{ userDataArray.total }}</td>
+                    </tr>
+                    {% set totalHours = totalHours + userDataArray.total %}
+                {% endfor %}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td><b>Total hours</b></td>
+                    <td><b>{{ totalHours }}</b></td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+
+
+    <div class="col-md-6 col col-sm-12">
+        <div id="gawain-activity-timeslots"></div>
+    </div>
+
+    <script>
+
+        function drawChart() {
+
+            $('#gawain-activity-timeslots').highcharts({
+                chart: {
+                    type: 'pie',
+                    borderWidth: 0
+                },
+
+                title: {
+                    text: 'Current activity timeslots'
+                },
+
+                subtitle: {
+                    text: 'Click on the slices to view timeslots details by task'
+                },
+
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}: {point.y}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+                },
+
+                series: [{
+                    name: 'Users',
+                    colorByPoint: true,
+                    data: [
+                        {% for userNick, userDataArray in activity_timeslots %}
+                        {
+                            name: "{{ userNick }}",
+                            y: {{ userDataArray.total }},
+                            drilldown: "{{ userNick }}_drilldown"
+                        } {% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ]
+                }],
+
+                drilldown: {
+                    series: [
+                        {% for userNick, userDataArray in activity_timeslots %}
+                        {
+                            name: "{{ userNick }}",
+                            id: "{{ userNick }}_drilldown",
+                            data: [
+                                {% for task_name,task_timeslot in userDataArray.details %}
+                                [{% if task_name != '' %}"{{ task_name }}"{% else %}"No Task"{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
+                                {% endfor %}
+                            ]
+                        } {% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ]
+                }
+            });
+
+        }
+
+
+        drawChart();
+
+
+        // This snippet fixes the missing auto refresh when changing tab
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            drawChart();
+        });
+
+    </script>
+
+</div>

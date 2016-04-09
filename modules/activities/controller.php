@@ -70,6 +70,8 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
                                                          'bootstrap',
                                                          'jsgantt-improved',
                                                          'bootstrap-cerulean-theme',
+                                                         'highcharts',
+                                                         'highcharts-drilldown',
                                                          'gawain-style-settings',
                                                          'gawain-button-bindings',
                                                          'font-awesome'
@@ -91,7 +93,14 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $str_GanttXML = $obj_Activity->getGanttData($activityID);
 
 
+        // Resources and timeslots
+        $obj_Timeslot = new Timeslot($str_SessionID);
+        $arr_ActivityTimeslots = $obj_Timeslot::groupTimeslotsByUser($obj_Timeslot->getUsersEntries(null, 'all',
+                                                                                                        $activityID));
+
+
         // Prepare the view
+        // Dashboard data
         $app->view()->set('page_dependencies', $arr_PageDependencies);
         $app->view()->set('navbar_data', $arr_NavbarData);
         $app->view()->set('activity_ID', $activityID);
@@ -99,8 +108,12 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $app->view()->set('activity_fields', $arr_ActivityFields);
         $app->view()->set('module_label', $str_ModuleLabel);
         $app->view()->set('module_item_label', $str_ItemLabel);
+
+        // Gantt data
         $app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
+        // Users and Timeslot data
+        $app->view()->set('activity_timeslots', $arr_ActivityTimeslots);
 
         // Renders the page
         $loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
