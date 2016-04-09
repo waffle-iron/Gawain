@@ -1,6 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_ABSTRACTS_DIR . 'database/DbHandler.php');
 

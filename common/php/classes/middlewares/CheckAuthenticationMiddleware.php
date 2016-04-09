@@ -1,6 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
 require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
 

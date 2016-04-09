@@ -1,6 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/../../constants/global_defines.php');
 require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
 
 

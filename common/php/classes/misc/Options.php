@@ -1,7 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/../../constants/global_defines.php');
-
 class Options
 {
 

@@ -2,7 +2,6 @@
 
 namespace common\page_navbar;
 
-require_once(__DIR__ . '/../../../php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 
