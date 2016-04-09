@@ -1,0 +1,4 @@
+/* This files contains all styles associated to tables */
+tfoot > tr > td {
+    border-top-width: 3pt;
+}
