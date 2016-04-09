@@ -3,3 +3,6 @@
 /.buildpath
 /.settings/
 /.idea/
+
+# Fake test script
+/rest-api/test.php
