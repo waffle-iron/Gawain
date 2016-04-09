@@ -36,12 +36,12 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $str_TimeslotFrom = $app->request->get('from');
         $str_TimeslotTo = $app->request->get('to');
 
-        if (!is_null($str_TimeslotFilter)) {
+        if ($str_TimeslotFilter != 'custom_period') {
             $arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries($str_TimeslotFilter);
         } elseif (!is_null($str_TimeslotFrom) || !is_null($str_TimeslotTo)) {
             $arr_Limits = array(
-                'from' => $str_TimeslotFrom,
-                'to' => $str_TimeslotTo
+                'from' => strlen($str_TimeslotFrom) > 0 ? $str_TimeslotFrom : null,
+                'to' => strlen($str_TimeslotTo) > 0 ? $str_TimeslotTo : null
             );
             $arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries($arr_Limits);
         } else {
@@ -70,6 +70,9 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('date_grouped_timeslots', $arr_DateGroupedTimeslots);
         $app->view()->set('activity_grouped_timeslots', $arr_ActivityGroupedTimeslots);
         $app->view()->set('module_item_label', $str_ItemLabel);
+        $app->view()->set('filter', $str_TimeslotFilter);
+        $app->view()->set('from', $str_TimeslotFrom);
+        $app->view()->set('to', $str_TimeslotTo);
 
 
         // Renders the page

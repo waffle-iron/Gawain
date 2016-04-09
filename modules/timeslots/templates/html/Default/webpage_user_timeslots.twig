@@ -48,37 +48,55 @@
                   action="{{ urlFor('timeslots') }}"
                   method="get">
                 <div class="form_group">
-                    <label for="filter">Timeslot view filter</label>
+                    <label for="filter">View filter</label>
                     <select id="filter" name="filter" class="form-control">
-                        <option value="this_day">This day</option>
-                        <option value="this_week">This week</option>
-                        <option value="this_month">This month</option>
-                        <option value="this_year">This year</option>
-                        <option value="custom_period">Custom perioid</option>
+                        <option value="this_day" {% if filter == 'this_day' %}selected{% endif %}>This day</option>
+                        <option value="this_week" {% if filter == 'this_week' %}selected{% endif %}>This week</option>
+                        <option value="this_month" {% if filter == 'this_month' or filter is null %}selected{% endif %}>This month</option>
+                        <option value="this_year" {% if filter == 'this_year' %}selected{% endif %}>This year</option>
+                        <option value="custom_period" {% if filter == 'custom_period' %}selected{% endif %}>Custom period</option>
                     </select>
                 </div>
 
-                <div class="form-group hidden" id="gawain-timeslots-filter-from">
+                <div class="form-group" id="gawain-timeslots-filter-from"
+                     {% if filter != 'custom_period' %}style="display: none"{% endif %}>
                     <label for="from">From</label>
-                    <input type="date" id="from" name="from" class="form-control" placeholder="From...">
+                    <input type="date"
+                           id="from"
+                           name="from"
+                           class="form-control"
+                           placeholder="From..."
+                           {% if filter != 'custom_period' %}disabled{% endif %}
+                           {% if not from is null %}value="{{ from }}"{% endif %}>
                 </div>
 
-                <div class="form-group hidden" id="gawain-timeslots-filter-from">
+                <div class="form-group" id="gawain-timeslots-filter-to"
+                     {% if filter != 'custom_period' %}style="display: none"{% endif %}>
                     <label for="to">To</label>
-                    <input type="date" id="to" name="to" class="form-control" placeholder="To...">
+                    <input type="date"
+                           id="to"
+                           name="to"
+                           class="form-control"
+                           placeholder="To..."
+                           {% if filter != 'custom_period' %}disabled{% endif %}
+                           {% if not to is null %}value="{{ to }}"{% endif %}>
                 </div>
 
-                <button type="submit" class="btn btn-default">Apply filter</button>
+                <button type="submit" class="btn btn-success">Apply filter</button>
             </form>
         </div>
 
         <script>
             $('#filter').change(function () {
-                var str_Value = $('#filter').find('option:selected').val();
+                var str_Value = $('#filter').val();
                 if (str_Value == 'custom_period') {
+                    $('#gawain-timeslots-filter-from input').prop('disabled', false);
+                    $('#gawain-timeslots-filter-to input').prop('disabled', false);
                     $('#gawain-timeslots-filter-from').show();
                     $('#gawain-timeslots-filter-to').show();
                 } else {
+                    $('#gawain-timeslots-filter-from input').prop('disabled', true);
+                    $('#gawain-timeslots-filter-to input').prop('disabled', true);
                     $('#gawain-timeslots-filter-from').hide();
                     $('#gawain-timeslots-filter-to').hide();
                 }

@@ -160,7 +160,7 @@ class Timeslot extends Entity
                     break;
 
                 default:
-                    $str_Limit = strftime('%Y-%m-%d', strtotime('this month', time()));
+                    $str_Limit = $date_Today->format('Y-m-01');
                     $arr_Wheres['timeslotReferenceDate'] = array(
                         'operator' => '>=',
                         'arguments' => array(
@@ -173,7 +173,7 @@ class Timeslot extends Entity
         } else {
 
             // If the limit parameter is an array, get the 'from' and 'to' elements
-            if (isset($mix_Limits['from'])) {
+            if (isset($mix_Limits['from']) && !is_null($mix_Limits['from'])) {
                 $arr_Wheres['timeslotReferenceDate'] = array(
                     'operator' => '>=',
                     'arguments' => array(
@@ -182,7 +182,7 @@ class Timeslot extends Entity
                 );
             }
 
-            if (isset($mix_Limits['to'])) {
+            if (isset($mix_Limits['to']) && !is_null($mix_Limits['to'])) {
                 $arr_Wheres['timeslotReferenceDate'] = array(
                     'operator' => '<=',
                     'arguments' => array(
