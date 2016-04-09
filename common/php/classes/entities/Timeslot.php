@@ -159,6 +159,9 @@ class Timeslot extends Entity
                     );
                     break;
 
+                case 'all':
+                    break;
+
                 default:
                     $str_Limit = $date_Today->format('Y-m-01');
                     $arr_Wheres['timeslotReferenceDate'] = array(

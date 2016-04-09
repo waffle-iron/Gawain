@@ -54,6 +54,7 @@
                         <option value="this_week" {% if filter == 'this_week' %}selected{% endif %}>This week</option>
                         <option value="this_month" {% if filter == 'this_month' or filter is null %}selected{% endif %}>This month</option>
                         <option value="this_year" {% if filter == 'this_year' %}selected{% endif %}>This year</option>
+                        <option value="all" {% if filter == 'all' %}selected{% endif %}>All entries</option>
                         <option value="custom_period" {% if filter == 'custom_period' %}selected{% endif %}>Custom period</option>
                     </select>
                 </div>
