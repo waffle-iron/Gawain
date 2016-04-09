@@ -278,7 +278,6 @@ abstract class Entity
         $arr_SelectFields = array();
         $arr_CustomerDependency = array();
         $arr_Joins = array();
-        $arr_Dataset = array();
 
         // First compile the select query string
         foreach ($this->availableFields as $str_FieldName => $arr_FieldEntry) {
