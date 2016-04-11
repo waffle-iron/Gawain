@@ -1,15 +1,28 @@
 <?php
 
+/** Manages JS and CSS ordered loading
+ *
+ * Class Jierarchy
+ */
 class Jierarchy
 {
 
-    // Dependency Source parsed from file
+    /** Dependency Source parsed from file
+     *
+     * @var mixed
+     */
     private $depSource;
 
-    // Javascript paths
+    /** Javascript paths
+     *
+     * @var array
+     */
     private $JsPaths = array();
 
-    // CSS paths
+    /** CSS paths
+     *
+     * @var array
+     */
     private $CssPaths = array();
 
 
