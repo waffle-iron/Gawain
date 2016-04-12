@@ -56,6 +56,12 @@ define('CONFIG_DIR', COMMON_DIR . 'config/');
 
 
 /**
+ * Internationalization (i18n) file folder path
+ */
+define('I18N_DIR', CONFIG_DIR . 'i18n/');
+
+
+/**
  * PHP source files folder path
  */
 define('PHP_DIR', COMMON_DIR . 'php/');
