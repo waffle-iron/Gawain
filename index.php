@@ -20,6 +20,12 @@
 namespace Gawain;
 
 require_once(__DIR__ . '/common/php/constants/global_defines.php');
+require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
+require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
+
+// PSR-0 autoloader registration for the while project
+spl_autoload_register('class_loader');
+
 require_once(PHP_CLASSES_DIR . 'middlewares/CheckAuthenticationMiddleware.php');
 require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
 
