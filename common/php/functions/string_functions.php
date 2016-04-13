@@ -19,6 +19,12 @@
 
 namespace Gawain\Functions\StringFunctions;
 
+
+/**
+ * String functions used widely in Gawain
+ */
+
+
 /** Generates a random string based on microtime hash
  *
  * @return string
@@ -102,4 +108,23 @@ function _array_to_xml($arr_Data, &$xml_Data)
 
     }
 
+}
+
+
+/** Converts an underscore string into a camle case one
+ *
+ * @param $str
+ *
+ * @return string
+ */
+function underscore2Camelcase($str) {
+    // Split string in words.
+    $words = explode('_', strtolower($str));
+
+    $return = '';
+    foreach ($words as $word) {
+        $return .= ucfirst(trim($word));
+    }
+
+    return $return;
 }
