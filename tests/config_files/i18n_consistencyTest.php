@@ -31,7 +31,7 @@ class i18n_consistencyTest extends \PHPUnit_Framework_TestCase
         $arr_OtherLanguages = array_diff(scandir(I18N_DIR), array('..', '.', 'en_EN.ini'));
 
         foreach ($arr_OtherLanguages as $str_OtherLanguageFile) {
-            $arr_OtherLanguageFileContent = parse_ini_file($str_OtherLanguageFile, true);
+            $arr_OtherLanguageFileContent = parse_ini_file(I18N_DIR . $str_OtherLanguageFile, true);
 
             $this->assertEquals(array_keys($arr_ReferenceLanguageFileContent),
                                 array_keys($arr_OtherLanguageFileContent));
@@ -47,7 +47,7 @@ class i18n_consistencyTest extends \PHPUnit_Framework_TestCase
         $arr_ReferenceLanguageSections = array_keys($arr_ReferenceLanguageFileContent);
 
         foreach ($arr_OtherLanguages as $str_OtherLanguageFile) {
-            $arr_OtherLanguageFileContent = parse_ini_file($str_OtherLanguageFile, true);
+            $arr_OtherLanguageFileContent = parse_ini_file(I18N_DIR . $str_OtherLanguageFile, true);
 
             foreach ($arr_ReferenceLanguageSections as $str_LanguageSection) {
                 $this->assertEquals(array_keys($arr_ReferenceLanguageFileContent[$str_LanguageSection]),
