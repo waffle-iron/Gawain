@@ -17,8 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Classes\Database;
+
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_ABSTRACTS_DIR . 'database/DbHandler.php');
+
+use Gawain\Abstracts\Database\DbHandler;
 
 /** Manages MySQL connections using MySQL native driver
  *
@@ -37,13 +41,13 @@ class MySqlHandler extends DbHandler
 
         try {
 
-            $this->handler = new mysqli($this->hostname, $this->username, $this->password, $this->schema);
+            $this->handler = new \mysqli($this->hostname, $this->username, $this->password, $this->schema);
 
             if ($this->handler->connect_error) {
-                throw new Exception('DB Connection Error');
+                throw new \Exception('DB Connection Error');
             }
 
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             echo 'Cannot connect to selected DB: ' . $exception->getMessage() . "\n";
         }
 

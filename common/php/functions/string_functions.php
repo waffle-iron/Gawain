@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Functions\StringFunctions;
+
 /** Generates a random string based on microtime hash
  *
  * @return string
@@ -56,7 +58,7 @@ function get_timestamp()
 function array2xml($arr_Array, $str_StartTag)
 {
 
-    $obj_XML = new SimpleXMLElement('<?xml version="1.0"?><' . $str_StartTag . '></' . $str_StartTag . '>');
+    $obj_XML = new \SimpleXMLElement('<?xml version="1.0"?><' . $str_StartTag . '></' . $str_StartTag . '>');
 
     // Recursive internal function, see below
     _array_to_xml($arr_Array, $obj_XML);
@@ -70,7 +72,7 @@ function array2xml($arr_Array, $str_StartTag)
 /** Recursive function to convert array into XML. Internal use only!!
  *
  * @param array            $arr_Data
- * @param SimpleXMLElement $xml_Data
+ * @param \SimpleXMLElement $xml_Data
  */
 function _array_to_xml($arr_Data, &$xml_Data)
 {

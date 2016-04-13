@@ -1,5 +1,7 @@
 <?php
 
+namespace Gawain\Classes\Net;
+
 /** Manages JS and CSS ordered loading
  *
  * Class Jierarchy

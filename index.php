@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain;
+
 require_once(__DIR__ . '/common/php/constants/global_defines.php');
 require_once(PHP_CLASSES_DIR . 'middlewares/CheckAuthenticationMiddleware.php');
 require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
@@ -24,15 +26,21 @@ require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
 require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
 require_once(PHP_VENDOR_DIR . 'Slim-Views/Twig.php');
 
-\Slim\Slim::registerAutoloader();
+Slim::registerAutoloader();
 Twig_Autoloader::register();
 
 require_once(PHP_VENDOR_DIR . 'Slim-Views/TwigExtension.php');
 require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
 
+use Gawain\Classes\Middlewares\CheckAuthenticationMiddleware;
+use Gawain\Classes\Net\Jierarchy;
+use Slim\Slim;
+use Slim\Views\TwigExtension;
+use Twig_Autoloader;
+
 
 // Creation of Slim app with Twig rendering engine (Uber coool)
-$app = new \Slim\Slim(array(
+$app = new Slim(array(
                           'view' => new \Slim\Views\Twig()
                       ));
 
@@ -44,7 +52,7 @@ $app->config(array(
 
 
 // Adding Twig extensions
-$app->view()->parserExtensions = array(new \Slim\Views\TwigExtension());
+$app->view()->parserExtensions = array(new TwigExtension());
 
 
 // Configure Twig instance
@@ -58,7 +66,7 @@ $obj_Jierarchy = new Jierarchy(CONFIG_DIR . 'dependencies.json');
 
 
 // Middleware declaration
-$app->add(new \CheckAuthenticationMiddleware());
+$app->add(new CheckAuthenticationMiddleware());
 
 
 // Default routing rule if the simple path is provided

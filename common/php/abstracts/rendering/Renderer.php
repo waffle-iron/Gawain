@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Abstracts\Rendering;
+
 require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
 
 
@@ -60,9 +62,9 @@ abstract class Renderer
     public function __construct()
     {
 
-        Twig_Autoloader::register();
-        $this->twigLoader = new Twig_Loader_Filesystem(TEMPLATES_DIR);
-        $this->twig = new Twig_Environment($this->twigLoader);
+        \Twig_Autoloader::register();
+        $this->twigLoader = new \Twig_Loader_Filesystem(TEMPLATES_DIR);
+        $this->twig = new \Twig_Environment($this->twigLoader);
 
     }
 
@@ -71,7 +73,7 @@ abstract class Renderer
      *
      * @param string $str_TemplatePath
      *
-     * @throws Twig_Error_Loader
+     * @throws \Twig_Error_Loader
      */
     public function addTemplatePath($str_TemplatePath)
     {
@@ -126,17 +128,17 @@ abstract class Renderer
 
     /** Provides a basic rendering method to be used in more complex render implementations
      *
-     * @throws Exception
+     * @throws \Exception
      */
     protected function basicRender()
     {
 
         if (!isset($this->renderingFormat)) {
-            throw new Exception('Rendering format not defined');
+            throw new \Exception('Rendering format not defined');
         }
 
         if (!isset($this->style)) {
-            throw new Exception('Rendering style not defined');
+            throw new \Exception('Rendering style not defined');
         }
 
         $this->twigLoader->addPath(TEMPLATES_DIR . $this->renderingFormat . '/' . $this->style);

@@ -17,7 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Classes\Rendering;
+
 require_once(PHP_ABSTRACTS_DIR . 'rendering/Renderer.php');
+
+use Gawain\Abstracts\Rendering\Renderer;
 
 
 class HtmlRenderer extends Renderer
@@ -26,7 +30,7 @@ class HtmlRenderer extends Renderer
     public function __construct()
     {
 
-        // Sets the rendering format to HTML and executes the parent costructor
+        // Sets the rendering format to HTML and executes the parent constructor
         $this->renderingFormat = 'html';
         parent::__construct();
     }

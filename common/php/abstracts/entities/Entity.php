@@ -17,9 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Abstracts\Entities;
+
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_VENDOR_DIR . 'PHPColors/Color.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
+
+use Gawain\Classes\Misc\Options;
+use Gawain\Functions\Autodefiners;
+use PHPColors\Color;
 
 
 /**
@@ -84,7 +90,7 @@ abstract class Entity
 
 
     /** Database Hanlder
-     * @var dbHandler
+     * @var \Gawain\Abstracts\Database\DbHandler
      */
     protected $dbHandler;
 

@@ -17,11 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Functions\Autodefiners;
+
+use Gawain\Classes\Database\MySqlHandler;
+
 /** Automatically selects the right DB handler from options
  *
- * @param Options $obj_OptionHandler
+ * @param \Gawain\Classes\Misc\Options $obj_OptionHandler
  *
- * @return dbHandler
+ * @return \Gawain\Abstracts\Database\DbHandler
  */
 function db_autodefine($obj_OptionHandler)
 {
@@ -32,7 +36,7 @@ function db_autodefine($obj_OptionHandler)
     switch ($str_DbType) {
         case 'MySQL':
             require_once(PHP_CLASSES_DIR . 'database/MySqlHandler.php');
-            $obj_Return = new MySqlHandler;
+            $obj_Return = new MySqlHandler();
             break;
 
         default:

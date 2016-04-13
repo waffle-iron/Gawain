@@ -17,10 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Classes\Entities;
+
 require_once(PHP_ABSTRACTS_DIR . 'entities/Entity.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
-require_once(PHP_CLASSES_DIR . 'entities/Activity.php');
 require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
+
+use Gawain\Abstracts\Entities\Entity;
+use Gawain\Classes\Auths\UserAuthManager;
+use Gawain\Functions\StringFunctions;
 
 
 
@@ -150,7 +155,7 @@ class Timeslot extends Entity
      * @param null   $int_TaskID
      *
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function getCurrentUserEntries($mix_Limits = 'this_month', $int_ActivityID = null, $int_TaskID = null)
     {
@@ -172,7 +177,7 @@ class Timeslot extends Entity
      * @param null   $int_TaskID
      *
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function getUsersEntries($arr_Users, $mix_Limits = 'this_month', $int_ActivityID = null, $int_TaskID = null)
     {
@@ -189,7 +194,7 @@ class Timeslot extends Entity
 
         if (!is_array($mix_Limits)) {
 
-            $date_Today = new DateTime();
+            $date_Today = new \DateTime();
 
             // If the limit parameter is a string, interpret the string and add condition
             switch ($mix_Limits) {
