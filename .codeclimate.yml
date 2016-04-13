@@ -26,3 +26,4 @@ exclude_paths:
   - "common/css/Themes/**"
   - "common/php/vendor/**"
   - "common/js/vendor/**"
+  - "tests/**"
