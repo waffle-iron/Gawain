@@ -34,8 +34,8 @@ class Jierarchy
      */
     public function __construct($str_DepFilePath)
     {
-        $str_JsonCOntent = file_get_contents($str_DepFilePath);
-        $this->depSource = json_decode($str_JsonCOntent, true);
+        $str_JsonContent = file_get_contents($str_DepFilePath);
+        $this->depSource = json_decode($str_JsonContent, true);
     }
 
 
