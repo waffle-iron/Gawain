@@ -26,28 +26,20 @@ require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
 // PSR-0 autoloader registration for the while project
 spl_autoload_register('class_loader');
 
-require_once(PHP_CLASSES_DIR . 'middlewares/CheckAuthenticationMiddleware.php');
-require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
-
-require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
-require_once(PHP_VENDOR_DIR . 'Slim-Views/Twig.php');
-
 Slim::registerAutoloader();
 Twig_Autoloader::register();
-
-require_once(PHP_VENDOR_DIR . 'Slim-Views/TwigExtension.php');
-require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
 
 use Gawain\Classes\Middlewares\CheckAuthenticationMiddleware;
 use Gawain\Classes\Net\Jierarchy;
 use Slim\Slim;
+use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 use Twig_Autoloader;
 
 
 // Creation of Slim app with Twig rendering engine
 $app = new Slim(array(
-                          'view' => new \Slim\Views\Twig()
+                          'view' => new Twig()
                       ));
 
 

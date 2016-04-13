@@ -19,8 +19,6 @@
 
 namespace Gawain\Abstracts\Rendering;
 
-require_once(PHP_VENDOR_DIR . 'Twig/Autoloader.php');
-
 
 /**
  * Class Renderer

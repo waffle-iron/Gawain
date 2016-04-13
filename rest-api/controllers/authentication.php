@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
+use Gawain\Classes\Auths\UserAuthManager;
 
 
 $obj_UserAuthManager = new UserAuthManager($app->request->getIp());
@@ -47,8 +47,6 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
 
 
     $app->post('/login', function () use ($app, $obj_UserAuthManager) {
-
-        $str_Body = $app->request->getBody();
 
         $str_SessionID = $app->getCookie('GawainSessionID');
         $int_SelectedCustomer = $app->request->post('selectedCustomer');

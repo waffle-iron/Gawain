@@ -19,8 +19,6 @@
 
 namespace Gawain\Classes\Rendering;
 
-require_once(PHP_ABSTRACTS_DIR . 'rendering/Renderer.php');
-
 use Gawain\Abstracts\Rendering\Renderer;
 
 

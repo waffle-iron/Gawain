@@ -18,7 +18,6 @@
  */
 
 require_once(COMMON_DIR . 'templates/html/Default/page_navbar.php');
-require_once(PHP_CLASSES_DIR . 'entities/Activity.php');
 
 use Gawain\Classes\Entities\Activity;
 use Gawain\Classes\Entities\Timeslot;

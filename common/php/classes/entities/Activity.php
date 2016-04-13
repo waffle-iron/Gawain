@@ -19,9 +19,6 @@
 
 namespace Gawain\Classes\Entities;
 
-require_once(PHP_ABSTRACTS_DIR . 'entities/Entity.php');
-require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
-
 use Gawain\Abstracts\Entities\Entity;
 use Gawain\Functions\StringFunctions;
 

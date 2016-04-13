@@ -19,8 +19,6 @@
 
 namespace Gawain\Abstracts\Database;
 
-require_once(PHP_CLASSES_DIR . 'misc/Options.php');
-
 use Gawain\Classes\Misc\Options;
 
 /**

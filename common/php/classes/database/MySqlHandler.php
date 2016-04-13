@@ -19,9 +19,6 @@
 
 namespace Gawain\Classes\Database;
 
-require_once(PHP_CLASSES_DIR . 'misc/Options.php');
-require_once(PHP_ABSTRACTS_DIR . 'database/DbHandler.php');
-
 use Gawain\Abstracts\Database\DbHandler;
 
 /** Manages MySQL connections using MySQL native driver

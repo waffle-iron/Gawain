@@ -18,7 +18,6 @@
  */
 
 require_once(COMMON_DIR . 'templates/html/Default/page_navbar.php');
-require_once(PHP_CLASSES_DIR . 'entities/Timeslot.php');
 
 
 // Get session ID

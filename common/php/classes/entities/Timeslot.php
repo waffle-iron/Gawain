@@ -19,10 +19,6 @@
 
 namespace Gawain\Classes\Entities;
 
-require_once(PHP_ABSTRACTS_DIR . 'entities/Entity.php');
-require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
-require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
-
 use Gawain\Abstracts\Entities\Entity;
 use Gawain\Classes\Auths\UserAuthManager;
 use Gawain\Functions\StringFunctions;

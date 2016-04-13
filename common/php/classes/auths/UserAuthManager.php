@@ -19,10 +19,6 @@
 
 namespace Gawain\Classes\Auths;
 
-require_once(PHP_CLASSES_DIR . 'misc/Options.php');
-require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
-require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
-
 use Gawain\Classes\Misc\Options;
 use Gawain\Functions\StringFunctions;
 use Gawain\Functions\Autodefiners;

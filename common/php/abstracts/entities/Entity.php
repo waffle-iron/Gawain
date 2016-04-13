@@ -19,12 +19,9 @@
 
 namespace Gawain\Abstracts\Entities;
 
-require_once(PHP_CLASSES_DIR . 'misc/Options.php');
-require_once(PHP_VENDOR_DIR . 'PHPColors/Color.php');
-require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
-
 use Gawain\Classes\Misc\Options;
 use Gawain\Functions\Autodefiners;
+use \Gawain\Functions\StringFunctions;
 use PHPColors\Color;
 
 
@@ -313,7 +310,7 @@ abstract class Entity
                                                                                                                                                                                                                                                         $arr_SkipReferentialsFor)
                 ) {
 
-                    $str_Random = generate_random_string();
+                    $str_Random = StringFunctions\generate_random_string();
 
                     $arr_Joins[] = array(
                         'table' => $arr_FieldEntry['referentialTableName'],
@@ -489,7 +486,7 @@ abstract class Entity
      *
      * @param array $arr_DataRows
      *
-     * @throws Exception
+     * @throws \Exception
      * @return boolean
      */
     public function insert($arr_DataRows)
@@ -507,7 +504,7 @@ abstract class Entity
         $arr_AvailableFields = array_keys($this->availableFields);
 
         if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
-            throw new Exception('Invalid fields in insert statement');
+            throw new \Exception('Invalid fields in insert statement');
 
         } else {
             // Compose the insert statement
@@ -553,7 +550,7 @@ abstract class Entity
      * @param array $arr_Wheres
      * @param array $arr_DataRows
      *
-     * @throws Exception
+     * @throws \Exception
      * @return boolean
      */
     public function update($arr_Wheres, $arr_DataRows)
@@ -582,7 +579,7 @@ abstract class Entity
         $arr_AvailableFields = array_keys($this->availableFields);
 
         if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
-            throw new Exception('Invalid fields in insert statement');
+            throw new \Exception('Invalid fields in insert statement');
 
         } else {
 

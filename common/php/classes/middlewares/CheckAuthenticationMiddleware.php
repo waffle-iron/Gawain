@@ -19,9 +19,6 @@
 
 namespace Gawain\Classes\Middlewares;
 
-require_once(PHP_CLASSES_DIR . 'auths/UserAuthManager.php');
-require_once(PHP_VENDOR_DIR . 'Slim/Slim.php');
-
 use Slim\Middleware;
 use Slim\Slim;
 use Gawain\Classes\Auths\UserAuthManager;
