@@ -20,6 +20,7 @@
 namespace Gawain\Functions\Autodefiners;
 
 use Gawain\Classes\Database\MySqlHandler;
+use Gawain\Functions\StringFunctions;
 
 /** Automatically selects the right DB handler from options
  *
@@ -45,4 +46,35 @@ function db_autodefine($obj_OptionHandler)
     }
 
     return $obj_Return;
+}
+
+
+/** PSR-0 class loader for Gawain
+ *  Automatically parses PHP files in common/php dir and loads the requested class on demand
+ *
+ * @param $str_ClassName
+ *
+ * @throws \Exception
+ */
+function class_loader($str_ClassName)
+{
+    $obj_Rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(PHP_DIR));
+
+    $arr_Files = array();
+
+    foreach ($obj_Rii as $obj_File) {
+        if (!$obj_File->isDir()) {
+            $arr_PathInfo = pathinfo($obj_File->getPathname());
+
+            if ($arr_PathInfo['extension'] == 'php') {
+                $arr_Files[$arr_PathInfo['filename']] = $obj_File->getPathname();
+            }
+        }
+    }
+
+    if (in_array($str_ClassName, array_keys($arr_Files))) {
+        require $arr_Files[$str_ClassName];
+    } else {
+        throw new \Exception('CLass does not exist');
+    }
 }
