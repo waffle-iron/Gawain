@@ -17,7 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Abstracts\Database;
+
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
+
+use Gawain\Classes\Misc\Options;
 
 /**
  * Class DbHandler
@@ -52,7 +56,7 @@ abstract class DbHandler
 
 
     /**
-     * @var stdClass Connection Handler
+     * @var \stdClass Connection Handler
      */
     protected $handler;
 

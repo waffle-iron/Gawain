@@ -17,9 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Classes\Auths;
+
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
+
+use Gawain\Classes\Misc\Options;
+use Gawain\Functions\StringFunctions;
+use Gawain\Functions\Autodefiners;
 
 /**
  * Class UserAuthManager
@@ -36,13 +42,13 @@ class UserAuthManager
 
 
     /** DB handler
-     * @var dbHandler
+     * @var \Gawain\Abstracts\Database\DbHandler
      */
     private $dbHandler;
 
 
     /** Options
-     * @var Options
+     * @var \Gawain\Classes\Misc\Options
      */
     private $options;
 
@@ -55,7 +61,7 @@ class UserAuthManager
     {
         $this->hostName = $str_Host;
         $this->options = new Options();
-        $this->dbHandler = db_autodefine($this->options);
+        $this->dbHandler = Autodefiners\db_autodefine($this->options);
     }
 
 
@@ -64,7 +70,7 @@ class UserAuthManager
      * @param string $str_UserNick
      * @param string $str_PasswordHash
      *
-     * @throws Exception
+     * @throws \Exception
      * @return array
      */
     public function authenticate($str_UserNick, $str_PasswordHash)
@@ -81,19 +87,19 @@ class UserAuthManager
         ));
 
         if (count($obj_Resultset) == 0) {
-            throw new Exception('User does not exist');
+            throw new \Exception('User does not exist');
 
         } elseif ($str_UserNick === null) {
-            throw new Exception('User not defined');
+            throw new \Exception('User not defined');
 
         } elseif (count($obj_Resultset) > 1) {
-            throw new Exception('Multiple user returned');
+            throw new \Exception('Multiple user returned');
 
         } elseif ($obj_Resultset[0]['userIsActive'] = 0) {
-            throw new Exception('User is not active');
+            throw new \Exception('User is not active');
 
         } elseif (strtoupper($obj_Resultset[0]['userPassword']) != strtoupper($str_PasswordHash)) {
-            throw new Exception('Wrong username or password');
+            throw new \Exception('Wrong username or password');
 
         } else {
             $str_SessionID = $this->generateSessionID();
@@ -301,7 +307,7 @@ class UserAuthManager
      * @param string  $str_ModuleCode
      * @param integer $int_RequiredPermission
      *
-     * @throws Exception
+     * @throws \Exception
      * @return boolean
      */
     public function hasGrants($str_SessionID, $str_ModuleCode, $int_RequiredPermission = 0)
@@ -338,7 +344,7 @@ class UserAuthManager
                 return false;
             }
         } else {
-            throw new Exception('Invalid request');
+            throw new \Exception('Invalid request');
         }
     }
 
@@ -439,7 +445,7 @@ class UserAuthManager
      * @param string $str_SessionID
      *
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public function getCurrentUserNick($str_SessionID)
     {
@@ -456,7 +462,7 @@ class UserAuthManager
         if (count($obj_Resultset) == 1) {
             return $obj_Resultset[0]['userNick'];
         } else {
-            throw new Exception('Non-unique session');
+            throw new \Exception('Non-unique session');
         }
 
     }

@@ -17,8 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Classes\Entities;
+
 require_once(PHP_ABSTRACTS_DIR . 'entities/Entity.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
+
+use Gawain\Abstracts\Entities\Entity;
+use Gawain\Functions\StringFunctions;
 
 /**
  * Class Activity
@@ -395,7 +400,7 @@ class Activity extends Entity
 
         // TODO: add retrieval of milestone events
 
-        return array2xml($arr_GanttData, 'project');
+        return StringFunctions\array2xml($arr_GanttData, 'project');
 
     }
 

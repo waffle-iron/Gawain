@@ -17,9 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace Gawain\Classes\Misc;
+
 require_once(PHP_CLASSES_DIR . '/misc/Options.php');
 require_once(PHP_FUNCTIONS_DIR . 'string_functions.php');
 require_once(PHP_FUNCTIONS_DIR . 'autodefiners.php');
+
+use Gawain\Classes\Misc\Options;
+use Gawain\Functions\StringFunctions;
+use Gawain\Functions\Autodefiners;
 
 /**
  * Class Logger
@@ -35,7 +41,7 @@ class Logger
 
     /** DB handler
      *
-     * @var dbHandler
+     * @var \Gawain\Abstracts\Database\DbHandler
      */
     private $dbHandler;
 
@@ -83,7 +89,7 @@ class Logger
     public function __construct($str_Entity, $str_Module = null)
     {
         $this->options = new Options();
-        $this->dbHandler = db_autodefine($this->options);
+        $this->dbHandler = Autodefiners\db_autodefine($this->options);
 
         $this->logTableName = $this->options->get('log_table');
         $this->logLevel = $this->options->get('default_log_level');
@@ -96,14 +102,14 @@ class Logger
      *
      * @param string $str_LogLevel
      *
-     * @throws Exception
+     * @throws \Exception
      * @return boolean
      */
     public function setLogLevel($str_LogLevel)
     {
 
         if (!in_array($str_LogLevel, $this->logLevelsList)) {
-            throw new Exception('Invalid log level');
+            throw new \Exception('Invalid log level');
         } else {
             $this->logLevel = $str_LogLevel;
 
@@ -129,7 +135,7 @@ class Logger
                                                                           $this->logLevelsList) <= array_search($this->logLevel,
                                                                                                                 $this->logLevelsList)
         ) {
-            $str_Timestamp = get_timestamp();
+            $str_Timestamp = StringFunctions\get_timestamp();
             $arr_InsertValues = array(
                 array($str_Timestamp => 's'),
                 array($str_LogLevel => 's'),
