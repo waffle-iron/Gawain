@@ -19,7 +19,7 @@
 
 namespace tests\config_files;
 
-require_once('../../common/php/constants/global_defines.php');
+require_once('common/php/constants/global_defines.php');
 
 
 class i18n_consistency extends \PHPUnit_Framework_TestCase
