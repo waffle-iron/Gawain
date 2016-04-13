@@ -21,9 +21,7 @@ namespace Gawain\Abstracts\Entities;
 
 use Gawain\Classes\Misc\Options;
 use Gawain\Functions\Autodefiners;
-use \Gawain\Functions\StringFunctions;
-use PHPColors\Color;
-
+use Gawain\Functions\StringFunctions;
 
 /**
  * Class from which derives all the other entities defined in Gawain.
@@ -37,66 +35,55 @@ abstract class Entity
      */
     protected $type;
 
-
     /** Reference entity label
      * @var string
      */
     protected $label;
-
 
     /** Reference entity item label
      * @var string
      */
     protected $itemLabel;
 
-
     /** Entity main ID field
      * @var string
      */
     protected $primaryKey;
-
 
     /** Entity reference table
      * @var string
      */
     protected $referenceTable;
 
-
     /** Entity domain dependency column
      * @var string
      */
     protected $domainDependencyColumn;
-
 
     /** All available fields for selected entity
      * @var array
      */
     protected $availableFields;
 
-
     /** Current domain ID
      * @var integer
      */
     protected $domainID;
-
 
     /** Session code
      * @var string
      */
     protected $sessionID;
 
-
     /** Database Hanlder
      * @var \Gawain\Abstracts\Database\DbHandler
      */
     protected $dbHandler;
 
-
     /** Options
      * @var Options
      */
     protected $options;
-
 
     /** Constructor
      *
@@ -110,14 +97,11 @@ abstract class Entity
         $this->options = new Options();
         $this->dbHandler = db_autodefine($this->options);
 
-
         // Sets remaining fields
         $this->getCurrentCustomer();
         $this->getEntityInfo();
         $this->getAvailableFields();
-
     }
-
 
     /** Get current customer ID
      *
@@ -135,9 +119,7 @@ abstract class Entity
         ));
 
         $this->domainID = $arr_Result[0]['customerID'];
-
     }
-
 
     /** Get entity info
      *
@@ -167,7 +149,6 @@ abstract class Entity
         $this->referenceTable = isset($obj_Result[0]['entityReferenceTable']) ? $obj_Result[0]['entityReferenceTable'] : null;
         $this->domainDependencyColumn = isset($obj_Result[0]['entityDomainDependencyColumnName']) ? $obj_Result[0]['entityDomainDependencyColumnName'] : null;
     }
-
 
     /** Get all the available fields for selected entity
      *
@@ -203,7 +184,6 @@ abstract class Entity
             array($this->type => 's')
         ));
 
-
         // Parsing entity fields info
         foreach ($obj_Result as $obj_ResultEntry) {
             $this->availableFields[$obj_ResultEntry['columnName']]['isAutoIncrement'] = (boolean)$obj_ResultEntry['fieldIsAutoIncrement'];
@@ -222,12 +202,10 @@ abstract class Entity
             $this->availableFields[$obj_ResultEntry['columnName']]['label'] = $obj_ResultEntry['fieldLabel'];
             $this->availableFields[$obj_ResultEntry['columnName']]['orderingIndex'] = $obj_ResultEntry['fieldOrderingIndex'];
 
-
             // Search for entity primary key
             if ($obj_ResultEntry['fieldIsMainID'] == 1) {
                 $this->primaryKey = $obj_ResultEntry['columnName'];
             }
-
 
             // Additional info about referentials
             if ($obj_ResultEntry['referentialJoinType'] !== null) {
@@ -238,11 +216,9 @@ abstract class Entity
                     $arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, array(
                         array($this->domainID => 'i')
                     ));
-
                 } else {
                     $arr_Resultset = $this->dbHandler->executePrepared($str_ReferentialFieldsQuery, null);
                 }
-
 
                 $arr_Referentials = array();
 
@@ -254,11 +230,8 @@ abstract class Entity
             } else {
                 $this->availableFields[$obj_ResultEntry['columnName']]['referentials'] = null;
             }
-
         }
-
     }
-
 
     /** Reads data
      *
@@ -333,12 +306,10 @@ abstract class Entity
                     $arr_SelectFields[] = $this->referenceTable . '.' . $str_FieldName;
                 }
             }
-
         }
 
         // In any case, always add main ID as first field
         array_unshift($arr_SelectFields, $this->referenceTable . '.' . $this->primaryKey . ' as _entityMainID');
-
 
         $str_QueryString = 'select ' . PHP_EOL;
         $str_QueryString .= implode(', ' . PHP_EOL, $arr_SelectFields) . PHP_EOL;
@@ -349,7 +320,6 @@ abstract class Entity
         } else {
             $str_QueryString .= 'from ' . $this->referenceTable . PHP_EOL;
         }
-
 
         // Create join part
         $str_JoinString = '';
@@ -367,21 +337,17 @@ abstract class Entity
 
         $str_QueryString .= $str_JoinString;
 
-
         // Chains all the input where conditions
         $arr_WhereOutput = $this->parseWhereArray($arr_Wheres);
 
         $str_QueryString .= $arr_WhereOutput['query'];
         $arr_Parameters = $arr_WhereOutput['parameters'];
 
-
         // Execute the query and get raw data
         $arr_GetResult = $this->dbHandler->executePrepared($str_QueryString, $arr_Parameters);
         $arr_Dataset = $this->reformatResultset($arr_GetResult, '_entityMainID');
 
-
         return $arr_Dataset;
-
     }
 
     /** Parses Where array to compose a well formed Where condition
@@ -426,7 +392,6 @@ abstract class Entity
             $str_QueryString = ' where ' . implode(' and ', $arr_WhereFields);
 
             $str_QueryString .= ' and ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->domainID;
-
         } else {
             $arr_Parameters = null;
             $str_QueryString = ' where ' . $this->referenceTable . '.' . $this->domainDependencyColumn . ' = ' . $this->domainID;
@@ -473,11 +438,9 @@ abstract class Entity
 
                 $arr_Dataset[$str_MainID] = $arr_GetRow;
             }
-
         }
 
         return $arr_Dataset;
-
     }
 
     /**
@@ -498,14 +461,12 @@ abstract class Entity
         }
         $arr_DataRows[$this->domainDependencyColumn] = $this->domainID;
 
-
         // First, check if the proposed datarows keys are contained in entity available fields
         $arr_DataRowsFields = array_keys($arr_DataRows);
         $arr_AvailableFields = array_keys($this->availableFields);
 
         if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
             throw new \Exception('Invalid fields in insert statement');
-
         } else {
             // Compose the insert statement
             $str_Query = 'insert into ' . $this->referenceTable . PHP_EOL;
@@ -533,16 +494,13 @@ abstract class Entity
                 $arr_Parameters[] = array($arr_ParametersValue[$int_ParameterCounter] => $arr_ParametersType[$int_ParameterCounter]);
             }
 
-
             // Starts transaction and insert data
             $this->dbHandler->beginTransaction();
             $this->dbHandler->executePrepared($str_Query, $arr_Parameters);
             $this->dbHandler->commit();
 
             return true;
-
         }
-
     }
 
     /** Updates existing data
@@ -580,7 +538,6 @@ abstract class Entity
 
         if (sizeof(array_diff($arr_DataRowsFields, $arr_AvailableFields)) > 1) {
             throw new \Exception('Invalid fields in insert statement');
-
         } else {
 
             // Compose the update statement
@@ -597,12 +554,10 @@ abstract class Entity
             $str_Set .= implode(', ', $arr_SetValues);
             $str_Query .= $str_Set;
 
-
             // Create the 'where' part
             $arr_WhereOutput = $this->parseWhereArray($arr_Wheres);
             $str_Where = $arr_WhereOutput['query'];
             $str_Query .= $str_Where;
-
 
             // Create the parameters array
             $arr_PreparedMarks = array();
@@ -621,7 +576,6 @@ abstract class Entity
             }
 
             $arr_Parameters = array_merge($arr_Parameters, $arr_WhereOutput['parameters']);
-
 
             // Perform the update
             $this->dbHandler->beginTransaction();
@@ -704,11 +658,9 @@ abstract class Entity
             }
 
             return $arr_Output;
-
         } else {
             return false;
         }
-
     }
 
     /** Gets information about entity fields (name, format, referentials and so on)

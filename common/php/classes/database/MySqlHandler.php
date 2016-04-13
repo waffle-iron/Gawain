@@ -43,7 +43,6 @@ class MySqlHandler extends DbHandler
             if ($this->handler->connect_error) {
                 throw new \Exception('DB Connection Error');
             }
-
         } catch (\Exception $exception) {
             echo 'Cannot connect to selected DB: ' . $exception->getMessage() . "\n";
         }
@@ -52,10 +51,7 @@ class MySqlHandler extends DbHandler
 
         // Additional lines to prevent wrong rendering of accented characters
         $this->handler->set_charset('utf8');
-
     }
-
-
 
     /** Execute prepared query and output resultset
      *
@@ -70,14 +66,12 @@ class MySqlHandler extends DbHandler
     public function executePrepared($str_Query, $arr_InputParameters)
     {
 
-
         /*
          The input parameters will be formatted in the following way:
          array([0] => array(variable1 => type1), [1] => array(variable2 => type2))
          */
         // Prepare the query
         $obj_Prepared = $this->handler->prepare($str_Query);
-
 
         if (!empty($arr_InputParameters)) {
             // Dynamic values binding
@@ -92,12 +86,10 @@ class MySqlHandler extends DbHandler
                 $arr_InputParametersValue[] = implode('', array_values($arr_InputParameter));
             }
 
-
             for ($int_ParametersCounter = 0; $int_ParametersCounter < sizeof($arr_InputParametersKey); $int_ParametersCounter++) {
                 $arr_ParametersValue[] = &$arr_InputParametersKey[$int_ParametersCounter];
                 $str_ParametersType .= $arr_InputParametersValue[$int_ParametersCounter];
             }
-
 
             $arr_BindArgument = array_merge(array($str_ParametersType), $arr_ParametersValue);
 
@@ -105,7 +97,6 @@ class MySqlHandler extends DbHandler
         }
 
         $obj_Prepared->execute();
-
 
         // Output
         $obj_Resultset = $obj_Prepared->get_result();
@@ -118,11 +109,8 @@ class MySqlHandler extends DbHandler
             $obj_Result = null;
         }
 
-
         return $obj_Result;
-
     }
-
 
     /** Starts a transaction
      *
@@ -132,7 +120,6 @@ class MySqlHandler extends DbHandler
         $this->handler->query('begin transaction');
     }
 
-
     /** Commits a transaction
      *
      */
@@ -141,7 +128,6 @@ class MySqlHandler extends DbHandler
         $this->handler->query('commit');
     }
 
-
     /** Rollback a transaction
      *
      */
@@ -149,7 +135,6 @@ class MySqlHandler extends DbHandler
     {
         $this->handler->query('rollback');
     }
-
 
     /** Destructor
      *

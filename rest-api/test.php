@@ -19,7 +19,6 @@ var_dump($obj_Manager->getCurrentUserEntries(array('from' => '2015-01-01')));
 
 //echo $obj_Logger->log('INFO', 'Testo di prova', 'admin');
 
-
 /*echo $obj_Manager->read(array(
 		'activityID' => array(
 				'operator' => '=',
@@ -34,7 +33,6 @@ var_dump($obj_Manager->getCurrentUserEntries(array('from' => '2015-01-01')));
 		'activityName' => 'Prova inserimento remoto',
 		'activityTypeID' => 1
 ));*/
-
 
 /*echo $obj_Manager->update(array(
 		'activityID' => array(
@@ -59,6 +57,5 @@ var_dump($obj_Manager->getCurrentUserEntries(array('from' => '2015-01-01')));
 					)
 			)
 	))*/
-
 
 ?>

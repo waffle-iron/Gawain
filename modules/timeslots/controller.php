@@ -19,10 +19,8 @@
 
 require_once(COMMON_DIR . 'templates/html/Default/page_navbar.php');
 
-
 // Get session ID
 $str_SessionID = $app->getCookie('GawainSessionID');
-
 
 $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -41,10 +39,8 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
                                                          'TinyColor'
                                                      ));
 
-
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, 'timeslots');
-
 
         // Timeslot object declaration and usage
         $obj_Timeslot = new Timeslot($str_SessionID);
@@ -64,19 +60,15 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
             $arr_CurrentUserTimeslots = $obj_Timeslot->getCurrentUserEntries();
         }
 
-
         // Group timeslots by date
         $arr_DateGroupedTimeslots = $obj_Timeslot::groupTimeslotsByDate($arr_CurrentUserTimeslots);
-
 
         // Group timeslots by activity and task
         $arr_ActivityGroupedTimeslots = $obj_Timeslot::groupTimeslotsByActivity($arr_CurrentUserTimeslots);
 
-
         $arr_TimeslotFields = $obj_Timeslot->getFieldsData();
         $str_ModuleLabel = $obj_Timeslot->getLabel();
         $str_ItemLabel = $obj_Timeslot->getItemLabel();
-
 
         // Pepare view variables
         $app->view()->set('page_dependencies', $arr_PageDependencies);
@@ -90,13 +82,10 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('from', $str_TimeslotFrom);
         $app->view()->set('to', $str_TimeslotTo);
 
-
         // Renders the page
         $loader->addPath(MODULES_DIR . 'timeslots/templates/html/Default');
         $app->render('webpage_user_timeslots.twig');
-
     })->name('timeslots');
-
 
     $app->get('/new', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -125,7 +114,6 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $str_ModuleLabel = $obj_Timeslot->getLabel();
         $str_ItemLabel = $obj_Timeslot->getItemLabel();
 
-
         // Prepare the view
         $app->view()->set('page_dependencies', $arr_PageDependencies);
         $app->view()->set('navbar_data', $arr_NavbarData);
@@ -136,19 +124,15 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
         $app->view()->set('main_ID', $str_MainID);
 
-
         // Action switch to define the view once and use it for edit and creation
         $app->view()->set('page_action', 'new');
         $app->view()->set('entity_new_save_link_name', 'timeslot_new_save');
         $app->view()->set('entity_edit_save_link_name', 'timeslot_edit_save');
 
-
         // Renders the page
         $loader->addPath(COMMON_DIR . 'templates/html/Default');
         $app->render('single_entity_new_edit.twig');
-
     })->name('timeslot_new');
-
 
     $app->post('/new/save', function () use ($app, $str_SessionID) {
 
@@ -173,9 +157,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         // Save activity data
         $obj_Timeslot->insert($arr_PostVariables);
         $app->redirect($app->urlFor('timeslots'));
-
     })->name('timeslot_new_save');
-
 
     $app->get('/:timeslotID/edit', function ($timeslotID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -192,7 +174,6 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
 
-
         $obj_Timeslot = new Timeslot($str_SessionID);
         $arr_TimeslotData = $obj_Timeslot->read($timeslotID);
         $arr_TimeslotFields = $obj_Timeslot->getFieldsData();
@@ -200,7 +181,6 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $str_MainID = $obj_Timeslot->getPrimaryKey();
         $str_ModuleLabel = $obj_Timeslot->getLabel();
         $str_ItemLabel = $obj_Timeslot->getItemLabel();
-
 
         // Prepare the view
         $app->view()->set('page_dependencies', $arr_PageDependencies);
@@ -213,19 +193,15 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('main_ID', $str_MainID);
         $app->view()->set('entity_ID', $timeslotID);
 
-
         // Action switch to define the view once and use it for edit and creation
         $app->view()->set('page_action', 'edit');
         $app->view()->set('entity_new_save_link_name', 'timeslot_new_save');
         $app->view()->set('entity_edit_save_link_name', 'timeslot_edit_save');
 
-
         // Renders the page
         $loader->addPath(COMMON_DIR . 'templates/html/Default');
         $app->render('single_entity_new_edit.twig');
-
     })->conditions(array('timeslotID' => '\d+'))->name('timeslot_edit');
-
 
     $app->post('/:ID/save', function ($ID) use ($app, $str_SessionID) {
 
@@ -243,9 +219,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         // Save activity data
         $obj_Timeslot->update($ID, $arr_PostVariables);
         $app->redirect($app->urlFor('timeslots'));
-
     })->conditions(array('ID' => '\d+'))->name('timeslot_edit_save');
-
 
     $app->post('/delete', function () use ($app, $str_SessionID) {
 
@@ -255,7 +229,5 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
             $obj_Timeslot->delete($int_TimeslotID);
         }
         $app->redirect($app->urlFor('timeslots'));
-
     })->name('timeslot_delete');
-
 });

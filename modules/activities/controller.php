@@ -22,10 +22,8 @@ require_once(COMMON_DIR . 'templates/html/Default/page_navbar.php');
 use Gawain\Classes\Entities\Activity;
 use Gawain\Classes\Entities\Timeslot;
 
-
 // Get session ID
 $str_SessionID = $app->getCookie('GawainSessionID');
-
 
 $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -45,10 +43,8 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
                                                          'TinyColor'
                                                      ));
 
-
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, 'activities');
-
 
         // Activity object declaration and usage
         $obj_Activity = new Activity($str_SessionID);
@@ -58,10 +54,8 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $str_ItemLabel = $obj_Activity->getItemLabel();
         $arr_ActivityTypes = $obj_Activity->getActivityTypes();
 
-
         // Prepare Gantt chart data outside the template
         $str_GanttXML = $obj_Activity->getGanttData();
-
 
         // Prepare the view
         $app->view()->set('page_dependencies', $arr_PageDependencies);
@@ -73,13 +67,10 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $app->view()->set('module_item_label', $str_ItemLabel);
         $app->view()->set('gantt_data', str_replace('\'', '\\\'', $str_GanttXML));
 
-
         // Renders the page
         $loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
         $app->render('webpage_all.twig');
-
     })->name('activities');
-
 
     $app->get('/:activityID', function ($activityID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -96,10 +87,8 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
                                                          'font-awesome'
                                                      ));
 
-
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
-
 
         //Activity object declaration and usage
         $obj_Activity = new Activity($str_SessionID);
@@ -111,12 +100,10 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         // Prepare Gantt chart data outside the template
         $str_GanttXML = $obj_Activity->getGanttData($activityID);
 
-
         // Resources and timeslots
         $obj_Timeslot = new Timeslot($str_SessionID);
         $arr_ActivityTimeslots = $obj_Timeslot::groupTimeslotsByUser($obj_Timeslot->getUsersEntries(null, 'all',
-                                                                                                        $activityID));
-
+                                                                                                    $activityID));
 
         // Prepare the view
         // Dashboard data
@@ -137,9 +124,7 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         // Renders the page
         $loader->addPath(MODULES_DIR . 'activities/templates/html/Default');
         $app->render('webpage_single_show.twig');
-
     })->conditions(array('activityID' => '\d+'))->name('activity_show');
-
 
     $app->get('/new', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -168,10 +153,8 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $str_ModuleLabel = $obj_Activity->getLabel();
         $str_ItemLabel = $obj_Activity->getItemLabel();
 
-
         // If the type is specified in the request, the field is automatically populated, else it is empty
         $int_ActivityTypeID = $app->request->get('activityType');
-
 
         // Prepare the view
         $app->view()->set('page_dependencies', $arr_PageDependencies);
@@ -184,19 +167,15 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
         $app->view()->set('main_ID', $str_MainID);
 
-
         // Action switch to define the view once and use it for edit and creation
         $app->view()->set('page_action', 'new');
         $app->view()->set('entity_new_save_link_name', 'activity_new_save');
         $app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
-
         // Renders the page
         $loader->addPath(COMMON_DIR . 'templates/html/Default');
         $app->render('single_entity_new_edit.twig');
-
     })->name('activity_new');
-
 
     $app->post('/new/save', function () use ($app, $str_SessionID) {
 
@@ -221,9 +200,7 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         // Save activity data
         $obj_Activity->insert($arr_PostVariables);
         $app->redirect($app->urlFor('activities'));
-
     })->name('activity_new_save');
-
 
     $app->get('/:activityID/edit', function ($activityID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
 
@@ -240,7 +217,6 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         // Navbar data declaration
         $arr_NavbarData = common\page_navbar\data_source($str_SessionID, null);
 
-
         $obj_Activity = new Activity($str_SessionID);
         $arr_ActivityData = $obj_Activity->read($activityID);
         $arr_ActivityFields = $obj_Activity->getFieldsData();
@@ -248,7 +224,6 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $str_MainID = $obj_Activity->getPrimaryKey();
         $str_ModuleLabel = $obj_Activity->getLabel();
         $str_ItemLabel = $obj_Activity->getItemLabel();
-
 
         // Prepare the view
         $app->view()->set('page_dependencies', $arr_PageDependencies);
@@ -261,19 +236,15 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         $app->view()->set('main_ID', $str_MainID);
         $app->view()->set('entity_ID', $activityID);
 
-
         // Action switch to define the view once and use it for edit and creation
         $app->view()->set('page_action', 'edit');
         $app->view()->set('entity_new_save_link_name', 'activity_new_save');
         $app->view()->set('entity_edit_save_link_name', 'activity_edit_save');
 
-
         // Renders the page
         $loader->addPath(COMMON_DIR . 'templates/html/Default');
         $app->render('single_entity_new_edit.twig');
-
     })->conditions(array('activityID' => '\d+'))->name('activity_edit');
-
 
     $app->post('/:ID/save', function ($ID) use ($app, $str_SessionID) {
 
@@ -291,9 +262,7 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
         // Save activity data
         $obj_Activity->update($ID, $arr_PostVariables);
         $app->redirect($app->urlFor('activity_show', array('activityID' => $ID)));
-
     })->conditions(array('ID' => '\d+'))->name('activity_edit_save');
-
 
     $app->post('/delete', function () use ($app, $str_SessionID) {
 
@@ -303,7 +272,5 @@ $app->group('/activities', function () use ($app, $loader, $obj_Jierarchy, $str_
             $obj_Activity->delete($int_ActivityID);
         }
         $app->redirect($app->urlFor('activities'));
-
     })->name('activity_delete');
-
 });

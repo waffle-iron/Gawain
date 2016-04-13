@@ -19,12 +19,11 @@
 
 namespace Gawain\Classes\Middlewares;
 
+use Gawain\Classes\Auths\UserAuthManager;
 use Slim\Middleware;
 use Slim\Slim;
-use Gawain\Classes\Auths\UserAuthManager;
 
 Slim::registerAutoloader();
-
 
 class CheckAuthenticationMiddleware extends Middleware
 {
@@ -35,13 +34,11 @@ class CheckAuthenticationMiddleware extends Middleware
         // Get reference to application
         $app = $this->app;
 
-
         // List of exceptions that needs to pass through the check
         $arr_RoutesExceptions = array(
             'login',
             'authentication'
         );
-
 
         // Check if the current request is the list of exceptions... in this case pass through the middleware
         foreach ($arr_RoutesExceptions as $str_RouteException) {
@@ -57,10 +54,8 @@ class CheckAuthenticationMiddleware extends Middleware
 
         $obj_AuthManager = new UserAuthManager($app->request->getHost());
 
-
         // Check if path is part of REST API, in this case no redirect is performed but only a halt
         $bool_IsApi = strpos($this->app->request()->getPathInfo(), 'rest-api') !== false;
-
 
         // If cookie is null, redirects to login
         if (is_null($str_SessionCookie)) {
@@ -78,7 +73,6 @@ class CheckAuthenticationMiddleware extends Middleware
         } else {
             $this->next->call();
         }
-
     }
 
 }

@@ -21,7 +21,6 @@ namespace Gawain\Classes\Rendering;
 
 use Gawain\Abstracts\Rendering\Renderer;
 
-
 class HtmlRenderer extends Renderer
 {
 
@@ -33,13 +32,11 @@ class HtmlRenderer extends Renderer
         parent::__construct();
     }
 
-
     public function render()
     {
 
         // Simply outputs the rendered code
         return $this->basicRender();
-
     }
 
 }

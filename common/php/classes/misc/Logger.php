@@ -19,9 +19,8 @@
 
 namespace Gawain\Classes\Misc;
 
-use Gawain\Classes\Misc\Options;
-use Gawain\Functions\StringFunctions;
 use Gawain\Functions\Autodefiners;
+use Gawain\Functions\StringFunctions;
 
 /**
  * Class Logger
@@ -76,7 +75,6 @@ class Logger
      */
     private $module;
 
-
     /** Constructor
      *
      * @param string $str_Entity
@@ -92,7 +90,6 @@ class Logger
         $this->entity = $str_Entity;
         $this->module = $str_Module;
     }
-
 
     /** Manually sets and override default log level
      *
@@ -112,7 +109,6 @@ class Logger
             return true;
         }
     }
-
 
     /** Inserts a log entry
      *
@@ -168,7 +164,6 @@ class Logger
         } else {
             return false;
         }
-
     }
 
 }

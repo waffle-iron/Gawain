@@ -42,7 +42,6 @@ class Activity extends Entity
         parent::__construct($str_SessionID);
     }
 
-
     /** Reads the given activity
      *  This method overrides the default abstract Entity method
      *  by adding automatic calculation of parameters without the need to manually substitute data
@@ -57,7 +56,6 @@ class Activity extends Entity
 
         // Apply parent method to get raw data
         $arr_Dataset = parent::read($arr_Wheres, $arr_SkipReferentialsFor);
-
 
         // Override raw values with calculated ones
         $arr_ActivityIDs = array_keys($arr_Dataset);
@@ -98,15 +96,12 @@ class Activity extends Entity
             array($int_ActivityID => 'i')
         ));
 
-
         $dbl_Effort = null;
-
 
         if (!(boolean)$obj_Resultset[0]['isAuto']) {
 
             // If a value is present and the Aut flag si false, simply return the overridden value
             $dbl_Effort = is_null($obj_Resultset[0]['effort']) ? 0 : floatval($obj_Resultset[0]['effort']);
-
         } else {
 
             // If the Auto flag is set to True, the effort is recursively calculated from the child tasks
@@ -126,12 +121,10 @@ class Activity extends Entity
                 array($int_ActivityID => 'i')
             ));
 
-
             if (count($obj_ResultsetChild) == 0) {
 
                 // If no child is found, return zero
                 $dbl_Effort = 0;
-
             } else {
 
                 // If children are found, for each of them repeat the procedure and get the effort
@@ -143,14 +136,10 @@ class Activity extends Entity
 
                 // The final effort is the sum of the children's effort
                 $dbl_Effort = array_sum($arr_ChildEffort);
-
             }
-
         }
 
-
         return $dbl_Effort;
-
     }
 
     /** Calculates activity completion based on activity timeslots.
@@ -182,14 +171,12 @@ class Activity extends Entity
             array($int_ActivityID => 'i')
         ));
 
-
         $dbl_Completion = null;
 
         if (!(boolean)$obj_Resultset[0]['isAuto']) {
 
             // If Auto flag is set to False, the saved value is returned
             $dbl_Completion = is_null($obj_Resultset[0]['completion']) ? 0 : floatval($obj_Resultset[0]['completion']);
-
         } else {
 
             // Get activity's whole timeslots and estimated effort
@@ -202,12 +189,9 @@ class Activity extends Entity
             } else {
                 $dbl_Completion = 0;
             }
-
         }
 
-
         return $dbl_Completion;
-
     }
 
     /** Gets the current activity's timeslot hours, grouped by user.
@@ -245,7 +229,6 @@ class Activity extends Entity
             $arr_TimeslotHours[$arr_Datarow['userName']] = isset($arr_TimeslotHours[$arr_Datarow['userName']]) ? ($arr_TimeslotHours[$arr_Datarow['userName']] + floatval($arr_Datarow['timeslotHours'])) : floatval($arr_Datarow['timeslotHours']);
         }
 
-
         // If the Recursive Mode flag is True, retrieve timeslot hours of the descendants
         if ($bool_RecursiveMode) {
 
@@ -260,12 +243,9 @@ class Activity extends Entity
                     $arr_TimeslotHours[$str_User] = isset($arr_TimeslotHours[$str_User]) ? ($arr_TimeslotHours[$str_User] + floatval($dbl_Hours)) : floatval($dbl_Hours);
                 }
             }
-
         }
 
-
         return $arr_TimeslotHours;
-
     }
 
     /** Gets the child activities of the selected activity
@@ -303,9 +283,7 @@ class Activity extends Entity
             );
         }
 
-
         return $arr_Result;
-
     }
 
     /** Calculates the end date for the given activity, using working days
@@ -337,7 +315,6 @@ class Activity extends Entity
 
         $str_EndDate = null;
 
-
         if ($bool_AdvancedCalculation) {
 
             // Coming soon...
@@ -349,12 +326,9 @@ class Activity extends Entity
             $int_DaysToAdd = round($dbl_EffortHours / 8);
 
             $str_EndDate = date('Y-m-d', strtotime($str_StartDate . ' +' . $int_DaysToAdd . ' Weekday'));
-
         }
 
-
         return $str_EndDate;
-
     }
 
     /** Returns the XML string for Gantt construction
@@ -398,7 +372,6 @@ class Activity extends Entity
         // TODO: add retrieval of milestone events
 
         return StringFunctions\array2xml($arr_GanttData, 'project');
-
     }
 
     /** Gets the activity types for the current domain
@@ -417,7 +390,6 @@ class Activity extends Entity
 			from activity_type
 			where activityTypeCustomerID = ?';
 
-
         $obj_Resultset = $this->dbHandler->executePrepared($str_Query, array(
             array($this->domainID => 'i')
         ));
@@ -431,7 +403,6 @@ class Activity extends Entity
         }
 
         return $arr_Output;
-
     }
 
     /** Private function to compile Gantt data recursively
@@ -474,7 +445,6 @@ class Activity extends Entity
             ));
         }
 
-
         // Fetch result and compose Gantt data array
         foreach ($obj_Resultset as $arr_Datarow) {
 
@@ -493,7 +463,6 @@ class Activity extends Entity
                 'pOpen' => is_null($int_ActivityID) ? 0 : 1
             );
 
-
             if ($int_ActivityID === null) {
                 $arr_ActivityGanttData['pParent'] = is_null($arr_Datarow['activityParentID']) ? -$arr_Datarow['activityTypeID'] : $arr_Datarow['activityParentID'];
             } else {
@@ -504,17 +473,13 @@ class Activity extends Entity
 
             $arr_Output[] = $arr_ActivityGanttData;
 
-
             // Repeat calculation for child activities if activity ID is given
             $arr_ChildActivityIDs = array_keys($arr_ChildActivities);
 
             foreach ($arr_ChildActivityIDs as $int_ChildActivityID) {
                 $this->getGanttDataRecursive($arr_Output, $int_ChildActivityID, true);
             }
-
         }
-
     }
-
 
 }

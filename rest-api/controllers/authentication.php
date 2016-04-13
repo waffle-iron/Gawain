@@ -19,12 +19,9 @@
 
 use Gawain\Classes\Auths\UserAuthManager;
 
-
 $obj_UserAuthManager = new UserAuthManager($app->request->getIp());
 
-
 $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
-
 
     $app->post('/authenticate', function () use ($app, $obj_UserAuthManager) {
 
@@ -34,7 +31,6 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
         $str_Username = $arr_Body['username'];
         $str_Password = $arr_Body['password'];
 
-
         try {
             $arr_Results = $obj_UserAuthManager->authenticate($str_Username, $str_Password);
             $app->setCookie('GawainSessionID', $arr_Results['sessionID'], 0);
@@ -42,9 +38,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
         } catch (Exception $exc) {
             $app->response->setStatus(401);
         }
-
     });
-
 
     $app->post('/login', function () use ($app, $obj_UserAuthManager) {
 
@@ -56,9 +50,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
         } else {
             $app->response->setStatus(403);
         }
-
     });
-
 
     $app->get('/isAuthenticated', function () use ($app, $obj_UserAuthManager) {
 
@@ -67,9 +59,7 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
         } else {
             $app->response->setStatus(401);
         }
-
     });
-
 
     $app->get('/logout', function () use ($app, $obj_UserAuthManager) {
 
@@ -81,7 +71,5 @@ $app->group('/authentication', function () use ($app, $obj_UserAuthManager) {
         } else {
             $app->response->setStatus(403);
         }
-
     })->name('logout');
-
 });

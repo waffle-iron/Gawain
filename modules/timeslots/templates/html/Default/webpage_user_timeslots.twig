@@ -52,10 +52,14 @@
                     <select id="filter" name="filter" class="form-control">
                         <option value="this_day" {% if filter == 'this_day' %}selected{% endif %}>This day</option>
                         <option value="this_week" {% if filter == 'this_week' %}selected{% endif %}>This week</option>
-                        <option value="this_month" {% if filter == 'this_month' or filter is null %}selected{% endif %}>This month</option>
+                        <option value="this_month" {% if filter == 'this_month' or filter is null %}selected{% endif %}>
+                            This month
+                        </option>
                         <option value="this_year" {% if filter == 'this_year' %}selected{% endif %}>This year</option>
                         <option value="all" {% if filter == 'all' %}selected{% endif %}>All entries</option>
-                        <option value="custom_period" {% if filter == 'custom_period' %}selected{% endif %}>Custom period</option>
+                        <option value="custom_period" {% if filter == 'custom_period' %}selected{% endif %}>Custom
+                            period
+                        </option>
                     </select>
                 </div>
 
@@ -68,7 +72,7 @@
                            class="form-control"
                            placeholder="From..."
                            {% if filter != 'custom_period' %}disabled{% endif %}
-                           {% if not from is null %}value="{{ from }}"{% endif %}>
+                            {% if not from is null %}value="{{ from }}"{% endif %}>
                 </div>
 
                 <div class="form-group" id="gawain-timeslots-filter-to"
@@ -80,7 +84,7 @@
                            class="form-control"
                            placeholder="To..."
                            {% if filter != 'custom_period' %}disabled{% endif %}
-                           {% if not to is null %}value="{{ to }}"{% endif %}>
+                            {% if not to is null %}value="{{ to }}"{% endif %}>
                 </div>
 
                 <button type="submit" class="btn btn-success">Apply filter</button>

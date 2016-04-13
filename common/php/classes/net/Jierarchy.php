@@ -27,7 +27,6 @@ class Jierarchy
      */
     private $CssPaths = array();
 
-
     /** Constructor
      *
      * @param string $str_DepFilePath
@@ -37,7 +36,6 @@ class Jierarchy
         $str_JsonContent = file_get_contents($str_DepFilePath);
         $this->depSource = json_decode($str_JsonContent, true);
     }
-
 
     /** Loads the selected file sets into current page by echoing inclusion strings
      *
@@ -53,7 +51,6 @@ class Jierarchy
 
         return $arr_Output;
     }
-
 
     /** Calculates the dependencies of the given file sets
      *
@@ -82,10 +79,8 @@ class Jierarchy
             }
         }
 
-
         // 'Flip flip' method to get a unique array °_°
         $this->JsPaths = array_merge(array_flip(array_flip($this->JsPaths)));
         $this->CssPaths = array_merge(array_flip(array_flip($this->CssPaths)));
-
     }
 }

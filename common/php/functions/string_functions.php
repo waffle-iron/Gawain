@@ -19,11 +19,9 @@
 
 namespace Gawain\Functions\StringFunctions;
 
-
 /**
  * String functions used widely in Gawain
  */
-
 
 /** Generates a random string based on microtime hash
  *
@@ -33,7 +31,6 @@ function generate_random_string()
 {
     return rtrim(base64_encode(md5(microtime())), '=');
 }
-
 
 /** Generates a unique timestamp based on current microtime
  *
@@ -53,7 +50,6 @@ function get_timestamp()
     return $str_Timestamp;
 }
 
-
 /** Converts a given array into XML string
  *
  * @param array  $arr_Array    The input array
@@ -71,13 +67,11 @@ function array2xml($arr_Array, $str_StartTag)
 
     // Outputs the XML string
     return str_replace(PHP_EOL, '', $obj_XML->asXML());
-
 }
-
 
 /** Recursive function to convert array into XML. Internal use only!!
  *
- * @param array            $arr_Data
+ * @param array             $arr_Data
  * @param \SimpleXMLElement $xml_Data
  */
 function _array_to_xml($arr_Data, &$xml_Data)
@@ -94,22 +88,16 @@ function _array_to_xml($arr_Data, &$xml_Data)
                     $xml_Subnode = $xml_Data->addChild($str_Key);
                     _array_to_xml($mix_ValueInner, $xml_Subnode);
                 }
-
             } else {
                 $xml_Subnode = $xml_Data->addChild($str_Key);
                 _array_to_xml($mix_Value, $xml_Subnode);
             }
-
         } else {
 
             $xml_Data->addChild($str_Key, htmlspecialchars($mix_Value));
-
         }
-
     }
-
 }
-
 
 /** Converts an underscore string into a camle case one
  *
@@ -117,7 +105,8 @@ function _array_to_xml($arr_Data, &$xml_Data)
  *
  * @return string
  */
-function underscore2Camelcase($str) {
+function underscore2Camelcase($str)
+{
     // Split string in words.
     $words = explode('_', strtolower($str));
 

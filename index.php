@@ -36,42 +36,34 @@ use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 use Twig_Autoloader;
 
-
 // Creation of Slim app with Twig rendering engine
 $app = new Slim(array(
-                          'view' => new Twig()
-                      ));
-
+                    'view' => new Twig()
+                ));
 
 // Settings
 $app->config(array(
                  'debug' => true
              ));
 
-
 // Adding Twig extensions
 $app->view()->parserExtensions = array(new TwigExtension());
-
 
 // Configure Twig instance
 $app->view()->setTemplatesDirectory(TEMPLATES_DIR . 'html/Default');
 $twig = $app->view()->getEnvironment();
 $loader = $twig->getLoader();
 
-
 // Jierarchy declaration
 $obj_Jierarchy = new Jierarchy(CONFIG_DIR . 'dependencies.json');
 
-
 // Middleware declaration
 $app->add(new CheckAuthenticationMiddleware());
-
 
 // Default routing rule if the simple path is provided
 $app->get('/', function () use ($app) {
     $app->redirect($app->urlFor('loginPage'));
 });
-
 
 // Login route
 $app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
@@ -90,9 +82,7 @@ $app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
 
     $loader->addPath(TEMPLATES_DIR . 'html/Default');
     $app->render('login.twig');
-
 })->name('loginPage');
-
 
 // Modules routes group
 $arr_ModulesList = array_diff(scandir(MODULES_DIR), array('..', '.'));
@@ -103,7 +93,6 @@ foreach ($arr_ModulesList as $str_Module) {
     }
 }
 
-
 // REST API routes group
 $app->group('/rest-api', function () use ($app, $loader, $obj_Jierarchy) {
 
@@ -112,9 +101,7 @@ $app->group('/rest-api', function () use ($app, $loader, $obj_Jierarchy) {
     foreach ($arr_ControllersList as $str_Controller) {
         require(RESTAPI_DIR . 'controllers/' . $str_Controller);
     }
-
 });
-
 
 // Run the application
 $app->run();

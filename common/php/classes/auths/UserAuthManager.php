@@ -20,8 +20,8 @@
 namespace Gawain\Classes\Auths;
 
 use Gawain\Classes\Misc\Options;
-use Gawain\Functions\StringFunctions;
 use Gawain\Functions\Autodefiners;
+use Gawain\Functions\StringFunctions;
 
 /**
  * Class UserAuthManager
@@ -36,18 +36,15 @@ class UserAuthManager
      */
     private $hostName;
 
-
     /** DB handler
      * @var \Gawain\Abstracts\Database\DbHandler
      */
     private $dbHandler;
 
-
     /** Options
      * @var \Gawain\Classes\Misc\Options
      */
     private $options;
-
 
     /** Constructor
      *
@@ -59,7 +56,6 @@ class UserAuthManager
         $this->options = new Options();
         $this->dbHandler = Autodefiners\db_autodefine($this->options);
     }
-
 
     /** Authenticates with the given password hash
      *
@@ -84,19 +80,14 @@ class UserAuthManager
 
         if (count($obj_Resultset) == 0) {
             throw new \Exception('User does not exist');
-
         } elseif ($str_UserNick === null) {
             throw new \Exception('User not defined');
-
         } elseif (count($obj_Resultset) > 1) {
             throw new \Exception('Multiple user returned');
-
         } elseif ($obj_Resultset[0]['userIsActive'] = 0) {
             throw new \Exception('User is not active');
-
         } elseif (strtoupper($obj_Resultset[0]['userPassword']) != strtoupper($str_PasswordHash)) {
             throw new \Exception('Wrong username or password');
-
         } else {
             $str_SessionID = $this->generateSessionID();
 
@@ -190,7 +181,6 @@ class UserAuthManager
 
         $mix_Return = null;
 
-
         switch ($str_Format) {
             case 'json':
                 $mix_Return = json_encode($obj_Resultset);
@@ -250,7 +240,6 @@ class UserAuthManager
                     }
                     $bool_Result = false;
                 }
-
             } else {
                 if ($bool_SendHeader) {
                     header('Location: ' . LOGOUT_LANDING_PAGE, true);
@@ -269,7 +258,6 @@ class UserAuthManager
         }
 
         return $bool_Result;
-
     }
 
     /** Checks if the given user is authenticated
@@ -327,7 +315,6 @@ class UserAuthManager
 				where modules.moduleCode = ?
 					and sessions.sessionID = ?';
 
-
         $arr_Resultset = $this->dbHandler->executePrepared($str_Query, array(
             array($str_ModuleCode => 's'),
             array($str_SessionID => 's')
@@ -372,7 +359,6 @@ class UserAuthManager
             $this->setSessionCustomer($str_SessionID, $int_SelectedCustomer);
 
             return true;
-
         } else {
             return false;
         }
@@ -460,7 +446,6 @@ class UserAuthManager
         } else {
             throw new \Exception('Non-unique session');
         }
-
     }
 
 }

@@ -34,36 +34,30 @@ abstract class DbHandler
      */
     protected $hostname;
 
-
     /**
      * @var string DB Username
      */
     protected $username;
-
 
     /**
      * @var string DB User Password
      */
     protected $password;
 
-
     /**
      * @var string DB Default schema
      */
     protected $schema;
-
 
     /**
      * @var \stdClass Connection Handler
      */
     protected $handler;
 
-
     /**
      * @var Options Options
      */
     protected $options;
-
 
     /**
      * DbHandler constructor.
@@ -78,7 +72,6 @@ abstract class DbHandler
         $this->schema = $this->options->get('db_schema');
     }
 
-
     /** Execute prepared query and output resultset
      *
      * @param $str_Query
@@ -88,13 +81,11 @@ abstract class DbHandler
      */
     abstract public function executePrepared($str_Query, $arr_InputParameters);
 
-
     /** Starts a transaction
      *
      * @return mixed
      */
     abstract public function beginTransaction();
-
 
     /** Commits a transaction
      *
@@ -102,13 +93,11 @@ abstract class DbHandler
      */
     abstract public function commit();
 
-
     /** Rollbacks a transaction
      *
      * @return mixed
      */
     abstract public function rollback();
-
 
     /**
      * Class destructor

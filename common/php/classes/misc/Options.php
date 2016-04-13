@@ -36,7 +36,6 @@ class Options
         $this->optionsArray = parse_ini_file(CONFIG_DIR . 'options.ini', false);
     }
 
-
     /** Retrieves the given option key
      *
      * @param $str_Key
@@ -47,7 +46,6 @@ class Options
     {
         return $this->optionsArray[$str_Key];
     }
-
 
     /** Sets the given key to the given value
      *

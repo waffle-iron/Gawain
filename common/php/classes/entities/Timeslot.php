@@ -23,8 +23,6 @@ use Gawain\Abstracts\Entities\Entity;
 use Gawain\Classes\Auths\UserAuthManager;
 use Gawain\Functions\StringFunctions;
 
-
-
 /**
  * Class Timeslot
  */
@@ -36,7 +34,6 @@ class Timeslot extends Entity
      * @var UserAuthManager
      */
     private $authManager;
-
 
     /** Child constructor
      *
@@ -54,7 +51,6 @@ class Timeslot extends Entity
         // Call parent constructor
         parent::__construct($str_SessionID);
     }
-
 
     /** Groups extracted timeslots by date
      *
@@ -78,11 +74,8 @@ class Timeslot extends Entity
             ksort($arr_DateGroupedTimeslots);
         }
 
-
         return $arr_DateGroupedTimeslots;
-
     }
-
 
     /** Groups extracted timeslots by Activity and Task
      *
@@ -101,8 +94,7 @@ class Timeslot extends Entity
             }
 
             if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['details'][$arr_Timeslot['timeslotTaskID']])) {
-                $arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['details'][$arr_Timeslot['timeslotTaskID']] =
-                    0;
+                $arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['details'][$arr_Timeslot['timeslotTaskID']] = 0;
             }
 
             $arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotActivityID']]['total'] += $arr_Timeslot['timeslotDuration'];
@@ -110,9 +102,7 @@ class Timeslot extends Entity
         }
 
         return $arr_ActivityGroupedTimeslots;
-
     }
-
 
     /** Groups extracted timeslots by Activity and Task
      *
@@ -131,8 +121,7 @@ class Timeslot extends Entity
             }
 
             if (!isset($arr_ActivityGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['details'][$arr_Timeslot['timeslotTaskID']])) {
-                $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['details'][$arr_Timeslot['timeslotTaskID']] =
-                    0;
+                $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['details'][$arr_Timeslot['timeslotTaskID']] = 0;
             }
 
             $arr_UserGroupedTimeslots[$arr_Timeslot['timeslotUserNick']]['total'] += $arr_Timeslot['timeslotDuration'];
@@ -140,9 +129,7 @@ class Timeslot extends Entity
         }
 
         return $arr_UserGroupedTimeslots;
-
     }
-
 
     /** Helper method that retrieves all the entries linked to current user
      *
@@ -160,9 +147,7 @@ class Timeslot extends Entity
         $str_CurrentUser = $this->authManager->getCurrentUserNick($this->sessionID);
 
         return $this->getUsersEntries(array($str_CurrentUser), $mix_Limits, $int_ActivityID, $int_TaskID);
-
     }
-
 
     /** Helper method that retrieves all the entries for the given users. If no user is specified, all user entries
      * are retrieved.
@@ -183,7 +168,7 @@ class Timeslot extends Entity
         // If no user is specified, all users are retrieved
         if (!is_null($arr_Users)) {
             $arr_Wheres['timeslotUserNick'] = array(
-                'operator'  => 'in',
+                'operator' => 'in',
                 'arguments' => $arr_Users
             );
         }
@@ -197,7 +182,7 @@ class Timeslot extends Entity
                 case 'this_day':
                     $str_Today = $date_Today->format('Y-m-d');
                     $arr_Wheres['timeslotReferenceDate'] = array(
-                        'operator'  => '=',
+                        'operator' => '=',
                         'arguments' => array(
                             $str_Today
                         )
@@ -207,7 +192,7 @@ class Timeslot extends Entity
                 case 'this_week':
                     $str_Limit = strftime('%Y-%m-%d', strtotime('this week', time()));
                     $arr_Wheres['timeslotReferenceDate'] = array(
-                        'operator'  => '>=',
+                        'operator' => '>=',
                         'arguments' => array(
                             $str_Limit
                         )
@@ -217,7 +202,7 @@ class Timeslot extends Entity
                 case 'this_month':
                     $str_Limit = $date_Today->format('Y-m-01');
                     $arr_Wheres['timeslotReferenceDate'] = array(
-                        'operator'  => '>=',
+                        'operator' => '>=',
                         'arguments' => array(
                             $str_Limit
                         )
@@ -227,7 +212,7 @@ class Timeslot extends Entity
                 case 'this_year':
                     $str_Limit = $date_Today->format('Y-01-01');
                     $arr_Wheres['timeslotReferenceDate'] = array(
-                        'operator'  => '>=',
+                        'operator' => '>=',
                         'arguments' => array(
                             $str_Limit
                         )
@@ -240,20 +225,19 @@ class Timeslot extends Entity
                 default:
                     $str_Limit = $date_Today->format('Y-m-01');
                     $arr_Wheres['timeslotReferenceDate'] = array(
-                        'operator'  => '>=',
+                        'operator' => '>=',
                         'arguments' => array(
                             $str_Limit
                         )
                     );
                     break;
             }
-
         } else {
 
             // If the limit parameter is an array, get the 'from' and 'to' elements
             if (isset($mix_Limits['from']) && !is_null($mix_Limits['from'])) {
                 $arr_Wheres['timeslotReferenceDate'] = array(
-                    'operator'  => '>=',
+                    'operator' => '>=',
                     'arguments' => array(
                         $mix_Limits['from']
                     )
@@ -262,20 +246,18 @@ class Timeslot extends Entity
 
             if (isset($mix_Limits['to']) && !is_null($mix_Limits['to'])) {
                 $arr_Wheres['timeslotReferenceDate'] = array(
-                    'operator'  => '<=',
+                    'operator' => '<=',
                     'arguments' => array(
                         $mix_Limits['to']
                     )
                 );
             }
-
         }
-
 
         // Add condition on activity ID and task ID, if present
         if (!is_null($int_ActivityID)) {
             $arr_Wheres['timeslotActivityID'] = array(
-                'operator'  => '=',
+                'operator' => '=',
                 'arguments' => array(
                     $int_ActivityID
                 )
@@ -284,17 +266,15 @@ class Timeslot extends Entity
 
         if (!is_null($int_TaskID)) {
             $arr_Wheres['timeslotTaskID'] = array(
-                'operator'  => '=',
+                'operator' => '=',
                 'arguments' => array(
                     $int_TaskID
                 )
             );
         }
 
-
         // Execute the query and get entries
         return $this->read($arr_Wheres);
-
     }
 
 }

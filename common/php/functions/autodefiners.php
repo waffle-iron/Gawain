@@ -48,7 +48,6 @@ function db_autodefine($obj_OptionHandler)
     return $obj_Return;
 }
 
-
 /** PSR-0 class loader for Gawain
  *  Automatically parses PHP files in common/php dir and loads the requested class on demand
  *

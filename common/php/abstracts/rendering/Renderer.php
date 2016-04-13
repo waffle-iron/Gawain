@@ -19,7 +19,6 @@
 
 namespace Gawain\Abstracts\Rendering;
 
-
 /**
  * Class Renderer
  */
@@ -29,30 +28,23 @@ abstract class Renderer
     // Rendering style
     public $data;
 
-
     // Internal Twig Loader
     protected $style;
-
 
     // Internal Twig environment
     protected $twigLoader;
 
-
     // Internal Twig Template
     protected $twig;
-
 
     // Renderer data
     protected $twigTemplate;
 
-
     // Template file path
     protected $templatePath;
 
-
     // Rendering format
     protected $renderingFormat;
-
 
     /** Constructor
      *
@@ -63,9 +55,7 @@ abstract class Renderer
         \Twig_Autoloader::register();
         $this->twigLoader = new \Twig_Loader_Filesystem(TEMPLATES_DIR);
         $this->twig = new \Twig_Environment($this->twigLoader);
-
     }
-
 
     /** Add a path (typically an entity custom path) to the loader
      *
@@ -77,9 +67,7 @@ abstract class Renderer
     {
 
         $this->twigLoader->addPath($str_TemplatePath);
-
     }
-
 
     /** Imports the data to be rendered
      *
@@ -89,9 +77,7 @@ abstract class Renderer
     {
 
         $this->data = $arr_Dataset;
-
     }
-
 
     /** Sets the template to be used for document generation
      *
@@ -101,9 +87,7 @@ abstract class Renderer
     {
 
         $this->templatePath = $str_TemplatePath;
-
     }
-
 
     /** Sets the style for the rendering
      *
@@ -113,16 +97,13 @@ abstract class Renderer
     {
 
         $this->style = $str_Style;
-
     }
-
 
     /** Renders the given data
      *
      * @return mixed
      */
     abstract public function render();
-
 
     /** Provides a basic rendering method to be used in more complex render implementations
      *
@@ -142,7 +123,6 @@ abstract class Renderer
         $this->twigLoader->addPath(TEMPLATES_DIR . $this->renderingFormat . '/' . $this->style);
 
         return $this->twig->render($this->templatePath, $this->data);
-
     }
 
 }

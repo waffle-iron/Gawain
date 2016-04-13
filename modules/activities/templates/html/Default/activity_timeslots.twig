@@ -6,28 +6,28 @@
 
         <table class="table">
             <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Hours</th>
-                </tr>
+            <tr>
+                <th>User</th>
+                <th>Hours</th>
+            </tr>
             </thead>
 
             <tbody>
-                {% set totalHours = 0 %}
-                {% for userNick, userDataArray in activity_timeslots %}
-                    <tr>
-                        <td>{{ userNick }}</td>
-                        <td>{{ userDataArray.total }}</td>
-                    </tr>
-                    {% set totalHours = totalHours + userDataArray.total %}
-                {% endfor %}
+            {% set totalHours = 0 %}
+            {% for userNick, userDataArray in activity_timeslots %}
+                <tr>
+                    <td>{{ userNick }}</td>
+                    <td>{{ userDataArray.total }}</td>
+                </tr>
+                {% set totalHours = totalHours + userDataArray.total %}
+            {% endfor %}
             </tbody>
 
             <tfoot>
-                <tr>
-                    <td><b>Total hours</b></td>
-                    <td><b>{{ totalHours }}</b></td>
-                </tr>
+            <tr>
+                <td><b>Total hours</b></td>
+                <td><b>{{ totalHours }}</b></td>
+            </tr>
             </tfoot>
         </table>
 
