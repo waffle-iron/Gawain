@@ -116,15 +116,3 @@ define('PHP_FUNCTIONS_DIR', PHP_DIR . 'functions/');
 define('PHP_VENDOR_DIR', PHP_DIR . 'vendor/');
 
 /* ==================================================================== */
-
-
-/**
- * Default login landing page
- */
-define('LOGIN_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/activities/');
-
-
-/**
- * Default logout landing page
- */
-define('LOGOUT_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/login/');
