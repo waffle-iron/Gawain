@@ -29,6 +29,7 @@ Twig_Autoloader::register();
 
 require_once(PHP_VENDOR_DIR . 'Slim-Views/TwigExtension.php');
 require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
+require_once(PHP_CLASSES_DIR . 'misc/i18n.php');
 
 
 // Creation of Slim app with Twig rendering engine (Uber coool)
