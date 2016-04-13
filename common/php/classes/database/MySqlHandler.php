@@ -1,12 +1,35 @@
 <?php
+/**
+ * Gawain
+ * Copyright (C) 2016  Stefano Romanò (rumix87 (at) gmail (dot) com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 require_once(PHP_ABSTRACTS_DIR . 'database/DbHandler.php');
 
+/** Manages MySQL connections using MySQL native driver
+ *
+ * Class MySqlHandler
+ */
 class MySqlHandler extends DbHandler
 {
 
-    // Class constructor
+    /**
+     * MySqlHandler constructor.
+     */
     function __construct()
     {
 
@@ -33,9 +56,8 @@ class MySqlHandler extends DbHandler
 
 
 
-    // Execute prepared query and output resultset
-
-    /**
+    /** Execute prepared query and output resultset
+     *
      * The input parameters will be formatted in the following way:
      * array([0] => array(variable1 => type1), [1] => array(variable2 => type2))
      *
@@ -101,28 +123,37 @@ class MySqlHandler extends DbHandler
     }
 
 
-    // Starts a transaction
+    /** Starts a transaction
+     *
+     */
     public function beginTransaction()
     {
         $this->handler->query('begin transaction');
     }
 
 
-    // Commits a transaction
+    /** Commits a transaction
+     *
+     */
     public function commit()
     {
         $this->handler->query('commit');
     }
 
 
-    // Rollback a transaction
+    /** Rollback a transaction
+     *
+     */
     public function rollback()
     {
         $this->handler->query('rollback');
     }
 
 
-    // Destructor
+    /** Destructor
+     *
+     * Closes DB Connection
+     */
     function __destruct()
     {
         $this->handler->close();
