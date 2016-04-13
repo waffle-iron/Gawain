@@ -25,7 +25,7 @@ require_once('common/php/constants/global_defines.php');
 class i18n_consistencyTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function AllLanguagesHaveSameSections()
+    public function testAllLanguagesHaveSameSections()
     {
         $arr_ReferenceLanguageFileContent = parse_ini_file(I18N_DIR . 'en_EN.ini', true);
         $arr_OtherLanguages = array_diff(scandir(I18N_DIR), array('..', '.', 'en_EN.ini'));
@@ -39,7 +39,7 @@ class i18n_consistencyTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function AllLanguageSectionsHaveAllEntries()
+    public function testAllLanguageSectionsHaveAllEntries()
     {
         $arr_ReferenceLanguageFileContent = parse_ini_file(I18N_DIR . 'en_EN.ini', true);
         $arr_OtherLanguages = array_diff(scandir(I18N_DIR), array('..', '.', 'en_EN.ini'));
