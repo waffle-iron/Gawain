@@ -62,7 +62,7 @@ function array2xml($arr_Array, $str_StartTag)
     _array_to_xml($arr_Array, $obj_XML);
 
     // Outputs the XML string
-    return str_replace(PHP_EOL, '', $obj_XML->asXML());
+    return preg_replace('/[\n\r]/', '', $obj_XML->asXML());
 
 }
 
