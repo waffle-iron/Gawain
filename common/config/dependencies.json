@@ -2,7 +2,7 @@
   "jQuery": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/jQuery/jquery.min.js"
+        "common/js/vendor/jQuery/jquery.min.js"
       ],
       "css": []
     },
@@ -11,7 +11,7 @@
   "bootstrap": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/Bootstrap/js/bootstrap.min.js"
+        "common/js/vendor/Bootstrap/js/bootstrap.min.js"
       ],
       "css": []
     },
@@ -22,8 +22,8 @@
   "highcharts": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/Highcharts/highcharts.js",
-        "/gawain/common/js/vendor/Highcharts/themes/grid.js"
+        "common/js/vendor/Highcharts/highcharts.js",
+        "common/js/vendor/Highcharts/themes/grid.js"
       ],
       "css": [
         ""
@@ -36,8 +36,8 @@
   "highcharts-more": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/Highcharts/highcharts-more.js",
-        "/gawain/common/js/vendor/Highcharts/highcharts-3d.js"
+        "common/js/vendor/Highcharts/highcharts-more.js",
+        "common/js/vendor/Highcharts/highcharts-3d.js"
       ],
       "css": [
         ""
@@ -50,7 +50,7 @@
   "highcharts-drilldown": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/Highcharts/modules/drilldown.js"
+        "common/js/vendor/Highcharts/modules/drilldown.js"
       ],
       "css": [
         ""
@@ -76,7 +76,7 @@
   "CryptoJS": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/CryptoJS/sha3.js"
+        "common/js/vendor/CryptoJS/sha3.js"
       ],
       "css": [
         ""
@@ -87,11 +87,11 @@
   "jquery-treegrid": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.min.js",
-        "/gawain/common/js/vendor/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
+        "common/js/vendor/jquery-treegrid/js/jquery.treegrid.min.js",
+        "common/js/vendor/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"
       ],
       "css": [
-        "/gawain/common/js/vendor/jquery-treegrid/css/jquery.treegrid.css"
+        "common/js/vendor/jquery-treegrid/css/jquery.treegrid.css"
       ]
     },
     "dependencies": [
@@ -128,7 +128,7 @@
     "path": {
       "js": [],
       "css": [
-        "/gawain/common/css/Themes/Cerulean/bootstrap.min.css"
+        "common/css/Themes/Cerulean/bootstrap.min.css"
       ]
     },
     "dependencies": [
@@ -139,7 +139,7 @@
     "path": {
       "js": [],
       "css": [
-        "/gawain/common/css/FontAwesome/font-awesome.min.css"
+        "common/css/FontAwesome/font-awesome.min.css"
       ]
     },
     "dependencies": []
@@ -148,12 +148,12 @@
     "path": {
       "js": [],
       "css": [
-        "/gawain/common/css/gawain/page.css",
-        "/gawain/common/css/gawain/presentation-elements.css",
-        "/gawain/common/css/gawain/progressbars.css",
-        "/gawain/common/css/gawain/navs.css",
-        "/gawain/common/css/gawain/buttons.css",
-        "/gawain/common/css/gawain/custom-fonts.css"
+        "common/csspage.css",
+        "common/csspresentation-elements.css",
+        "common/cssprogressbars.css",
+        "common/cssnavs.css",
+        "common/cssbuttons.css",
+        "common/csscustom-fonts.css"
       ]
     },
     "dependencies": [
@@ -163,7 +163,7 @@
   "gawain-button-bindings": {
     "path": {
       "js": [
-        "/gawain/common/js/onloads/button-bindings.js"
+        "common/js/onloads/button-bindings.js"
       ],
       "css": []
     },
@@ -174,7 +174,7 @@
   "gawain-treegrid-onload": {
     "path": {
       "js": [
-        "/gawain/common/js/onloads/treegrid.js"
+        "common/js/onloads/treegrid.js"
       ],
       "css": []
     },
@@ -185,10 +185,10 @@
   "jsgantt-improved": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/jsgantt-improved/jsgantt.js"
+        "common/js/vendor/jsgantt-improved/jsgantt.js"
       ],
       "css": [
-        "/gawain/common/js/vendor/jsgantt-improved/jsgantt.css"
+        "common/js/vendor/jsgantt-improved/jsgantt.css"
       ]
     },
     "dependencies": []
@@ -196,7 +196,7 @@
   "TinyColor": {
     "path": {
       "js": [
-        "/gawain/common/js/vendor/TinyColor/tinycolor-min.js"
+        "common/js/vendor/TinyColor/tinycolor-min.js"
       ],
       "css": []
     },

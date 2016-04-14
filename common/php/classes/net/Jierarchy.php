@@ -32,8 +32,8 @@ class Jierarchy
      */
     public function __construct($str_DepFilePath)
     {
-        $str_JsonCOntent = file_get_contents($str_DepFilePath);
-        $this->depSource = json_decode($str_JsonCOntent, true);
+        $str_JsonContent = file_get_contents($str_DepFilePath);
+        $this->depSource = json_decode($str_JsonContent, true);
     }
 
 
@@ -69,13 +69,13 @@ class Jierarchy
 
             if (!empty($arr_CurrentNode['path']['js'])) {
                 foreach ($arr_CurrentNode['path']['js'] as $str_JsPath) {
-                    $this->JsPaths[] = $str_JsPath;
+                    $this->JsPaths[] = ROOT_DIR . '/' . $str_JsPath;
                 }
             }
 
             if (!empty($arr_CurrentNode['path']['css'])) {
                 foreach ($arr_CurrentNode['path']['css'] as $str_CssPath) {
-                    $this->CssPaths[] = $str_CssPath;
+                    $this->CssPaths[] = ROOT_DIR . '/' . $str_CssPath;
                 }
             }
         }
