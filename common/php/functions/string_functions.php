@@ -23,7 +23,7 @@
  */
 function generate_random_string()
 {
-    return rtrim(base64_encode(md5(microtime())), '=');
+    return rtrim(base64_encode(md5(microtime())), '=') . rand();
 }
 
 
