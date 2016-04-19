@@ -20,11 +20,11 @@
 require_once(PHP_CLASSES_DIR . 'misc/Options.php');
 
 /**
- * Class i18n
+ * Class I18N
  *
  * Localizes all strings in Gawain
  */
-class i18n
+class I18N
 {
 
     /** Language files folder
@@ -123,7 +123,10 @@ class i18n
         return $str_StringID;
     }
 
-
+    /** Get all available language files
+     *
+     * @return array
+     */
     public function getAvailableLanguages()
     {
         $arr_AvailableLanguages = array();

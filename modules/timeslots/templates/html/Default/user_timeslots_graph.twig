@@ -17,11 +17,11 @@
             },
 
             title: {
-                text: 'Current user timeslots for the selected period'
+                text: '{{ I18N.timeslots__grouped_by_activity }}'
             },
 
             subtitle: {
-                text: 'Click on the slices to view timeslots details by task'
+                text: '{{ I18N.graphs__click_on_slices_for_details }}'
             },
 
             plotOptions: {
@@ -60,7 +60,7 @@
                         id: "{{ activity_name }}_drilldown",
                         data: [
                             {% for task_name,task_timeslot in timeslot_data.details %}
-                            [{% if task_name != '' %}"{{ task_name }}"{% else %}"No Task"{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
+                            [{% if task_name != '' %}"{{ task_name }}"{% else %}"{{ I18N.common__empty }}"{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
                             {% endfor %}
                         ]
                     } {% if not loop.last %},{% endif %}

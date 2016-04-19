@@ -25,7 +25,7 @@
 
             <tfoot>
                 <tr>
-                    <td><b>Total hours</b></td>
+                    <td><b>{{ I18N.common__total }}</b></td>
                     <td><b>{{ totalHours }}</b></td>
                 </tr>
             </tfoot>
@@ -49,11 +49,11 @@
                 },
 
                 title: {
-                    text: 'Current activity timeslots'
+                    text: '{{ I18N.activities__grouped_by_user }}'
                 },
 
                 subtitle: {
-                    text: 'Click on the slices to view timeslots details by task'
+                    text: '{{ I18N.graphs__click_on_slices_for_details }}'
                 },
 
                 plotOptions: {
@@ -92,7 +92,7 @@
                             id: "{{ userNick }}_drilldown",
                             data: [
                                 {% for task_name,task_timeslot in userDataArray.details %}
-                                [{% if task_name != '' %}"{{ task_name }}"{% else %}"No Task"{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
+                                [{% if task_name != '' %}"{{ task_name }}"{% else %}"{{ I18N.common__empty }}"{% endif %}, {{ task_timeslot }}] {% if not loop.last %},{% endif %}
                                 {% endfor %}
                             ]
                         } {% if not loop.last %},{% endif %}

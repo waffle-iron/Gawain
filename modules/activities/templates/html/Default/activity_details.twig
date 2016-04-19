@@ -23,7 +23,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <i class="fa fa-info-circle fa-fw"></i> General Info
+                    <i class="fa fa-info-circle fa-fw"></i> {{ I18N.activities__general_info }}
                 </h3>
             </div>
 
@@ -65,7 +65,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <i class="fa fa-calendar fa-fw"></i> Status and deadlines
+                    <i class="fa fa-calendar fa-fw"></i> {{ I18N.activities__status_and_deadlines }}
                 </h3>
             </div>
 
@@ -88,7 +88,7 @@
                         <dd>{{ activity_data.activityEstimatedEffortHours }} h
                             {% if activity_data.activityIsEstimatedEffortHoursAuto == 1 %}
                                 <span class="label label-default"
-                                      title="The value is calculated automatically based on given data">Auto</span>
+                                      title="{{ I18N.activities__effort_auto_calc_upon_children }}">Auto</span>
                             {% endif %}
                         </dd>
                     {% endif %}
@@ -99,7 +99,7 @@
                         <dd>{{ activity_data.activityCompletion }}%
                             {% if activity_data.activityIsCompletionAuto == 1 %}
                                 <span class="label label-default"
-                                      title="The value is calculated automatically based on given data">Auto</span>
+                                      title="{{ I18N.activities__completion_auto_calc_upon_timeslots }}">Auto</span>
                             {% endif %}
                         </dd>
                     {% endif %}
