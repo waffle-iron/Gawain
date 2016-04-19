@@ -29,7 +29,7 @@ Twig_Autoloader::register();
 
 require_once(PHP_VENDOR_DIR . 'Slim-Views/TwigExtension.php');
 require_once(PHP_CLASSES_DIR . 'net/Jierarchy.php');
-require_once(PHP_CLASSES_DIR . 'misc/i18n.php');
+require_once(PHP_CLASSES_DIR . 'misc/I18N.php');
 
 
 // Creation of Slim app with Twig rendering engine (Uber coool)
@@ -58,6 +58,10 @@ $loader = $twig->getLoader();
 $obj_Jierarchy = new Jierarchy(CONFIG_DIR . 'dependencies.json');
 
 
+// I18N declaration
+$obj_I18N = new I18N('en_EN');
+
+
 // Middleware declaration
 $app->add(new \CheckAuthenticationMiddleware());
 
@@ -69,7 +73,7 @@ $app->get('/', function () use ($app) {
 
 
 // Login route
-$app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
+$app->get('/login', function () use ($app, $loader, $obj_Jierarchy, $obj_I18N) {
 
     // Calculates and prepares the page library dependencies
     $arr_PageDependencies = $obj_Jierarchy->load(array(
@@ -82,6 +86,7 @@ $app->get('/login', function () use ($app, $loader, $obj_Jierarchy) {
                                                  ));
 
     $app->view()->set('page_dependencies', $arr_PageDependencies);
+    $app->view()->set('I18N', $obj_I18N);
 
     $loader->addPath(TEMPLATES_DIR . 'html/Default');
     $app->render('login.twig');
