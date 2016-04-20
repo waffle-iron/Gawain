@@ -60,6 +60,7 @@ class Logger
         10 => 'ERROR',
         20 => 'WARNING',
         30 => 'INFO',
+        50 => 'TRACE',
         99 => 'DEBUG'
     );
 
@@ -77,10 +78,10 @@ class Logger
 
     /** Constructor
      *
-     * @param string $str_Entity
+     * @param string $str_Entity = NULL
      * @param string $str_Module = NULL
      */
-    public function __construct($str_Entity, $str_Module = null)
+    public function __construct($str_Entity = null, $str_Module = null)
     {
         $this->options = new Options();
         $this->dbHandler = db_autodefine($this->options);
@@ -88,6 +89,24 @@ class Logger
         $this->logTableName = $this->options->get('log_table');
         $this->logLevel = $this->options->get('default_log_level');
         $this->entity = $str_Entity;
+        $this->module = $str_Module;
+    }
+
+    /** Manually set entity name
+     *
+     * @param string $str_Entity
+     */
+    public function setEntity($str_Entity)
+    {
+        $this->entity = $str_Entity;
+    }
+
+    /** Manually set module name
+     *
+     * @param string $str_Module
+     */
+    public function setModule($str_Module)
+    {
         $this->module = $str_Module;
     }
 
