@@ -31,6 +31,11 @@ class Session
      */
     private $sessionID;
 
+    /** Internal domain ID
+     * @var string
+     */
+    private $domainID;
+
     /** Internal DB handler
      * @var dbHandler
      */
@@ -214,20 +219,24 @@ class Session
      */
     public function getDomain()
     {
-        $str_CustomerPrepQuery = 'select
+        if (is_null($this->domainID)) {
+            $str_CustomerPrepQuery = 'select
 				customerID
 			from sessions
 			where sessionID = ?';
 
-        $arr_Result = $this->dbHandler->executePrepared($str_CustomerPrepQuery, array(
-            array($this->sessionID => 's')
-        ));
+            $arr_Result = $this->dbHandler->executePrepared($str_CustomerPrepQuery, array(
+                array($this->sessionID => 's')
+            ));
 
-        if (count($arr_Result) == 1) {
-            return $arr_Result[0]['customerID'];
-        } else {
-            throw new Exception('Non unique session');
+            if (count($arr_Result) == 1) {
+                $this->domainID = $arr_Result[0]['customerID'];
+            } else {
+                throw new Exception('Non unique session');
+            }
         }
+
+        return $this->domainID;
     }
 
     /** Gets the user nickname associated to the given session
