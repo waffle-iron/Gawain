@@ -59,7 +59,7 @@ $obj_Jierarchy = new Jierarchy(CONFIG_DIR . 'dependencies.json');
 
 
 // I18N declaration
-$obj_I18N = new I18N('en_EN');
+$obj_I18N = new I18N();
 
 
 // Middleware declaration
