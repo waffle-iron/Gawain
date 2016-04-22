@@ -66,14 +66,16 @@ class I18N
      *
      * @param $str_LanguageID
      */
-    public function __construct($str_LanguageID)
+    public function __construct($str_LanguageID = null)
     {
         // Main language passed to constructor
-        $this->language = $str_LanguageID;
+        $this->options = new Options();
+        if (is_null($str_LanguageID)) {
+            $this->language = $this->options->get('default_locale');
+        }
         $this->translations['main'] = $this->loadLanguage($this->language, false);
 
         // Fallback language loaded from options
-        $this->options = new Options();
         $this->fallbackLanguage = $this->options->get('fallback_locale');
         $this->translations['fallback'] = $this->loadLanguage($this->fallbackLanguage, true);
     }
