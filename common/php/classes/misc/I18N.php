@@ -70,9 +70,8 @@ class I18N
     {
         // Main language passed to constructor
         $this->options = new Options();
-        if (is_null($str_LanguageID)) {
-            $this->language = $this->options->get('default_locale');
-        }
+
+        $this->language = is_null($str_LanguageID) ? $this->options->get('default_locale') : $str_LanguageID;
         $this->translations['main'] = $this->loadLanguage($this->language, false);
 
         // Fallback language loaded from options
@@ -107,10 +106,11 @@ class I18N
      *  The string has to be specified as {section}__{stringID}
      *
      * @param $str_StringID
+     * @param $arr_Arguments
      *
      * @return mixed
      */
-    public function __call($str_StringID)
+    public function __call($str_StringID, $arr_Arguments)
     {
         $arr_Parameters = explode('__', $str_StringID, 2);
 
