@@ -69,13 +69,17 @@ class Jierarchy
 
             if (!empty($arr_CurrentNode['path']['js'])) {
                 foreach ($arr_CurrentNode['path']['js'] as $str_JsPath) {
-                    $this->JsPaths[] = ROOT_DIR . '/' . $str_JsPath;
+                    if (strlen($str_JsPath) > 0) {
+                        $this->JsPaths[] = '/' . SERVER_NAME . '/' . $str_JsPath;
+                    }
                 }
             }
 
             if (!empty($arr_CurrentNode['path']['css'])) {
                 foreach ($arr_CurrentNode['path']['css'] as $str_CssPath) {
-                    $this->CssPaths[] = ROOT_DIR . '/' . $str_CssPath;
+                    if (strlen($str_CssPath) > 0) {
+                        $this->CssPaths[] = '/' . SERVER_NAME . '/' . $str_CssPath;
+                    }
                 }
             }
         }

@@ -148,12 +148,12 @@
     "path": {
       "js": [],
       "css": [
-        "common/csspage.css",
-        "common/csspresentation-elements.css",
-        "common/cssprogressbars.css",
-        "common/cssnavs.css",
-        "common/cssbuttons.css",
-        "common/csscustom-fonts.css"
+        "common/css/gawain/page.css",
+        "common/css/gawain/presentation-elements.css",
+        "common/css/gawain/progressbars.css",
+        "common/css/gawain/navs.css",
+        "common/css/gawain/buttons.css",
+        "common/css/gawain/custom-fonts.css"
       ]
     },
     "dependencies": [

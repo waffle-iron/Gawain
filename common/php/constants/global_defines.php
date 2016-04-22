@@ -111,6 +111,11 @@ define('PHP_VENDOR_DIR', PHP_DIR . 'vendor/');
 
 /* ==================================================================== */
 
+/**
+ * Server name
+ */
+define('SERVER_NAME', basename(ROOT_DIR));
+
 
 /**
  * Default login landing page
