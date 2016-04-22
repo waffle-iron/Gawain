@@ -56,6 +56,12 @@ define('CONFIG_DIR', COMMON_DIR . 'config/');
 
 
 /**
+ * Internationalization (i18n) file folder path
+ */
+define('I18N_DIR', CONFIG_DIR . 'i18n/');
+
+
+/**
  * PHP source files folder path
  */
 define('PHP_DIR', COMMON_DIR . 'php/');
@@ -115,15 +121,3 @@ define('PHP_VENDOR_DIR', PHP_DIR . 'vendor/');
  * Server name
  */
 define('SERVER_NAME', basename(ROOT_DIR));
-
-
-/**
- * Default login landing page
- */
-define('LOGIN_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/activities/');
-
-
-/**
- * Default logout landing page
- */
-define('LOGOUT_LANDING_PAGE', 'http://' . $_SERVER['SERVER_NAME'] . '/gawain/modules/login/');

@@ -35,7 +35,11 @@
                     <ul class="dropdown-menu">
                         <li><a href="#">To be filled...</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="{{ urlFor('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                        <li>
+                            <a href="{{ urlFor('logout') }}">
+                                <i class="fa fa-sign-out fa-fw"></i> {{ I18N.login__logout }}
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

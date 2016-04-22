@@ -7,7 +7,11 @@
     var g = new JSGantt.GanttChart(document.getElementById('gawain-activities-gantt-chart-container'), 'day');
 
     g.setScrollTo('today');
-    g.setFormatArr('Day', 'Week', 'Month', 'Quarter');
+    g.setFormatArr('{{ I18N.common__day }}',
+            '{{ I18N.common__week }}',
+            '{{ I18N.common__month }}',
+            '{{ I18N.common__quarter }}'
+    );
 
     JSGantt.parseXMLString('{{ gantt_data|raw }}', g);
 

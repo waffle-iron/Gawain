@@ -25,9 +25,9 @@ require_once(PHP_CLASSES_DIR . 'entities/Timeslot.php');
 $str_SessionID = $app->getCookie('GawainSessionID');
 
 
-$app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
+$app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID, $obj_I18N) {
 
-    $app->get('/', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
+    $app->get('/', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID, $obj_I18N) {
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
@@ -90,6 +90,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('filter', $str_TimeslotFilter);
         $app->view()->set('from', $str_TimeslotFrom);
         $app->view()->set('to', $str_TimeslotTo);
+        $app->view()->set('I18N', $obj_I18N);
 
 
         // Renders the page
@@ -99,7 +100,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
     })->name('timeslots');
 
 
-    $app->get('/new', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
+    $app->get('/new', function () use ($app, $loader, $obj_Jierarchy, $str_SessionID, $obj_I18N) {
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
@@ -136,6 +137,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('module_item_label', $str_ItemLabel);
         $app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
         $app->view()->set('main_ID', $str_MainID);
+        $app->view()->set('I18N', $obj_I18N);
 
 
         // Action switch to define the view once and use it for edit and creation
@@ -178,7 +180,8 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
     })->name('timeslot_new_save');
 
 
-    $app->get('/:timeslotID/edit', function ($timeslotID) use ($app, $loader, $obj_Jierarchy, $str_SessionID) {
+    $app->get('/:timeslotID/edit', function ($timeslotID) use (
+        $app, $loader, $obj_Jierarchy, $str_SessionID, $obj_I18N) {
 
         // Page dependencies
         $arr_PageDependencies = $obj_Jierarchy->load(array(
@@ -213,6 +216,7 @@ $app->group('/timeslots', function () use ($app, $loader, $obj_Jierarchy, $str_S
         $app->view()->set('domain_dependency_column', $str_DomainDependencyColumn);
         $app->view()->set('main_ID', $str_MainID);
         $app->view()->set('entity_ID', $timeslotID);
+        $app->view()->set('I18N', $obj_I18N);
 
 
         // Action switch to define the view once and use it for edit and creation

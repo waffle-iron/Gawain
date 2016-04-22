@@ -31,17 +31,19 @@
         <div class="col-md-6 col-md-offset-3">
             <form class="form-horizontal" id="gawain-authentication-form">
                 <div class="form-group">
-                    <label for="gawain-login-username" class="col-md-2 control-label">Username</label>
+                    <label for="gawain-login-username" class="col-md-2 control-label">{{ I18N.login__username }}</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" id="gawain-login-username" placeholder="Username"
+                        <input type="text" class="form-control" id="gawain-login-username"
+                               placeholder="{{ I18N.login__username }}"
                                name="username">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="gawain-login-password" class="col-md-2 control-label">Password</label>
+                    <label for="gawain-login-password" class="col-md-2 control-label">{{ I18N.login__password }}</label>
                     <div class="col-md-10">
-                        <input type="password" class="form-control" id="gawain-login-password" placeholder="Password"
+                        <input type="password" class="form-control" id="gawain-login-password"
+                               placeholder="{{ I18N.login__password }}"
                                name="password" data-gawain-hash="hash">
                     </div>
                 </div>
@@ -54,7 +56,7 @@
                                 data-gawain-controller-method="authenticate"
                                 data-gawain-request-method="POST"
                                 data-gawain-request-target="gawain-authentication-form"
-                                data-gawain-response-target="gawain-domain-viewport">Authenticate
+                                data-gawain-response-target="gawain-domain-viewport">{{ I18N.login__authenticate }}
                         </button>
                     </div>
                 </div>

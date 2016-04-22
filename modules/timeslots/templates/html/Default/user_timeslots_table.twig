@@ -6,8 +6,8 @@
     <tr>
         <th>{{ timeslots_fields.timeslotReferenceDate.label }}</th>
         <th></th>
-        <th>Activity Name</th>
-        <th>Task Name</th>
+        <th>{{ I18N.timeslots__activity_name }}</th>
+        <th>{{ I18N.timeslots__task_name }}</th>
         <th>{{ timeslots_fields.timeslotDuration.label }}</th>
         <th>{{ timeslots_fields.timeslotDescription.label }}</th>
     </tr>
@@ -24,13 +24,13 @@
                     <td rowspan="{{ timeslot_data|length }}"
                         style="vertical-align: middle">{{ timeslot_group_date|date('d/m/Y') }}</td>{% endif %}
                 <td>
-                    <a href="{{ urlFor('timeslot_edit', {timeslotID: ID}) }}" title="Edit"><i
+                    <a href="{{ urlFor('timeslot_edit', {timeslotID: ID}) }}" title="{{ I18N.common__edit }}"><i
                                 class="fa fa-pencil fa-fw"></i></a>
-                    <a href="{{ urlFor('timeslot_new') }}?cloneFrom={{ ID }}" title="Clone"><i
+                    <a href="{{ urlFor('timeslot_new') }}?cloneFrom={{ ID }}" title="{{ I18N.common__clone }}"><i
                                 class="fa fa-clone fa-fw"></i></a>
                     <a class="gawain-button-like"
-                       onclick="if (confirm('Are you sure to delete this record? This operation cannot be reverted')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}"
-                       title="Delete"><i class="fa fa-trash-o fa-fw"></i></a>
+                       onclick="if (confirm('{{ I18N.common__are_you_sure_to_delete }}')) {$('#gawain-timeslot-delete-{{ ID }}').submit();}"
+                       title="{{ I18N.common__delete }}"><i class="fa fa-trash-o fa-fw"></i></a>
                 </td>
                 <td>{{ timeslot.timeslotActivityID }}</td>
                 <td>{{ timeslot.timeslotTaskID }}</td>

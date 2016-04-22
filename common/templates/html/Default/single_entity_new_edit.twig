@@ -2,9 +2,9 @@
 
 {% block page_title %}
     {% if page_action == 'new' %}
-        Create {{ module_item_label }}
+        {{ I18N.common__create }} {{ module_item_label }}
     {% elseif page_action == 'edit' %}
-        Edit {{ module_item_label }}
+        {{ I18N.common__edit }} {{ module_item_label }}
     {% endif %}
 {% endblock %}
 
@@ -140,8 +140,9 @@
         <hr>
 
         <div class="pull-right">
-            <button type="reset" class="btn btn-warning" form="gawain-activity-edit-form">Clean all fields</button>
-            <button type="submit" class="btn btn-success">Save</button>
+            <button type="reset" class="btn btn-warning" form="gawain-activity-edit-form">
+                {{ I18N.common__clear_fields }}</button>
+            <button type="submit" class="btn btn-success">{{ I18N.common__save }}</button>
         </div>
 
 
