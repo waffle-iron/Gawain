@@ -2,9 +2,9 @@
 
 {% block page_title %}
     {% if page_action == 'new' %}
-        Create {{ module_item_label }}
+        {{ I18N.common__create }} {{ module_item_label }}
     {% elseif page_action == 'edit' %}
-        Edit {{ module_item_label }}
+        {{ I18N.common__edit }} {{ module_item_label }}
     {% endif %}
 {% endblock %}
 

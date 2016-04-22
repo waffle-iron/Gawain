@@ -30,7 +30,7 @@
     <a class="btn btn-primary"
        role="button"
        href="{{ urlFor('timeslot_new') }}">
-        <i class="fa fa-plus-circle fa-fw"></i> Create
+        <i class="fa fa-plus-circle fa-fw"></i> {{ I18N.common__create }}
     </a>
 
 {% endblock %}
@@ -48,7 +48,7 @@
                   action="{{ urlFor('timeslots') }}"
                   method="get">
                 <div class="form_group">
-                    <label for="filter">View filter</label>
+                    <label for="filter">{{ I18N.timeslots__view_filter }}</label>
                     <select id="filter" name="filter" class="form-control">
                         <option value="this_day" {% if filter == 'this_day' %}selected{% endif %}>
                             {{ I18N.timeslots__this_day }}</option>
