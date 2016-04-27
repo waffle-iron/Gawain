@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/steromano87/Gawain.png?label=ready&title=Ready)](https://waffle.io/steromano87/Gawain)
 # Gawain
 Web based project management. Made for consultants.
 
